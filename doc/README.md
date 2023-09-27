@@ -31,7 +31,11 @@
 
 [See color font](ISS-colors.pdf)
 
+<<<<<<< HEAD
 ## TODOs
+=======
+## TODOs AKA Tasks
+>>>>>>> e166a19 (ER diagram, mock up, tasks)
 
 + Build mock up
 + Build and set up MySQL database on eva server
