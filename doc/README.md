@@ -4,7 +4,7 @@
 
 Úkolem zadání je vytvořit jednoduchý informační systém pro správu událostí pořádaných uživateli informačního systému (např. koncert, vystoupení, přednáška, setkání programátorů, demonstrace, apod.). Každá událost má nějaké **unikátní označení**, pomocí kterého ji uživatelé budou moci vhodně odlišit, **datum/čas konání** (od, do), **místo konání**, **kapacita** (omezená/neomezená), volitelné **vstupné** (může být více kategorií vstupného dle požadavků pořadatele), kategorie a další vhodné atributy (např. **popis**, **ikona**, **fotky**, apod.). **Místo konání je definováno svoji adresou a dalšími vhodnými atributy (popis, fotky, apod.).** **Kategorie mají hierarchický charakter (např. vzdělání -> seminář).** Na základě těchto kategorií pak uživatelé mohou přívětivě vyhledávat nové akce, registrovat se na akce a přidávat si je tak do svého kalendáře. Uživatelé budou moci dále informační systém používat následujícím způsobem:
 
-+ **administrátor** 
++ **administrátor**
     - spravuje uživatele
     - má práva všech následujících rolí
 + **moderátor**
@@ -31,11 +31,8 @@
 
 [See color font](ISS-colors.pdf)
 
-<<<<<<< HEAD
-## TODOs
-=======
+
 ## TODOs AKA Tasks
->>>>>>> e166a19 (ER diagram, mock up, tasks)
 
 + Build mock up
 + Build and set up MySQL database on eva server
