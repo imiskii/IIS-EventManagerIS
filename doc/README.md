@@ -31,7 +31,7 @@
 
 [See color font](ISS-colors.pdf)
 
-## TODOs AKA Tasks
+## TODOs
 
 + Build mock up
 + Build and set up MySQL database on eva server
