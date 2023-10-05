@@ -1,0 +1,139 @@
+
+.card-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    padding: 1rem 3rem 2rem 3rem;
+}
+
+main h2{
+    padding: 2rem 3rem 0rem 4rem;
+}
+
+/* Filter bar */
+
+.filter-bar{
+    width: 100%;
+}
+
+.filter-bar ul{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    list-style: none;
+    background-color: #F4A261;
+    padding: 0px 0px 0px 40px;
+}
+
+.filter-bar ul li{
+    position: relative;
+}
+
+.filter-bar ul li a{
+    display: block;
+    padding: 20px 40px;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    font-size: 20px;
+}
+
+.filter-bar ul li .filter-opt ul{
+    max-height: 500px;
+    overflow-y: auto;
+    display: block;
+    padding: 10px;
+    white-space: nowrap;
+}
+
+.filter-bar ul li .filter-opt{
+    width: fit-content;
+    min-width: 100%;
+    padding: 10px;
+    background-color: #F4A261;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+.filter-bar ul li a:hover{
+    background-color: #E76F51;
+}
+.filter-bar ul li:hover .filter-opt{
+    display: block;
+}
+
+
+/* Category tree */
+
+
+ul.category-tree {
+    padding: 10px;
+    white-space: nowrap;
+}
+
+.category-tree li input{
+    margin: 2px;
+}
+
+/* Locations list */
+
+.filter-opt ul li input{
+    margin: 2px;
+}
+
+/* Rating input */
+
+.rating-input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.rating-input input{
+    width: 50px;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
+    border: 2px solid #E9C46A;
+}
+
+/* Calendar input */
+
+.filter-date{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    border: 2px solid #E9C46A;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 0px 20px;
+}
+
+.filter-date label{
+    font-size: 12px;
+    color: grey;
+}
+
+.filter-date input{
+    font-size: 16px;
+    border: none;
+    font-family: "Roboto Mono", monospace;
+    outline: none;
+}
+
+.filter-date input::-webkit-calendar-picker-indicator{
+    background-color: #2A9D8F;
+    padding: 5px;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Submit button */
+
+.submit-button button{
+    margin-left: 20px;
+    padding: 10px;
+}

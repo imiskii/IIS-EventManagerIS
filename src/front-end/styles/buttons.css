@@ -1,0 +1,51 @@
+
+.button-round-filled{
+    display: inline-block;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border: 0.4rem solid #E9C46A;
+    border-radius: 0.5rem;
+    color: black;
+    background-color: #E9C46A;
+    cursor: pointer;
+}
+
+.button-round-filled-green{
+    display: inline-block;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border: 0.4rem solid #2A9D8F;
+    border-radius: 0.5rem;
+    color: black;
+    background-color: #2A9D8F;
+    cursor: pointer;
+}
+
+.button-round-empty{
+    display: inline-block;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border: 0.4rem solid #E9C46A;
+    border-radius: 0.5rem;
+    color: black;
+    background-color: white;
+    cursor: pointer;
+}
+
+.button-sharp-filled{
+    display: inline-block;
+    padding: 1rem;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border: 0.4rem solid #E76F51;
+    color: black;
+    background-color: #E76F51;
+    cursor: pointer;
+}
