@@ -1,0 +1,200 @@
+
+/* import component styles */
+@import 'buttons.css';
+@import 'event-card.css';
+
+/* import page styles */
+@import 'index.css';
+@import 'login.css';
+
+
+/* General styles */
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+
+body{
+    background-color: white;
+}
+
+/* HEADER */
+
+header{
+    width: 100%;
+    background-color: #E9C46A;
+}
+
+
+.top-bar{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#logo{
+    height: 100%;
+    width: 30%;
+    text-align: left;
+    text-decoration: none;
+    color: black;
+    font-size: 2rem;
+    margin: 1rem 0rem 1rem 2rem;
+}
+
+.search-bar{
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+}
+.search-bar form{
+    background-color: white;
+    stroke: black;
+    stroke-width: 0.2rem;
+    border-radius: 60rem;
+    padding: 0.5rem 1rem 0.5rem 2rem;
+}
+.search-bar form input{
+    background-color: transparent;
+    flex: 1;
+    border: 0;
+    outline: none;
+    font-size: 1.2rem;
+    color: black;
+}
+.search-bar button{
+    width: 2rem;
+    border: 0;
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    background-color: #2A9D8F;
+    cursor: pointer;
+}
+
+
+.profile{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: right;
+    text-align: right;
+}
+
+.profile-icon{
+    height: 3.5rem;
+    width: 3.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E76F51;
+    margin: 1rem 2rem 1rem 0rem;
+}
+.profile-icon a i{
+    font-size: 2rem;
+    text-decoration: none;
+    color: black;
+}
+.profile-icon img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile .profile-menu{
+    position: absolute;
+    top: 80px;
+    padding: 10px 20px;
+    background-color: #E76F51;
+    transition: 0.5s;
+    visibility: hidden;
+    opacity: 0;
+}
+.profile .profile-menu.active{
+    visibility: visible;
+    opacity: 1;
+}
+.profile .profile-menu h3{
+    font-size: 16px;
+    font-weight: 800;
+    text-align:  center;
+    padding-bottom: 10px;
+}
+.profile .profile-menu h3 span{
+    font-size: 12px;
+    font-weight: 100;   
+}
+.profile .profile-menu ul li{
+    list-style: none;
+    padding: 10px 0;
+    border-top: 1px solid black;
+    display: flex;
+    align-items: center;
+}
+.profile .profile-menu ul li i{
+    margin-right: 10px;
+    opacity: 0.5;
+    transition: 0.5s;
+}
+.profile .profile-menu ul li:hover i{
+    color: #2A9D8F;
+    opacity: 1;
+}
+.profile .profile-menu ul li a{
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    transition: 0.5s;
+}
+.profile .profile-menu ul li:hover a{
+    color: #2A9D8F;
+}
+
+
+/* BODY */
+
+body{
+    background-color: white;
+}
+
+main{
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* FOOTER */
+
+footer{
+    color: white;
+    font-size: 1rem;
+    word-spacing: 0.2rem;
+    text-align: center;
+}
+
+.footer-top{
+    padding: 0.4rem 0;
+    background-color: #353535;
+}
+
+.footer-bottom{
+    background: #0D1317;
+    width: auto;
+    padding: 1rem 0;
+    align-items: center;
+}
+
+.footer-bottom p{
+    text-transform: capitalize;
+}
