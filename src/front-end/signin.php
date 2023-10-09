@@ -1,22 +1,87 @@
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventer | Log In</title>
-    <!-- change styles hardcoded path -->
-    <link rel="stylesheet" href="/iis/styles/style.css">
-    <script src="https://kit.fontawesome.com/2ff75daa4b.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <main>
+<?php
+/**
+ * @file signin.php
+ * @brief page sign in form
+ * @author Michal Ľaš (xlasmi00)
+ * @date 06.08.2023
+ */
 
+require "components/html-components.php";
 
-    </main>
+makeHead("Eventer | Log in");
+
+?>
+
+<main>
+    <div class="center-block">
+        <div class="form-container">
+            <h2>Sign in</h2>
+            <form action="" method="post">
+                <ul>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" name="nick" id="nick" placeholder="Username">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" name="name" id="name" placeholder="First name">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" name="surname" id="surname" placeholder="Last name">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <input type="text" name="email" id="email" placeholder="Email">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <input type="password" name="pwd" id="pwd" placeholder="Password">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-row">
+                            <div class="input-icon">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <input type="password" name="pwd" id="pwd" placeholder="Repeat password">
+                        </div>
+                    </li>
+                    <li>
+                        <div class="buttons">
+                            <button class="button-round-filled" type="submit">Sign in</button>
+                            <a href="#" class="button-round-empty">Log in to existing account</a>
+                            <a href="#" class="button-round-empty"><i class="fa-solid fa-arrow-left"></i>Go back Home</a>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</main>
 
 <?php
 
-include('components/footer.html');
+makeFooter();
 
 ?>
 

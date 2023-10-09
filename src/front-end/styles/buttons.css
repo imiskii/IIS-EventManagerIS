@@ -5,7 +5,7 @@
     font-size: 1rem;
     text-align: center;
     text-decoration: none;
-    border: 0.4rem solid #E9C46A;
+    border: 0.2rem solid #E9C46A;
     border-radius: 0.5rem;
     color: black;
     background-color: #E9C46A;
@@ -18,7 +18,7 @@
     font-size: 1rem;
     text-align: center;
     text-decoration: none;
-    border: 0.4rem solid #2A9D8F;
+    border: 0.2rem solid #2A9D8F;
     border-radius: 0.5rem;
     color: black;
     background-color: #2A9D8F;
@@ -31,7 +31,7 @@
     font-size: 1rem;
     text-align: center;
     text-decoration: none;
-    border: 0.4rem solid #E9C46A;
+    border: 0.2rem solid #E9C46A;
     border-radius: 0.5rem;
     color: black;
     background-color: white;
@@ -44,7 +44,7 @@
     font-size: 1rem;
     text-align: center;
     text-decoration: none;
-    border: 0.4rem solid #E76F51;
+    border: 0.2rem solid #E76F51;
     color: black;
     background-color: #E76F51;
     cursor: pointer;
