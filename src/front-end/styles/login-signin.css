@@ -1,0 +1,71 @@
+
+
+main .center-block{
+    width: 100%;
+    height: 76vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 25px 25px 25px;
+    border: 2px solid #E9C46A;
+    border-radius: 10px;
+}
+
+.form-container h2{
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.form-container ul{
+    list-style: none;
+}
+
+.form-container ul li .input-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container .input-row input{
+    width: 90%;
+    margin: 5px;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+}
+
+.form-container ul li .input-row .input-icon{
+    width: 10%;
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid grey;
+}
+
+.form-container ul li .buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container ul li button, .form-container ul li a{
+    width: 80%;
+    margin: 5px;
+}
+
+.form-container ul li a i{
+    padding: 0px 10px;
+}
