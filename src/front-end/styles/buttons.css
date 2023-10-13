@@ -11,6 +11,9 @@
     background-color: #E9C46A;
     cursor: pointer;
 }
+.button-round-filled:hover{
+    background-color: #E76F51;
+}
 
 .button-round-filled-green{
     display: inline-block;
@@ -37,6 +40,9 @@
     background-color: white;
     cursor: pointer;
 }
+.button-round-empty:hover{
+    background-color: #E76F51;
+}
 
 .button-sharp-filled{
     display: inline-block;
@@ -48,4 +54,7 @@
     color: black;
     background-color: #E76F51;
     cursor: pointer;
+}
+.button-sharp-filled:hover{
+    background-color: #E9C46A;
 }

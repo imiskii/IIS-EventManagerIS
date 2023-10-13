@@ -3,7 +3,7 @@
  * @file index.php
  * @brief index
  * @author Michal Ľaš (xlasmi00)
- * @date 05.08.2023
+ * @date 05.10.2023
  */
 
 
@@ -101,13 +101,13 @@ makeHeader();
                         <li>
                             <div class="rating-input">
                                 <label for="min-r">Min rating</label>
-                                <input type="number" id="min-r" pattern="[0-5]" value="0">
+                                <input type="number" id="min-r" pattern="[0-5]" value="0" oninput="checkRatingFilterInput()">
                             </div>
                         </li>
                         <li>
                             <div class="rating-input">
                                 <label for="max-r">Max rating</label>
-                                <input type="number" id="max-r" pattern="[0-5]" value="5">
+                                <input type="number" id="max-r" pattern="[0-5]" value="5" oninput="checkRatingFilterInput()">
                             </div>
                         </li>
                     </ul>

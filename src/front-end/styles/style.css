@@ -2,10 +2,14 @@
 /* import component styles */
 @import 'buttons.css';
 @import 'event-card.css';
+@import 'info-container.css';
 
 /* import page styles */
 @import 'index.css';
 @import 'login-signin.css';
+@import 'event-detail.css';
+@import 'profile.css';
+@import 'event-create.css';
 
 
 /* General styles */
@@ -110,6 +114,11 @@ header{
     width: 100%;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.login-btns a{
+    margin-right: 1rem;
+    border-radius: 1rem;
 }
 
 .profile .profile-menu{
