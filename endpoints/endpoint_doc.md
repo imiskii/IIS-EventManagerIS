@@ -1,4 +1,5 @@
 GET:
+
     User:
         - get Account from email X                          /index.php/Account/email=X
 
@@ -38,6 +39,7 @@ GET:
         -- User can only access his own Account, Administrator can access any Account
 
 POST:
+
     User:
         - post create Account                               /index.php/Account/create
 
@@ -57,6 +59,7 @@ POST:
         - post Registration to Entrance_Fee X               /index.php/Registration/fee_id=X
 
 PUT:
+
     User:
         - put new email to Account X                        /index.php/Account/email=X
         - put new nick to Account X                         /index.php/Account/email=X
@@ -75,6 +78,7 @@ PUT:
         - put new status to Account X                       /index.php/Account/email=X
 
 DELETE:
+
     User:
         - delete Account X                                  /index.php/Account/email=X
         - delete photo on Account X                         /index.php/Account/email=X:photo
