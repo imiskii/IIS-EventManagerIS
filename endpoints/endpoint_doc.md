@@ -25,7 +25,7 @@ GET:
         - get subComments of Comment X                      /index.php/Comment/comment_id=X
         -- is there a need to select comments by Account?
 
-        - get Entrance_Fee by Event name X                  /index.php/Entrance_Fee/event_name=X
+        - get Entrance_Fee by Event X                       /index.php/Entrance_Fee/event_id=X
         
         - get Registrations by email X                      /index.php/Registration/email=X
 
