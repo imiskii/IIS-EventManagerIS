@@ -14,7 +14,7 @@ switch ($method) {
         include 'methods/post.php';
         break;
     case 'PUT':
-        include '<methods/put.php';
+        include 'methods/put.php';
         break;
     case 'DELETE':
         include 'methods/delete.php';
