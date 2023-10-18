@@ -1,0 +1,105 @@
+
+.manage-tool-bar{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.manage-tool-bar button, .manage-tool-bar a{
+    margin-right: 1rem;
+}
+
+.row-block{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.manage-filters form{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+.manage-filters form span label{
+    text-wrap: nowrap;
+}
+.manage-filters input, .manage-filters select{
+    padding: 0.5rem;
+}
+.manage-filters span{
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+}
+.manage-filters button{
+    text-wrap: nowrap;
+    padding: 0.5rem;
+    margin-top: 1.2rem;
+    margin-left: 2rem;
+}
+.manage-filters .filter-bar ul{
+    background-color: white;
+    padding: 0;
+}
+.manage-filters .filter-bar .filter-opt ul{
+    background-color: #E9C46A;
+}
+.manage-filters .filter-bar a{
+    font-size: 1rem;
+    padding: 1rem;
+}
+.manage-filters .filter-bar .filter-date{
+    padding: 1rem;
+    border: none;
+    margin: 0;
+}
+.manage-filters .filter-bar .filter-date label{
+    font-size: 0.8rem;
+}
+.manage-filters .filter-bar .filter-opt{
+    border: 0.2rem solid #E9C46A;
+    background-color: #E9C46A;
+}
+.manage-filters .filter-bar .filter-opt input{
+    width: auto;
+}
+.manage-filters .filter-bar .filter-opt .rating-input input{
+    width: 100%;
+}
+
+.manage-container table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border: 0.2rem solid #E9C46A;
+}
+.manage-container table td, .manage-container table th{
+    border: 0.1rem solid #E9C46A;
+    padding: 0.2rem;
+}
+.manage-container table th{
+    background-color: rgb(233,196,106,0.5);;
+}
+.manage-container table .cell-center{
+    text-align: center;
+}
+.manage-container table .cell-small{
+    width: 5%;
+}
+.manage-container table .cell-normal{
+    width: 15%;
+}
+.manage-container table .cell-large{
+    width: 30%;
+}
+.manage-container table tr td input, .manage-container table tr td select{
+    width: 100%;
+    padding: 0.5rem;
+}
+.manage-container table tr td button, .manage-container table tr td a{
+    padding: 0.2rem;
+}
