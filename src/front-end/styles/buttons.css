@@ -1,7 +1,7 @@
 
 .button-round-filled{
     display: inline-block;
-    padding: 1rem;
+    padding: 0.5rem;
     font-size: 1rem;
     text-align: center;
     text-decoration: none;
@@ -10,6 +10,9 @@
     color: black;
     background-color: #E9C46A;
     cursor: pointer;
+}
+.button-round-filled:hover{
+    background-color: #E76F51;
 }
 
 .button-round-filled-green{
@@ -24,6 +27,9 @@
     background-color: #2A9D8F;
     cursor: pointer;
 }
+.button-round-filled-green:hover{
+    background-color: #264653;
+}
 
 .button-round-empty{
     display: inline-block;
@@ -37,6 +43,9 @@
     background-color: white;
     cursor: pointer;
 }
+.button-round-empty:hover{
+    background-color: #E76F51;
+}
 
 .button-sharp-filled{
     display: inline-block;
@@ -48,4 +57,7 @@
     color: black;
     background-color: #E76F51;
     cursor: pointer;
+}
+.button-sharp-filled:hover{
+    background-color: #E9C46A;
 }

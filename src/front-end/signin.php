@@ -3,7 +3,7 @@
  * @file signin.php
  * @brief page sign in form
  * @author Michal Ľaš (xlasmi00)
- * @date 06.08.2023
+ * @date 06.10.2023
  */
 
 require "components/html-components.php";

@@ -1,0 +1,68 @@
+
+.event-create-main-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 4rem 8rem 4rem 8rem;
+}
+
+.event-create-main-container form{
+    width: 100%;
+}
+
+.event-create-main-container .form-block{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    margin-top: 2rem;
+}
+.form-block button{
+    margin-right: 1rem;
+}
+.event-create-main-container span{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+}
+
+.event-create-main-container input,select{
+    font-size: 1rem;
+    padding: 1rem;
+    border: 0.1rem solid #E76F51;
+    border-radius: 1rem;
+}
+
+.event-create-main-container textarea{
+    font-size: 1rem;
+    padding: 1rem;
+    border: 0.1rem solid #E76F51;
+    border-radius: 1rem;
+}
+
+.event-create-main-container label{
+    font-size: 1rem;
+    padding-bottom: 0.4rem;
+}
+
+.ticket-create{
+    padding: 1rem;
+    background-color: #E76F51;
+}
+.ticket-create .filter-date{
+    margin: 0;
+    background-color: #E76F51;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+}
+.ticket-form-inputs{
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
