@@ -5,7 +5,7 @@ $db = connect_to_db();
 
 $email = 'sample@email.com';
 $firstName = 'John';
-$lastName = 'Doe';
+$lastName = 'Doeringo';
 $nick = 'johndoe123';
 $password = 'sample_password'; // Always hash your passwords, don't store them as plain text!
 $accountType = 'standard';
