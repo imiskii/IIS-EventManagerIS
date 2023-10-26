@@ -311,23 +311,24 @@ function fetch_filter_operation($filter)
 }
 
 // if isValid is true -> all filters are valid | else invalid filters are stored in $invalid_filters and returned
-function validate_data($table, $data, $invalid_data)
+function validate_data($table, $data)
 {
     $isValid = true;
-    // $allowedFilters = fetch_allowed_filters_for_table($table); // if $table is not valid -> we will fail inside this function
     $valid_data_check = fetch_valid_column_value_for_table($table);
 
     foreach ($data as $key => $value) {
+        // print("Key: $key = $value\n");
         // Check if the filter is allowed and valid
         if (isset($valid_data_check[$key]) && is_callable($valid_data_check[$key])) { // is data valid and does it have a value checker implemented
             if (!$valid_data_check[$key]($value)) { // is data value valid for given column
+                // print("Is incorrect\n");
                 $isValid = false;
-                $invalid_data[] = $key;
             }
+            // print("Is correct\n");
         } 
         else {
+            // print("Is incorrect\n");
             $isValid = false;
-            $invalid_data[] = $key;
         }
     }
 

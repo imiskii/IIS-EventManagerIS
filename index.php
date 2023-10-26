@@ -3,8 +3,10 @@ require 'config/common.php';
 
 $db = connect_to_db(); // connect to database -> returns pdo that allows us to work with the db
 
-$method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
 $path = $_SERVER['PATH_INFO'] ?? null;
+$method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
+// $method = 'POST'; // testing POST method
+
 // 1. Parse the URL
 $parsedUrl = parse_url($path);
 
@@ -29,7 +31,7 @@ if (!in_array($table, $db_tables, true))
 $filters = $_GET; // Directly assign the $_GET array to $filters -> if method is not GET has to be empty
 if ($method != 'GET' && !empty($filters))
 {
-    sendResponse(400, 'Bad Request: query parameters are only allowed for GET. Send JSON instead.');
+    sendResponse(400, 'Bad Request: query parameters are only allowed for the GET Method. Send JSON instead.');
     exit;
 }
 
@@ -44,11 +46,9 @@ switch ($method) {
         include 'methods/get.php'; // include emulates function calls + passes all current context
         break;
     case 'POST':
-        // json_decode(file_get_contents('php://input'), true);
         include 'methods/post.php';
         break;
     case 'PUT':
-        // json_decode(file_get_contents('php://input'), true);
         include 'methods/put.php';
         break;
     case 'DELETE':
