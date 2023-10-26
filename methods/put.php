@@ -1,5 +1,5 @@
 <?php
-    switch ($path) {
+    switch ($database_table) { // first URL parameter defines what table we will use
         case 'empty':
             break;
         // ... other PUT endpoints ...
