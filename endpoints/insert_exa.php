@@ -3,7 +3,7 @@ require '../config/common.php';
 
 $db = connect_to_db();
 
-$email = 'sample@email.com';
+$email = 'sampleemail.com';
 $firstName = 'John';
 $lastName = 'Doeringo';
 $nick = 'johndoe123';
