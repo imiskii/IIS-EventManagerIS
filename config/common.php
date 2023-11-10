@@ -19,22 +19,17 @@ function connect_to_db()
     ];
     try {
         $pdo = new PDO($dsn, $username, $password, $options);
-        echo "Successfully connected!";
         return $pdo;
     } catch (PDOException $e) {
         echo "Connection failed: " . $e->getMessage();
     }
 }
 
-function fetch_valid_column_value_for_table($table)
+function fetch_valid_column_values_for_table($table)
 {
     switch ($table){
        case "Account":
             return $allowed_filters_for_Account = [
-                'id' => function ($value) {
-                    // Ensure the owner_id is a positive integer.
-                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
-                },
                 'email' => function ($value) {
                     return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
                 },
@@ -63,7 +58,6 @@ function fetch_valid_column_value_for_table($table)
                     return in_array($value, $validStatuses, true);
                 },
             ];
-            break;
         case "Category":
             return $allowed_filters_for_Category = [
                 'category_name' => function ($value) {
@@ -96,7 +90,234 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
             ];
-            break;
+        case "Event":
+            return $allowed_filters_for_Event = [
+                'event_name' => function ($value) {
+                    // Assuming event names can contain letters, numbers, spaces, and some special characters
+                    return preg_match('/^[a-zA-Z0-9\s\-\_]+$/', $value) && strlen($value) <= 128;
+                },
+                'rating' => function ($value) {
+                    // Ensure the rating is a valid float number, you might want to add range validation here
+                    return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
+                },
+                'time_of_creation' => function ($value) {
+                    // Ensure the input is a valid datetime string
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+                'time_of_last_edit' => function ($value) {
+                    // Ensure the input is a valid datetime string
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+                'status' => function ($value) {
+                    // If statuses are predefined, validate against a list of valid statuses.
+                    $validStatuses = ['active', 'inactive', 'pending'];
+                    return in_array($value, $validStatuses, true) && strlen($value) <= 64;
+                },
+                'category_name' => function ($value) {
+                    // Assuming category names can contain letters, numbers, and spaces
+                    return preg_match('/^[a-zA-Z0-9\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'owner_id' => function ($value) {
+                    // Ensure the owner_id is a positive integer.
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+            ];
+        case "Address":
+            return $allowed_filters_for_Address = [
+                'Country' => function ($value) {
+                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'zip' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
+                },
+                'city' => function ($value) {
+                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'street' => function ($value) {
+                    return preg_match('/^[a-zA-Z0-9\s\-\_]+$/', $value) && strlen($value) <= 128;
+                },
+                'street_number' => function ($value) {
+                    return preg_match('/^[a-zA-Z0-9\s\/\-\_]+$/', $value) && strlen($value) <= 128;
+                },
+                'state' => function ($value) {
+                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'description' => function ($value) {
+                    return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
+                },
+                'date_of_creation' => function ($value) {
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+                'status' => function ($value) {
+                    $validStatuses = ['active', 'inactive', 'pending'];
+                    return in_array($value, $validStatuses, true) && strlen($value) <= 64;
+                },
+                'account_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+            ];
+        case "Event_Instance":
+            return $allowed_filters_for_EventInstance = [
+                'event_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'address_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'time_from' => function ($value) {
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+                'time_to' => function ($value) {
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+            ];
+        case "Entrace_fee":
+            return $allowed_filters_for_EntranceFee = [
+                'instance_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'name' => function ($value) {
+                    return is_string($value) && strlen($value) <= 128;
+                },
+                'shopping_method' => function ($value) {
+                    $validStatuses = ['online', 'cash', 'card'];// make up some status names
+                    return in_array($value, $validStatuses, true) && strlen($value) <= 64;
+                },
+                'cost' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_FLOAT) !== false && $value >= 0;
+                },
+                'max_tickets' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
+                },
+                'sold_tickets' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
+                },
+            ];
+        case "Registration":
+            return $allowed_filters_for_Registration = [
+                'owner_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'instance_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'fee_name' => function ($value) {
+                    return is_string($value) && strlen($value) <= 128;
+                },
+                'time_of_confirmation' => function ($value) {
+                    // Assuming a specific datetime format for validation, e.g., "Y-m-d H:i:s".
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+            ];
+        case "Photos":
+            return $allowed_filters_for_Photos = [
+                'photo' => function ($value) {
+                    return !empty($value) && is_string($value);
+                },
+                'event_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'address_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+            ];
+        case "Comment":
+            return $allowed_filters_for_Comment = [
+                'time_of_posting' => function ($value) {
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value);
+                },
+                'comment_text' => function ($value) {
+                    // You might want to add more specific validation for comment text.
+                    // For example, checking for length, forbidden words, etc.
+                    return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
+                },
+                'author_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'super_comment' => function ($value) {
+                    // Optional, as a comment may not have a parent comment.
+                    return $value === null || (filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0);
+                },
+                'event_id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+            ];
+        case "Login":
+            return $allowed_filters_for_Comment = [
+                'email' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+                },
+                'password' => function ($value) {
+                    return preg_match('/^\w+$/', $value) && strlen($value) <= 128;
+                },
+            ];
+        case "Logout":
+            return [];
+        default:
+            sendResponse(400, 'Back-End Fail, fetch_valid function failed.');
+            exit;
+    }
+}
+
+// pretty much the same as fetch_valid_column_values, but can't query by descriptions.. TODO?
+function fetch_valid_column_filters_for_table($table)
+{
+    switch ($table){
+       case "Account":
+            return $allowed_filters_for_Account = [
+                'id' => function ($value) {
+                    // Ensure the owner_id is a positive integer.
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+                'email' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+                },
+                'first_name' => function ($value) {
+                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'last_name' => function ($value) {
+                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'nick' => function ($value) {
+                    return preg_match('/^\w+$/', $value) && strlen($value) <= 128;
+                },
+                'account_type' => function ($value) {
+                    // Assuming account types are predefined, you might check against a list of valid types.
+                    $validAccountTypes = ['user', 'moderator', 'administrator'];
+                    return in_array($value, $validAccountTypes, true);
+                },
+                'status' => function ($value) {
+                    $validStatuses = ['active', 'inactive', 'banned']; // TODO add statuses
+                    return in_array($value, $validStatuses, true);
+                },
+            ];
+        case "Category":
+            return $allowed_filters_for_Category = [
+                'category_name' => function ($value) {
+                    // Assuming category names can contain letters, numbers, and spaces
+                    return preg_match('/^[a-zA-Z0-9\s]+$/', $value) && strlen($value) <= 128;
+                },
+                'time_of_creation' => function ($value) {
+                    // Ensure the input is a valid datetime string
+                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                },
+                'status' => function ($value) {
+                    // If statuses are predefined, validate against a list of valid statuses.
+                    $validStatuses = ['active', 'inactive', 'pending'];
+                    return in_array($value, $validStatuses, true) && strlen($value) <= 64;
+                },
+                'super_category' => function ($value) {
+                    // Assuming super category names follow the same pattern as category names.
+                    if ($value)
+                        return preg_match('/^[a-zA-Z0-9\s]+$/', $value) && strlen($value) <= 128;
+                    return true; // if category is of the highest order
+
+                },
+                'account_id' => function ($value) {
+                    // Ensure the account_id is a positive integer.
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
+            ];
         case "Event":
             return $allowed_filters_for_Event = [
                 'id' => function ($value) {
@@ -132,7 +353,6 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
             ];
-            break;
         case "Address":
             return $allowed_filters_for_Address = [
                 'id' => function ($value) {
@@ -156,9 +376,6 @@ function fetch_valid_column_value_for_table($table)
                 'state' => function ($value) {
                     return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
                 },
-                'description' => function ($value) {
-                    return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
-                },
                 'date_of_creation' => function ($value) {
                     return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
                 },
@@ -170,9 +387,11 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
             ];
-            break;
         case "Event_Instance":
             return $allowed_filters_for_EventInstance = [
+                'id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
                 'event_id' => function ($value) {
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
@@ -186,7 +405,6 @@ function fetch_valid_column_value_for_table($table)
                     return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
                 },
             ];
-            break;
         case "Entrace_fee":
             return $allowed_filters_for_EntranceFee = [
                 'instance_id' => function ($value) {
@@ -209,9 +427,11 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
                 },
             ];
-            break;
         case "Registration":
             $allowed_filters_for_Registration = [
+                'id' => function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
+                },
                 'owner_id' => function ($value) {
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
@@ -226,7 +446,6 @@ function fetch_valid_column_value_for_table($table)
                     return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
                 },
             ];
-            break;
         case "Photos":
             $allowed_filters_for_Photos = [
                 'id' => function ($value) {
@@ -242,7 +461,6 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
             ];
-            break;
         case "Comment":
             $allowed_filters_for_Comment = [
                 'id' => function ($value) {
@@ -250,11 +468,6 @@ function fetch_valid_column_value_for_table($table)
                 },
                 'time_of_posting' => function ($value) {
                     return DateTime::createFromFormat('Y-m-d H:i:s', $value);
-                },
-                'comment_text' => function ($value) {
-                    // You might want to add more specific validation for comment text.
-                    // For example, checking for length, forbidden words, etc.
-                    return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                 },
                 'author_id' => function ($value) {
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
@@ -267,35 +480,49 @@ function fetch_valid_column_value_for_table($table)
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
             ];
-            break;
         default:
-            sendResponse(400, 'Back-End Fail, fetch_valid function failed.');
+            sendResponse(400, 'Back-End Fail, fetch_valid filters function failed.');
             exit;
-            break;
     }
 }
 
-function fetch_allowed_filters_for_table($table)
+function fetch_gettable_columns_for_table($table)
 {
     switch ($table){
-        case "Accounts":
-            break;
-        case "Events":
-            break;
-        case "Locations":
-            break;
-        case "Event_Instaces":
-            break;
-        case "Categories":
-            break;
-        case "Comments":
-            break;
-        case "Entrace_fees":
-            break;
-        case "Registration":
-            break;
+        case "Account":
+            return 'id, email, first_name, last_name, nick, account_type, photo, status';
+        default:
+            return '*';
     }
 
+}
+
+function fetch_required_columns_for_table($table)
+{
+    switch ($table){
+        case "Account":
+            return $required_columns = ['email', 'account_type']; // account_type is used with sessions
+        case "Category":
+            return $required_columns = ['category_name', 'account_id']; 
+        case "Event":
+            return $required_columns = ['owner_id']; 
+        case "Address":
+            return $required_columns = ['account_id']; 
+        case "Event_Instance":
+            return $required_columns = ['event_id', 'address_id']; 
+        case "Entrance_fee":
+            return $required_columns = ['instance_id']; 
+        case "Registration":
+            return $required_columns = ['owner_id', 'instance_id']; 
+        case "Photos":
+            return $required_columns = ['event_id', 'address_id']; 
+        case "Comment":
+            return $required_columns = ['author_id', 'event_id']; 
+        case "Login":
+            return $required_columns = ['email', 'password']; 
+        case "Logout":
+            return $required_columns = []; 
+    }
 }
 
 function fetch_filter_operation($filter)
@@ -310,29 +537,97 @@ function fetch_filter_operation($filter)
     }
 }
 
-// if isValid is true -> all filters are valid | else invalid filters are stored in $invalid_filters and returned
 function validate_data($table, $data)
 {
     $isValid = true;
-    $valid_data_check = fetch_valid_column_value_for_table($table);
+    $required_columns = fetch_required_columns_for_table($table);
+    $valid_data_check = fetch_valid_column_values_for_table($table);
 
-    foreach ($data as $key => $value) {
-        // print("Key: $key = $value\n");
-        // Check if the filter is allowed and valid
-        if (isset($valid_data_check[$key]) && is_callable($valid_data_check[$key])) { // is data valid and does it have a value checker implemented
-            if (!$valid_data_check[$key]($value)) { // is data value valid for given column
-                // print("Is incorrect\n");
-                $isValid = false;
-            }
-            // print("Is correct\n");
-        } 
-        else {
-            // print("Is incorrect\n");
+    // check if all required columns are present
+    foreach ($required_columns as $required_column) {
+        if (!property_exists($data, $required_column)) {
             $isValid = false;
+            break;
+        }
+    }
+
+    // If all required columns are present, proceed with data validation
+    if ($isValid) {
+        foreach ($data as $key => $value) {
+            // Check if the filter is allowed and valid
+            if (isset($valid_data_check[$key]) && is_callable($valid_data_check[$key])) {
+                if (!$valid_data_check[$key]($value)) {
+                    $isValid = false;
+                    // print("Invalid filter: $key with value: \"$value\"\n");
+                    break;
+                }
+            } else {
+                $isValid = false;
+                // print("invalid filter: $key with value: \"$value\"\n");
+                break;
+            }
         }
     }
 
     return $isValid;
+}
+
+
+
+function validate_filters($table, $filters)
+{
+    $isValid = true;
+    $valid_filter_check = fetch_valid_column_filters_for_table($table);
+
+    foreach ($filters as $key => $value) {
+        // Check if the filter is allowed and valid
+        if (isset($valid_filter_check[$key]) && is_callable($valid_filter_check[$key])) {
+            if (!$valid_filter_check[$key]($value)) {
+                $isValid = false;
+                // print("Invalid filter: $key with value: $value\n");
+                break;
+            }
+        } else {
+            $isValid = false;
+            // print("Invalid filter: $key with value: $value\n");
+            break;
+        }
+    }
+
+    return $isValid;
+}
+
+function session_handler($db, $table, $data)
+{
+    if ($table == 'Login' && !isset($_SESSION['account_type'])){
+        $email = $data->email;
+        $query = "SELECT password, account_type FROM Account WHERE email = :email";
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $stored_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // if (password_verify($data['pwd'], $stored_data['pwd'])) { // right now we don't hash passwords
+        if ($stored_data['password'] == $data->password){
+            $_SESSION['account_type'] = $stored_data['account_type'];
+            sendResponse(200, "Log in successfull.\n");
+        }
+        else{
+            sendResponse(401, "Log in failed: No email-password configuration found or valid.\n");
+        }
+    }
+    else if ($table == 'Login' && isset($_SESSION['account_type'])){
+        sendResponse(200, "You are already logged in.\n");
+    }
+    else if ($table == 'Logout' && isset($_SESSION['account_type'])){
+        session_destroy();
+        sendResponse(200, "Log out successfull.\n");
+    }
+    else{
+        sendResponse(400, "Attempt to Log out error: user was never logged in.\n");
+    }
+
 }
 
 // Utility function to send JSON responses

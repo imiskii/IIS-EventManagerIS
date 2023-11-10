@@ -1,11 +1,25 @@
 <?php
+//TODO list
+/*
+allow for column to column comparisons in queries // is this necessary though?
+allow negation for our operations -> != // is this necessary though?
+*/
+
+    if(!isset($_SESSION['account_type']))
+    {
+        sendResponse(401, "Tried to use GET while not logged in.\n");
+        exit;
+    }
+
+    $gettable_columns = fetch_gettable_columns_for_table($table); // bit overkill, but handles that we do not want to send password in Account
+
     if (empty($filters)) {
-        $query = "SELECT * FROM $table";
+        $query = "SELECT $gettable_columns FROM $table";
 
         $stmt = $db->prepare($query);
     }
     else {
-        $query = "SELECT * FROM $table WHERE";
+        $query = "SELECT $gettable_columns FROM $table WHERE";
 
         // apply filters to our query
         $params = [];
@@ -14,7 +28,7 @@
             $query .= " $key $operation :$key AND"; // :$key is a placeholder -> supposedly guards against SQL injections
             $params[":$key"] = $value;
         }
-        // Trim the trailing " AND"
+
         $query = rtrim($query, " AND"); // above leaves us with " AND" at the end of our query..
 
         $stmt = $db->prepare($query);
