@@ -27,7 +27,7 @@ $table = $pathParts[1] ?? null; // with path "/db_table" - we want to use index 
 
 $db_tables = ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
 if (!in_array($table, $db_tables, true) && ($method != 'POST' || $table != 'Login') && ($method != 'POST' || $table != 'Logout'))
-{ 
+{
     sendResponse(400, 'Bad Request: request is not querying a table, or a login/logout attempt');
     exit;
 }

@@ -2,9 +2,9 @@
 function connect_to_db()
 {
     $host = 'localhost';
-    $db_name = 'xkurca01';
-    $username = 'xkurca01';
-    $password = '9emtirde';
+    $db_name = 'xlazik00';
+    $username = 'xlazik00';
+    $password = 'imojbo9n';
     $port = '/var/run/mysql/mysql.sock';
 
     $dsn = "mysql:host=$host;dbname=$db_name;port=$port";
@@ -503,25 +503,25 @@ function fetch_required_columns_for_table($table)
         case "Account":
             return $required_columns = ['email', 'account_type']; // account_type is used with sessions
         case "Category":
-            return $required_columns = ['category_name', 'account_id']; 
+            return $required_columns = ['category_name', 'account_id'];
         case "Event":
-            return $required_columns = ['owner_id']; 
+            return $required_columns = ['owner_id'];
         case "Address":
-            return $required_columns = ['account_id']; 
+            return $required_columns = ['account_id'];
         case "Event_Instance":
-            return $required_columns = ['event_id', 'address_id']; 
+            return $required_columns = ['event_id', 'address_id'];
         case "Entrance_fee":
-            return $required_columns = ['instance_id']; 
+            return $required_columns = ['instance_id'];
         case "Registration":
-            return $required_columns = ['owner_id', 'instance_id']; 
+            return $required_columns = ['owner_id', 'instance_id'];
         case "Photos":
-            return $required_columns = ['event_id', 'address_id']; 
+            return $required_columns = ['event_id', 'address_id'];
         case "Comment":
-            return $required_columns = ['author_id', 'event_id']; 
+            return $required_columns = ['author_id', 'event_id'];
         case "Login":
-            return $required_columns = ['email', 'password']; 
+            return $required_columns = ['email', 'password'];
         case "Logout":
-            return $required_columns = []; 
+            return $required_columns = [];
     }
 }
 
