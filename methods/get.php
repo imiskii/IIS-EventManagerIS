@@ -12,6 +12,9 @@
         $stmt = $db->prepare($query);
     }
     else {
+        if (!validate_filters($table, $filters)) {
+            sendResponse(400, "Invalid filters have been provided for GET.\n");
+        }
         $query = "SELECT $gettable_columns FROM $table WHERE";
 
         // apply filters to our query

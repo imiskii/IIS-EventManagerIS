@@ -9,9 +9,9 @@ differentiate query operations for authorization levels
 
 $db = connect_to_db(); // connect to database -> returns pdo that allows us to work with the db
 
-$path = $_SERVER['PATH_INFO'] ?? null;
+$path = $_SERVER['PATH_INFO'] ?? '';
 $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
-// $method = 'POST'; // TEST
+$method = 'POST'; // TEST
 
 // 1. Parse the URL
 $parsedUrl = parse_url($path);
@@ -23,7 +23,7 @@ if ($pathParts[0] != "") // only valid path is "/database_table" so after explod
     sendResponse(400, "Invalid path in request. Correct path assignment is: \"/database_table...\"");
     exit;
 }
-$table = $pathParts[1] ?? null; // with path "/db_table" - we want to use index 1 after explode
+$table = $pathParts[1] ?? ''; // with path "/db_table" - we want to use index 1 after explode
 
 $db_tables = ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
 if (!in_array($table, $db_tables, true) && ($method != 'POST' || $table != 'Login') && ($method != 'POST' || $table != 'Logout'))
@@ -48,7 +48,7 @@ if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
 
 switch ($method) {
     case 'GET':
-        include 'methods/get.php'; // include emulates function calls + passes all current context
+        include 'methods/get.php';
         break;
     case 'POST':
         include 'methods/post.php';
