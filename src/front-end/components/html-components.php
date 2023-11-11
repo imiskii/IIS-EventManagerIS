@@ -9,7 +9,7 @@
 
 /**
  * Generator for page head
- * 
+ *
  * @param string $title title of the page
  * @return void
 */
@@ -17,7 +17,7 @@ function makeHead(string $title)
 {
     ?>
 
-    <!DOCTYPE html> 
+    <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -25,9 +25,9 @@ function makeHead(string $title)
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo $title ?></title>
         <!-- change styles hardcoded path -->
-        <link rel="stylesheet" href="/iis/styles/style.css">
+        <link rel="stylesheet" href="styles/style.css">
         <script src="https://kit.fontawesome.com/2ff75daa4b.js" crossorigin="anonymous"></script>
-        <script src="/iis/js/design-scripts.js"></script>
+        <script src="js/design-scripts.js"></script>
     </head>
     <body>
 
@@ -37,7 +37,7 @@ function makeHead(string $title)
 
 /**
  * Function generates menu for logged in user based on his role
- * 
+ *
  * @return void
  */
 function generateProfilMenu()
@@ -73,7 +73,7 @@ function generateProfilMenu()
 
 /**
  * Generator for page header
- * 
+ *
  * @return void
  */
 function makeHeader()
@@ -98,7 +98,7 @@ function makeHeader()
                     {
                         echo '<div class="profile-icon" onclick="menuToggle();">';
                         echo "<img src='profil icon'>";
-                        echo "</div>"; 
+                        echo "</div>";
                         generateProfilMenu();
                     }
                     else
@@ -106,10 +106,10 @@ function makeHeader()
                         echo "<div class='login-btns'>";
                         echo "<a href='' class='button-sharp-filled'>log in</a>";
                         echo "<a href='' class='button-sharp-filled'>sign in</a>";
-                        echo "</div>"; 
+                        echo "</div>";
                     }
                     */
-                    
+
                     // TEST CODE
 
                     echo '<div class="profile-icon" onclick="menuToggle();">';
@@ -118,7 +118,7 @@ function makeHeader()
                     // echo "<div class='login-btns'>";
                     // echo "<a href='' class='button-sharp-filled'>log in</a>";
                     // echo "<a href='' class='button-sharp-filled'>sign in</a>";
-                    
+
                     echo "</div>";
 
                     // END OF TEST COED
@@ -142,7 +142,7 @@ function makeHeader()
 
 /**
  * Generator for page footer
- * 
+ *
  * @return void
  */
 function makeFooter()
@@ -166,11 +166,11 @@ function makeFooter()
 
 /**
  * Function generates Event Cards
- * 
+ *
  * @param array $events is array of values that are displayed on card like Event name, Location, etc.
  * @param string $card_type is type of card that will be generated, default is "" -> normall card, "owner" -> card for event owners, "participant" -> card for event participant
  * @return void
- * 
+ *
  */
 function generateEventCards(array $events, string $card_type="")
 {
@@ -239,7 +239,7 @@ function generateEventCards(array $events, string $card_type="")
 
 /**
  * Function generates list of locations
- * 
+ *
  * @return void
  */
 function generateLocations()
@@ -256,11 +256,11 @@ function generateLocations()
 
 /**
  * Function generates tree of categories
- * 
+ *
  * @param string|null $parent_category name of parent category
  * @return void
  */
-function generateCategoryTree($parent_category = null) 
+function generateCategoryTree($parent_category = null)
 {
 
     // getParentCategories($parent_category = null) is function that return list subcategories of given parent category
@@ -295,7 +295,7 @@ function generateCategorySelecetOptions($parent_category = null, $prev_categorie
     <option value="2">Category 2</option>
     <option value="3">Category 3</option>
 
-    <?php 
+    <?php
     // END OF TEST CODE
 
     /*
@@ -307,7 +307,7 @@ function generateCategorySelecetOptions($parent_category = null, $prev_categorie
             $prev_categories = $prev_categories . '->' . $category['name'];
             echo '<option value="'.$category['id'].'">'.$prev_categories.'</option>';
             generateCategorySelecetOptions($category['name'], $prev_categories);
-        }   
+        }
     }
     */
 }
@@ -322,9 +322,9 @@ function generateLocationSelecetOptions()
     <option value="loc2">Location 2</option>
     <option value="loc3">Location 3</option>
 
-    <?php 
+    <?php
     // END OF TEST CODE
-    
+
     /*
     $locations = getLocations();
     $counter = 0;
@@ -339,7 +339,7 @@ function generateLocationSelecetOptions()
 
 /**
  * Generator for event tickets
- * 
+ *
  * @param int $eventID ID of event, which tickets variants will be generated
  * @return void
  */
@@ -446,7 +446,7 @@ function generateEventTickets($eventID)
 
         $cnt_tt = 1; // counter fot tickets types
         $num_tt = count($ticketTypes);
-        
+
         foreach ($ticketTypes as $type)
         {
             echo '<tr>';
@@ -480,7 +480,7 @@ function generateEventTickets($eventID)
 
 /**
  * Make information section for event
- * 
+ *
  * @param int $eventID ID of event
  * @return void
  */
@@ -516,7 +516,7 @@ function makeEventInfo($eventID)
     $eventInfo = getEventInfo($eventID);
 
     ?>
-    
+
     <div class="gallery-popup">
         <div class="gallery-popup-top-bar">
             <span class="close-btn"><i class="fa-solid fa-xmark"></i></span>
@@ -545,7 +545,7 @@ function makeEventInfo($eventID)
 
 /**
  * Generator for event comments
- * 
+ *
  * @param int $eventID ID of event, which comments will be generated
  * @return void
  */
@@ -637,7 +637,7 @@ function generateComments($eventID)
 
 /**
  * Make chooser for roles in IS accessible only for administrator
- * 
+ *
  * @return void
  */
 function makeRoleSelector()
@@ -674,7 +674,7 @@ function makeRoleSelector()
 
 /**
  * Make section with information about profile
- * 
+ *
  * @param int $profileID ID of profile
  * @return void
  */
@@ -754,7 +754,7 @@ function makeProfileInfo($profileID)
 
 /**
  * Generate tickets for profile
- * 
+ *
  * @param int $profileID ID of profile, which tickets will be generated
  * @return void
  */
@@ -790,8 +790,8 @@ function generateProfileTickets($profileID)
 
     while ($row = $pTickets->fetch_assoc())
     {
-        
-        
+
+
         // getEventLink() get link to event-detail page of particular event
         $eventLink = getEventLink($row['eventID']);
 
@@ -856,7 +856,7 @@ function generateCategoryProposalRows()
     /*
     // db query
     $categoryProposals = getCategoryProposals();
-    
+
     while($row = $categoryProposals->fetch_assoc())
     {
         echo '<tr>';
@@ -902,7 +902,7 @@ function generateCategoryRows()
     /*
     // db query
     $categories = getCategories();
-    
+
     while($row = $categories->fetch_assoc())
     {
         echo '<tr>';
@@ -946,7 +946,7 @@ function generateLocationProposalRows()
     /*
     // db query
     $locationProposals = getlocationProposals();
-    
+
     while($row = $categoryProposals->fetch_assoc())
     {
         echo '<tr>';
@@ -995,7 +995,7 @@ function generateLocationRows()
     /*
     // db query
     $locations = getLocations();
-    
+
     while($row = $locations->fetch_assoc())
     {
         echo '<tr>';
@@ -1045,7 +1045,7 @@ function generateAccountRows()
     /*
     // db query
     $accounts = getAccounts();
-    
+
     while($row = $accounts->fetch_assoc())
     {
         echo '<tr>';
