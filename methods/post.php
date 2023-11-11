@@ -1,7 +1,7 @@
 <?php
     // $json_data = '{"email":"sample@il.com","last_name":"Doeringo","nick":"johndoe123","password":"sample_password","account_type":"user","photo":null,"status":"active"}';
-    $json_data = '{"email":"sample@il.com","password":"sample_password"}';
-    // $json_data = '{}';
+    // $json_data = '{"email":"new@email.com","password":"sample_password"}';
+    $json_data = '{}';
 
     // $table = 'Login';
     
@@ -11,7 +11,7 @@
     $data = json_decode($json_data); 
     if (!$data) // json_decode can return null if an error occured
         sendResponse(400, "Error in decoding JSON.\n");
-    if (!validate_data($table, $data)){
+    if (!validate_data($table, $data, $method)){
         sendResponse(400, "POST Method Failed To Validate Data.");
         exit;
     }
@@ -51,6 +51,6 @@
     if ($stmt->execute()) {
         sendResponse(200, "$table has been successfully added.");
     } else {
-        sendResponse(400, "Server Error: Failed to add $table.");
+        sendResponse(500, "Server Error: Failed to add $table.");
     }
 ?>
