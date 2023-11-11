@@ -9,58 +9,166 @@ differentiate query operations for authorization levels
 
 $db = connect_to_db(); // connect to database -> returns pdo that allows us to work with the db
 
-$path = $_SERVER['PATH_INFO'] ?? null;
-$method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
-// $method = 'POST'; // TEST
+require "src/front-end/components/html-components.php";
 
-// 1. Parse the URL
-$parsedUrl = parse_url($path);
+makeHead("Eventer");
+makeHeader();
 
-// 2. Explode the Path
-$pathParts = explode('/', $parsedUrl['path'], 2);
-if ($pathParts[0] != "") // only valid path is "/database_table" so after explode: [0] = "" && [1] = db_table
-{
-    sendResponse(400, "Invalid path in request. Correct path assignment is: \"/database_table...\"");
-    exit;
-}
-$table = $pathParts[1] ?? null; // with path "/db_table" - we want to use index 1 after explode
+?>
 
-$db_tables = ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
-if (!in_array($table, $db_tables, true) && ($method != 'POST' || $table != 'Login') && ($method != 'POST' || $table != 'Logout'))
-{
-    sendResponse(400, 'Bad Request: request is not querying a table, or a login/logout attempt');
-    exit;
-}
+<main>
+    <div class="filter-bar">
+        <ul>
+            <li>
+                <a href="#">Categories</a>
+                <div class="filter-opt">
+                    <ul class="category-tree">
+                        <?php
+                        /* uncomment this after getParentCategories() function will be finished */
+                        /****
+                        generateCategoryTree();
+                        ****/
+                        ?>
 
-// 3. Handle Query String
-$filters = $_GET; // Directly assign the $_GET array to $filters ($_GET gets URL params. for any method)
-if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
-{
-    sendResponse(400, 'Bad Request: query parameters are only allowed for the GET Method. Send JSON instead.');
-    exit;
-}
+                        <!-- TEST CODE -->
 
-// print("\nIde sa na to!\n");
-// print_r($table); // Outputs: Account etc..
-// print("\n");
-// print_r($filters); // Outputs: Array ( [first_name] => John [last_name] => Doe )
-// print("\n");
+                        <li><input type="checkbox">Item 1</li>
+                        <li>
+                            <input type="checkbox">Item 2
+                            <ul class="category-tree">
+                                <li><input type="checkbox">item 2.1</li>
+                                <li><input type="checkbox">Item 2.2</li>
+                                <li><input type="checkbox">Item 2.3</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <input type="checkbox">Item 3
+                            <ul class="category-tree">
+                                <li>
+                                    <input type="checkbox">Item 3.1
+                                    <ul class="category-tree">
+                                        <li><input type="checkbox">Item 3.1.1</li>
+                                        <li><input type="checkbox">item 3.1.2</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <input type="checkbox">Item 3.2
+                                    <ul class="category-tree">
+                                        <li><input type="checkbox">Item 3.2.1</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-switch ($method) {
-    case 'GET':
-        include 'methods/get.php'; // include emulates function calls + passes all current context
-        break;
-    case 'POST':
-        include 'methods/post.php';
-        break;
-    case 'PUT':
-        include 'methods/put.php';
-        break;
-    case 'DELETE':
-        include 'methods/delete.php';
-        break;
-    default:
-        sendResponse(405, "Unknown Method.");
-        break;
-}
+                        <!-- END OF TEST CODE -->
+
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#">Locations</a>
+                <div class="filter-opt">
+                    <ul>
+                        <?php
+                        /* location generator */
+                        /****
+                        generateLocations();
+                        ****/
+                        ?>
+
+                        <!-- TEST CODE -->
+
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+
+                        <!-- END OF TEST CODE -->
+
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#">Rating</a>
+                <div class="filter-opt">
+                    <ul>
+                        <li>
+                            <div class="rating-input">
+                                <label for="min-r">Min rating</label>
+                                <input type="number" id="min-r" pattern="[0-5]" value="0" oninput="checkRatingFilterInput()">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rating-input">
+                                <label for="max-r">Max rating</label>
+                                <input type="number" id="max-r" pattern="[0-5]" value="5" oninput="checkRatingFilterInput()">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="filter-date">
+                    <label for="date-from-input">Date from:</label>
+                    <input type="date" id="date-from-input">
+                </div>
+            </li>
+            <li>
+                <div class="filter-date">
+                    <label for="date-from-input">Date to:</label>
+                    <input type="date" id="date-from-input">
+                </div>
+            </li>
+            <li>
+                <div class="submit-button">
+                    <button class="button-round-filled-green" type="submit">Submit filters</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Today</h2>
+    <div class="card-container">
+
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            $fill = array("a" => "bar", "b" => "foo"); // tmp code
+            generateEventCards($fill);
+        ?>
+
+    </div>
+
+    <h2>This Week</h2>
+    <div class="card-container">
+
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            generateEventCards($fill);
+        ?>
+
+    </div>
+
+    <h2>This Month</h2>
+    <div class="card-container">
+
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            generateEventCards($fill);
+        ?>
+
+    </div>
+</main>
+
+<?php
+
+makeFooter();
+
 ?>
