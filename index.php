@@ -11,7 +11,7 @@ $db = connect_to_db(); // connect to database -> returns pdo that allows us to w
 
 $path = $_SERVER['PATH_INFO'] ?? '';
 $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
-$method = 'POST'; // TEST
+// $method = 'PUT'; // TEST
 
 // 1. Parse the URL
 $parsedUrl = parse_url($path);
@@ -40,11 +40,19 @@ if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
     exit;
 }
 
-// print("\nIde sa na to!\n");
-// print_r($table); // Outputs: Account etc..
-// print("\n");
-// print_r($filters); // Outputs: Array ( [first_name] => John [last_name] => Doe )
-// print("\n");
+// 4. Decode received data from JSON
+$json_data = file_get_contents('php://input');
+$data = json_decode($json_data, true); 
+if (!$data && $method != 'GET' && $table != 'Logout') {// json_decode can return null if an error occured + if GET data has to be null
+    sendResponse(400, "Error in decoding JSON.\n");
+    exit;
+}
+else{
+    if (!validate_data($table, $data, $method)) {
+        sendResponse(400, "PUT Method Failed To Validate Data.");
+        exit;
+    }
+}
 
 switch ($method) {
     case 'GET':

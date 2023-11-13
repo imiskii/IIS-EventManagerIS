@@ -1,21 +1,8 @@
 <?php
     // $json_data = '{"email":"sample@il.com","last_name":"Doeringo","nick":"johndoe123","password":"sample_password","account_type":"user","photo":null,"status":"active"}';
-    // $json_data = '{"email":"new@email.com","password":"sample_password"}';
-    $json_data = '{}';
-
-    // $table = 'Login';
+    // $json_data = '{"email":"jan.novak@email.cz","password":"hashed_password"}';
+    // $json_data = '{}';
     
-
-    // real code starts here
-    // Decode received data from JSON
-    $data = json_decode($json_data); 
-    if (!$data) // json_decode can return null if an error occured
-        sendResponse(400, "Error in decoding JSON.\n");
-    if (!validate_data($table, $data, $method)){
-        sendResponse(400, "POST Method Failed To Validate Data.");
-        exit;
-    }
-
     // branch POST into query table or login/logout
     if ($table == 'Login' || $table == 'Logout'){ // POST - login/logout
         session_handler($db, $table, $data);
