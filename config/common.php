@@ -7,7 +7,7 @@ function connect_to_db()
     $password = '9emtirde';
     $port = '/var/run/mysql/mysql.sock';
 
-    $dsn = "mysql:host=$host;dbname=$db_name;port=$port";
+    $dsn = "mysql:host=$host;dbname=$db_name;port=$port;charset=utf8mb4";
     // PDO options, these are optional but recommended for various reasons
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -400,7 +400,7 @@ function fetch_valid_columns($table, $method)
                             return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
                         },
                     ];
-                case "Entrace_fee": //TODO maybe add 'id' tp this db table -> otherwise requires unique handling
+                case "Entrance_fee": //TODO maybe add 'id' tp this db table -> otherwise requires unique handling
                     return $allowed_filters_for_EntranceFee = [
                         'instance_id' => function ($value) {
                             return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
@@ -523,6 +523,8 @@ function fetch_valid_columns($table, $method)
                     sendResponse(500, "Back-End Fail, fetch_valid function failed.\n");
                     exit;
             }
+        case 'GET':
+            return [];
         default:
             sendResponse(500, "Back-End Fail, fetch_valid function failed on method selection.\n");
     }
@@ -789,6 +791,8 @@ function fetch_required_columns($table, $method)
                 case "Logout":
                     return $required_columns = []; 
             }
+        case "GET":
+            return [];
         default:
             switch ($table){
                 case "Account": // email is our unofficial id for Account + account_type is used by sessions to validate access -> they are required
@@ -849,12 +853,16 @@ function validate_filters($table, $filters)
     return $isValid;
 }
 
-function item_exists($db, $table, $id)
+function item_exists($db, $table, $id_string, $id_array)
 {
-    $query = "SELECT COUNT(*) FROM $table WHERE id = :id";
+    // $query = "SELECT COUNT(*) FROM $table WHERE id = :id";
+    $query = "SELECT COUNT(*) FROM $table WHERE $id_string";
 
     $stmt = $db->prepare($query);
-    $stmt->bindParam(':id', $id);
+    foreach ($id_array as $key => $value) {
+        $stmt->bindValue(":$key", $value);
+    }
+    // $stmt->bindParam(':id', $id);
     $stmt->execute();
 
     return $stmt->fetchColumn() > 0;
@@ -868,14 +876,15 @@ function validate_data($table, $data, $method)
 
     // check if all required columns are present
     foreach ($required_columns as $required_column) {
-        if (!property_exists($data, $required_column)) {
+        if (!isset($data, $required_column)) {
             $isValid = false;
             break;
         }
     }
 
-    if ($isValid) {
-        // data validation
+    if ($isValid) { // data validation
+        if($method == 'GET' || $table == 'Logout') // works fine without this if, but return error codes for foreach
+            return $data === null;
         foreach ($data as $key => $value) {
             // Check if the filter is allowed and valid
             if (isset($valid_data_check[$key]) && is_callable($valid_data_check[$key])) {
@@ -895,19 +904,48 @@ function validate_data($table, $data, $method)
     return $isValid;
 }
 
+function get_id_string($id)
+{
+    $id_string = "";
+    foreach($id as $key => $value) {
+        $id_string .= "$key = :$key AND ";
+    }
+    $id_string = substr($id_string, 0, -5); // removes last 5 chars -> ' AND '
+
+    return $id_string;
+}
+
+function extract_id(&$data, $table)
+{
+    $primary_keys = fetch_required_columns($table, 'PUT');
+
+    $id = [];
+
+    foreach($primary_keys as $primary_key) {
+        $id[$primary_key] = $data[$primary_key];
+        unset($data[$primary_key]);
+    }
+
+    return $id;
+}
+
 function session_handler($db, $table, $data)
 {
     if ($table == 'Login' && !isset($_SESSION['account_type'])){
-        $email = $data->email;
         $query = "SELECT password, account_type FROM Account WHERE email = :email";
 
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':email', $data['email']);
         $stmt->execute();
         $stored_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if (!$stored_data){
+            sendResponse(401, "No user with provided email exists.\n");
+            return;
+        }
+
         // if (password_verify($data['pwd'], $stored_data['pwd'])) { // right now we don't hash passwords
-        if ($stored_data['password'] == $data->password){
+        if ($stored_data['password'] == $data['password']){
             $_SESSION['account_type'] = $stored_data['account_type'];
             sendResponse(200, "Log in successfull.\n");
         }
@@ -925,7 +963,6 @@ function session_handler($db, $table, $data)
     else{
         sendResponse(400, "Attempt to Log out error: user was never logged in.\n");
     }
-
 }
 
 // Utility function to send JSON responses

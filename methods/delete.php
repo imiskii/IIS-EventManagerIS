@@ -1,24 +1,20 @@
 <?php
-    $json_data = '{"id":"3"}';
 
-    $data = json_decode($json_data); 
-    if (!$data) // json_decode can return null if an error occured
-        sendResponse(400, "Error in decoding JSON.\n");
-    if (!validate_data($table, $data, $method)) {
-        sendResponse(400, "PUT Method Failed To Validate Data.");
-        exit;
-    }
+    $id_array = extract_id($data, $table);
+    $id_string = get_id_string($id_array); // our WHERE clause for db queries
 
-    if(item_exists($db, $table, $data->id)) {
-        $query = "DELETE FROM $table WHERE id = :id";
+    if(item_exists($db, $table, $id_string, $id_array)) {
+        $query = "DELETE FROM $table WHERE $id_string";
 
         $stmt = $db->prepare($query);
-        $stmt->bindValue(':id', $data->id);
+        foreach ($id_array as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
 
         if ($stmt->execute()) {
-            sendResponse(200, "successfull delete on table: $table for item with id: $data->id.\n");
+            sendResponse(200, "successfull delete on table: $table.\n");
         } else {
-            sendResponse(500, "Server Error: Failed to delete item with id: $data->id on table: $table.\n");
+            sendResponse(500, "Server Error: Failed to delete item on table: $table.\n");
         }
 
     }

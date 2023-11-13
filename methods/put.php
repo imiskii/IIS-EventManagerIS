@@ -1,36 +1,32 @@
 <?php
-    $json_data = '{"id":"6","email":"new@email.com"}';
+    // $json_data = '{"id":"6","email":"new@email.com"}';
 
-    $data = json_decode($json_data); 
-    if (!$data) // json_decode can return null if an error occured
-        sendResponse(400, "Error in decoding JSON.\n");
-    if (!validate_data($table, $data, $method)) {
-        sendResponse(400, "PUT Method Failed To Validate Data.");
-        exit;
-    }
+    $id_array = extract_id($data, $table);
+    $id_string = get_id_string($id_array); // our WHERE clause for db queries
 
-    if(item_exists($db, $table, $data->id)) {
+    if(item_exists($db, $table, $id_string, $id_array)) {
         $query = "UPDATE $table SET ";
         $params = [];
         foreach($data as $key => $value) {
-            if ($key != 'id') { // Skip the 'id' key
-                $query .= "$key = :$key, ";
-                $params[":$key"] = $value;
-            }
+            $query .= "$key = :$key, ";
+            $params[":$key"] = $value;
         }
         $query = rtrim($query, ", ");
-        $query .= " WHERE id = :id"; // or whatever your primary key is
-        $params[':id'] = $data->id; // make sure 'id' is provided
+
+        $query .= " WHERE $id_string"; // => " WHERE id = :id" etc.
 
         $stmt = $db->prepare($query);
+        foreach ($id_array as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
         foreach ($params as $placeholder => $value) {
             $stmt->bindValue($placeholder, $value);
         }
 
         if ($stmt->execute()) {
-            sendResponse(200, "successfull update on table: $table for item with id: $data->id.\n");
+            sendResponse(200, "successfull update on table: $table.\n");
         } else {
-            sendResponse(500, "Server Error: Failed to update item with id: $data->id on table: $table.\n");
+            sendResponse(500, "Server Error: Failed to update item on table: $table.\n");
         }
     }
     else {
