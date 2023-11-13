@@ -24,44 +24,8 @@ makeHeader();
                 <div class="filter-opt">
                     <ul class="category-tree">
                         <?php
-                        /* uncomment this after getParentCategories() function will be finished */
-                        /****
                         generateCategoryTree();
-                        ****/
                         ?>
-
-                        <!-- TEST CODE -->
-
-                        <li><input type="checkbox">Item 1</li>
-                        <li>
-                            <input type="checkbox">Item 2
-                            <ul class="category-tree">
-                                <li><input type="checkbox">item 2.1</li>
-                                <li><input type="checkbox">Item 2.2</li>
-                                <li><input type="checkbox">Item 2.3</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <input type="checkbox">Item 3
-                            <ul class="category-tree">
-                                <li>
-                                    <input type="checkbox">Item 3.1
-                                    <ul class="category-tree">
-                                        <li><input type="checkbox">Item 3.1.1</li>
-                                        <li><input type="checkbox">item 3.1.2</li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <input type="checkbox">Item 3.2
-                                    <ul class="category-tree">
-                                        <li><input type="checkbox">Item 3.2.1</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <!-- END OF TEST CODE -->
-
                     </ul>
                 </div>
             </li>

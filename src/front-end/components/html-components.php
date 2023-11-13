@@ -253,6 +253,14 @@ function generateLocations()
     */
 }
 
+function getSubcategories($parent_category = null)
+{
+    global $db;
+
+    $condition = ($parent_category == null) ? 'IS NULL' : "= \"$parent_category\"";
+    $query = "select category_name from Category where super_category " . $condition;
+    return $db->query($query);
+}
 
 /**
  * Function generates tree of categories
@@ -263,26 +271,23 @@ function generateLocations()
 function generateCategoryTree($parent_category = null)
 {
 
-    // getParentCategories($parent_category = null) is function that return list subcategories of given parent category
+    // getSubcategories($parent_category = null) is function that return list subcategories of given parent category
     // it has one parameter and it is name of parent category, default value is null
 
-    /*
-    $categories = getParentCategories($parent_category);
 
-    echo '<ul class="category-tree">';
-    foreach ($categories as $category)
-    {
-        if ($category['parent_name'] == $parent_category)
-        {
+    $categories = getSubcategories($parent_category);
+
+    if (!empty($categories)) {
+        echo '<ul class="category-tree">';
+        foreach ($categories as $category) {
             echo '<li>';
-            echo '<input type="checkbox" name="categories[]" value="' . $category['name'] . '">';
-            echo $category['name'];
-            generateCategoryTree($category['name']);
-            echo '<\li>';
+            echo '<input type="checkbox" name="categories[]" value="' . $category['category_name'] . '">';
+            echo $category['category_name'];
+            generateCategoryTree($category['category_name']);
+            echo '</li>';
         }
+        echo '</ul>';
     }
-    echo '</ul>';
-    */
 }
 
 
@@ -299,7 +304,7 @@ function generateCategorySelecetOptions($parent_category = null, $prev_categorie
     // END OF TEST CODE
 
     /*
-    $categories = getParentCategories($parent_category);
+    $categories = getSubcategories($parent_category);
     foreach ($categories as $category)
     {
         if ($category['parent_category'] == $parent_category)

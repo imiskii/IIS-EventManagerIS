@@ -7,7 +7,7 @@ function connect_to_db()
     $password = 'imojbo9n';
     $port = '/var/run/mysql/mysql.sock';
 
-    $dsn = "mysql:host=$host;dbname=$db_name;port=$port";
+    $dsn = "mysql:host=$host;dbname=$db_name;port=$port;charset=utf8mb4";
     // PDO options, these are optional but recommended for various reasons
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
