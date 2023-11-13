@@ -184,10 +184,10 @@ VALUES
 INSERT INTO Category (category_name, description, time_of_creation, status, super_category, account_id)
 VALUES
     ('Hudební Události', 'Kategorie pro hudební události jako festivaly a koncerty', NOW(), 'Active', NULL, 1),
-    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'aktivní', NULL, 1),
+    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'aktivní', 'Hudební Události', 1),
     ('Divadlo', 'Kategorie pro divadelní představení', NOW(), 'aktivní', NULL, 2),
     ('Výstavy', 'Kategorie pro výstavy a galerie', NOW(), 'aktivní', NULL, 3),
-    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'aktivní', NULL, 4),
+    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'aktivní', 'Hudební Události', 4),
     ('Workshopy', 'Kategorie pro vzdělávací workshopy', NOW(), 'aktivní', NULL, 5),
     ('Kino', 'Kategorie pro kino a filmové projekce', NOW(), 'aktivní', NULL, 6),
     ('Sportovní akce', 'Kategorie pro sportovní akce', NOW(), 'aktivní', NULL, 7),
