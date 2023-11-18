@@ -1,11 +1,7 @@
 <?php
-    // $json_data = '{"email":"sample@il.com","last_name":"Doeringo","nick":"johndoe123","password":"sample_password","account_type":"user","photo":null,"status":"active"}';
-    // $json_data = '{"email":"jan.novak@email.cz","password":"hashed_password"}';
-    // $json_data = '{}';
-    
     // branch POST into query table or login/logout
-    if ($table == 'Login' || $table == 'Logout'){ // POST - login/logout
-        session_handler($db, $table, $data);
+    if ($table == 'Login' || $table == 'Logout') { // POST - login/logout
+        session_handler($db, $table, $data, $account_type);
         exit;
     }
 
@@ -30,7 +26,6 @@
 
     $stmt = $db->prepare($query);
 
-    // replace placeholders in our query with actual values
     foreach ($params as $placeholder => $value) { 
         $stmt->bindValue($placeholder, $value);
     }

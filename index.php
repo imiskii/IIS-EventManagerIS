@@ -2,16 +2,28 @@
 require 'config/common.php';
 
 session_start();
-
-/* TODO list
-differentiate query operations for authorization levels
-*/
-
 $db = connect_to_db(); // connect to database -> returns pdo that allows us to work with the db
-
 $path = $_SERVER['PATH_INFO'] ?? '';
 $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
-// $method = 'PUT'; // TEST
+
+
+// TESTING START
+// $method = 'POST'; // Login
+// $json_data = '{"email":"jan.novak@email.cz","password":"hashed_password"}';
+
+// $method = 'PUT'; // Modify
+// $json_data = '{"id":"6","email":"new_new@email.com"}';
+
+// $method = 'POST'; // Logout
+$json_data = file_get_contents('php://input');
+
+// $method = 'DELETE'; // Delete
+// $json_data = '{"id":"7"}';
+
+// $method = 'POST'; // Add
+// $json_data = '{"event_name":"TEST_event","description":"Just testing"}';
+// TESTING END
+
 
 // 1. Parse the URL
 $parsedUrl = parse_url($path);
@@ -25,10 +37,10 @@ if ($pathParts[0] != "") // only valid path is "/database_table" so after explod
 }
 $table = $pathParts[1] ?? ''; // with path "/db_table" - we want to use index 1 after explode
 
-$db_tables = ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
-if (!in_array($table, $db_tables, true) && ($method != 'POST' || $table != 'Login') && ($method != 'POST' || $table != 'Logout'))
+$account_type = $_SESSION['account_type'] ?? "not_logged_in";
+$accessible_db_tables = fetch_method_tables_for_account_type($account_type, $method); if (!in_array($table, $accessible_db_tables, true))
 { 
-    sendResponse(400, 'Bad Request: request is not querying a table, or a login/logout attempt');
+    sendResponse(400, 'Bad Request: request is invalid or unauthorized');
     exit;
 }
 
@@ -41,18 +53,19 @@ if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
 }
 
 // 4. Decode received data from JSON
-$json_data = file_get_contents('php://input');
+// $json_data = file_get_contents('php://input');
 $data = json_decode($json_data, true); 
 if (!$data && $method != 'GET' && $table != 'Logout') {// json_decode can return null if an error occured + if GET data has to be null
     sendResponse(400, "Error in decoding JSON.\n");
     exit;
 }
 else{
-    if (!validate_data($table, $data, $method)) {
+    if (!validate_data($table, $data, $method, $account_type)) {
         sendResponse(400, "PUT Method Failed To Validate Data.");
         exit;
     }
 }
+add_missing_data($account_type, $method, $table, $data); // set creation time, init status/account_type etc..
 
 switch ($method) {
     case 'GET':

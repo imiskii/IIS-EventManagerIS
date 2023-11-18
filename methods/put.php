@@ -1,8 +1,13 @@
 <?php
-    // $json_data = '{"id":"6","email":"new@email.com"}';
-
     $id_array = extract_id($data, $table);
     $id_string = get_id_string($id_array); // our WHERE clause for db queries
+
+    if ($account_type == "user") { // user is only allowed to modify items they OWN
+        if (!check_user_ownership($db, $table, $id_array, $id_string)) {
+            sendResponse(401, "Tried to modify an item that doesn't exist/belong to you!\n");
+            exit;
+        }
+    }
 
     if(item_exists($db, $table, $id_string, $id_array)) {
         $query = "UPDATE $table SET ";
