@@ -28,29 +28,9 @@ makeHeader();
                 <a href="#">Locations</a>
                 <div class="filter-opt">
                     <ul>
-                        <?php
-                        /* location generator */
-                        /****
-                        generateLocations();    
-                        ****/
+                        <?php   
+                        generateLocations();
                         ?>
-
-                        <!-- TEST CODE -->
-
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-                        <li><input type="checkbox">Random location 123</li>
-
-                        <!-- END OF TEST CODE -->
 
                     </ul>
                 </div>
