@@ -163,6 +163,67 @@ function makeFooter()
     <?php
 }
 
+function addFilter(&$filter_value, array &$id_array, array &$query_parts, $filter_name, $operator) {
+    static $cnt = 0;
+    $filter = is_array($filter_value) ? $filter_value : [$filter_value];
+    for($i = 0; $i < sizeof($filter); $i++, $cnt++) {
+        $id_array[$filter_name . $cnt] = $filter[$i];
+        $filter[$i] = ':' . $filter_name . $cnt;
+    }
+    $values = implode(', ', $filter);
+
+    array_push($query_parts, "$filter_name $operator ($values)");
+}
+
+function generateEventCard(&$event) {
+    echo '<a href="" class="event-card">';
+    echo '<img src="src/front-end/1.png">';
+    echo '<div class="name-rating">';
+    echo '    <h3>' . $event["event_name"] . '</h3>';
+    echo '    <div class="rating">';
+    echo '        <p>' . $event["rating"] . '</p>';
+    echo '        <i class="fa-regular fa-star"></i>';
+    echo '    </div>';
+    echo '</div>';
+    echo '<ul>';
+    echo '    <li><i class="fa-solid fa-calendar-days"></i>' . $event["earliest_date"] . ' - ' . $event["latest_date"] . '</li>';
+    echo '    <li><i class="fa-solid fa-location-dot"></i>' . $event["cities"] .  '</li>';
+    echo '</ul>';
+    echo '</a>';
+}
+
+function dateCZ(string $datetime) {
+    return "DATE_FORMAT($datetime, '%d.%m.%Y')";
+}
+
+function dateENG(string $datetime) {
+    return "DATE_FORMAT($datetime, '%Y-%m-%d')";
+}
+
+function yearmonthENG(string $datetime) {
+    return "DATE_FORMAT($datetime, '%Y-%m')";
+}
+
+function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
+    $return_id = 'event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, '. dateCZ("MIN(time_from)") .
+    ' AS earliest_date, '. dateCZ("MAX(time_to)"). ' AS latest_date';
+    $table = "Event JOIN Event_instance ON Event.id = Event_instance.event_id JOIN Address ON Event_instance.address_id = Address.id";
+    $group_by = "event_name, rating";
+    if ($restrain_function) {
+        $filter .= " and $restrain_function(NOW() $args) between $restrain_function(time_from $args) and $restrain_function(time_to $args)";
+    }
+    $events = fetch_all_table_columns($table, $return_id, $id_array, $filter, $group_by);
+    if(!empty($events)) {
+        if ($title) {
+            echo '<h2>' . $title . '</h2>';
+        }
+        echo '<div class="card-container">';
+        foreach($events as &$event) {
+            generateEventCard($event);
+        }
+        echo '</div>';
+    }
+}
 
 /**
  * Function generates Event Cards
@@ -172,68 +233,58 @@ function makeFooter()
  * @return void
  *
  */
-function generateEventCards(array $events, string $card_type="")
+function generateEventCards(string $card_type="")
 {
-    if ($card_type != "" || $card_type != "owner")
-    {
-        $card_type = "";
+    // if ($card_type != "" || $card_type != "owner")
+    // {
+    //     $card_type = "";
+    // }
+
+    // if ($card_type != "")
+    // {
+    //     $card_type = "-" . $card_type;
+    // }
+    $query_parts = [];
+    $id_array = [];
+    $date_set = false;
+
+    // Check if the form has been submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Check if the "categories" array is set in the POST data
+        if (isset($_POST["categories"])) {
+            addFilter($_POST["categories"], $id_array, $query_parts, "category_name", "in");
+        }
+        if (isset($_POST["locations"])) {
+            addFilter($_POST["locations"], $id_array, $query_parts, "city", "in");
+        }
+        if (isset($_POST["min_rating"])) {
+            addFilter($_POST["min_rating"], $id_array, $query_parts, "rating", ">=");
+        }
+        if (isset($_POST["max_rating"])) {
+            addFilter($_POST["max_rating"], $id_array, $query_parts, "rating", "<=");
+        }
+        if (isset($_POST["date_from"]) && $_POST["date_from"] != "") {
+            addFilter($_POST["date_from"], $id_array, $query_parts, "time_from", ">=");
+            $date_set = true;
+        }
+        if (isset($_POST["date_to"]) && $_POST["date_to"] != "") {
+            addFilter($_POST["date_to"], $id_array, $query_parts, "time_to", "<=");
+            $date_set = true;
+        }
     }
 
-    if ($card_type != "")
-    {
-        $card_type = "-" . $card_type;
+
+    $id_string = implode(" and ", $query_parts);
+
+    if($date_set) {
+        generateEventCardSet($id_array, $id_string);
+    } else {
+        generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
+        generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
+        generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
+        generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
+        generateEventCardSet($id_array, $id_string, null, null, "All");
     }
-
-    /* TEST CODE */
-    for ($i = 0; $i <= 10; $i++)
-    {
-        ?>
-
-        <!-- TEST CODE -->
-        <a href="" class="event-card">
-            <img src="/iis/1.png">
-            <div class="name-rating">
-                <h3>Event Name</h3>
-                <div class="rating">
-                    <p>4/5</p>
-                    <i class="fa-regular fa-star"></i>
-                </div>
-            </div>
-            <ul>
-                <li><i class="fa-solid fa-calendar-days"></i>30.02.2024-31.03.2024</li>
-                <li><i class="fa-solid fa-location-dot"></i>Everywhere</li>
-            </ul>
-        </a>
-        <!-- END OF TEST CODE -->
-
-        <?php
-    }
-
-    /*
-
-    foreach($events as $event)
-    {
-        ?>
-
-        <a href="event-detail.php?id='<?php echo $event['id']?>'" class="<?php echo 'event-card' . $card_type ?>">
-            <img src="<?php echo $event['image_url']; ?>">
-            <div class="name-rating">
-                <h3><?php echo $event['event_name']; ?></h3>
-                <div class="rating">
-                    <p><?php echo $event['rating']; ?></p>
-                    <i class="fa-regular fa-star"></i>
-                </div>
-            </div>
-            <ul>
-                <li><i class="fa-solid fa-calendar-days"></i><?php echo $event['date_from'] . $event['date_to']; ?></li>
-                <li><i class="fa-solid fa-location-dot"></i><?php echo $event['location']; ?></li>
-            </ul>
-        </a>
-
-        <?php
-    }
-
-    */
 }
 
 
@@ -246,7 +297,7 @@ function generateLocations()
 {
     global $db;
 
-    $locations = fetch_distinct_table_columns($db, "Address", "city", null, "TRUE");
+    $locations = fetch_distinct_table_columns("Address", "city", null, null);
     if(!$locations) {
         return;
     }
@@ -254,8 +305,8 @@ function generateLocations()
     foreach ($locations as $location)
     {
         echo '<li>';
-        echo '<input type="checkbox" name="locations[]" value="' . $location . '">';
-        echo $location;
+        echo '<input type="checkbox" name="locations[]" value="' . $location["city"] . '">';
+        echo $location["city"];
         echo '</li>';
     }
 }
@@ -267,7 +318,7 @@ function getSubcategories($parent_category = null)
     $id_array = ($parent_category) ? ["super_category" => $parent_category] : null;
     $id_string = "super_category " . ($parent_category ? "= :super_category" : "IS NULL");
 
-    return fetch_distinct_table_columns($db, "Category", "category_name", $id_array, $id_string);
+    return fetch_distinct_table_columns("Category", "category_name", $id_array, $id_string);
 }
 
 /**
@@ -290,9 +341,9 @@ function generateCategoryTree($parent_category = null)
     foreach ($categories as $category)
     {
         echo '<li>';
-        echo '<input type="checkbox" name="categories[]" value="' . $category . '">';
-        echo $category;
-        generateCategoryTree($category);
+        echo '<input type="checkbox" name="categories[]" value="' . $category["category_name"] . '">';
+        echo $category["category_name"];
+        generateCategoryTree($category["category_name"]);
         echo '</li>';
     }
     echo '</ul>';

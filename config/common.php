@@ -1344,7 +1344,8 @@ function validate_data($table, $data, $method, $account_type)
     return $isValid;
 }
 
-function get_pdo_statement($db, $query, $id_array) {
+function get_pdo_statement($query, $id_array) {
+    global $db;
     $stmt = $db->prepare($query);
     if ($id_array) {
         foreach ($id_array as $key => $value) {
@@ -1355,30 +1356,30 @@ function get_pdo_statement($db, $query, $id_array) {
     return $stmt;
 }
 
-function fetch_table_column($db, $table, $return_id, $id_array, $id_string)
+function fetch_table_column($table, $return_id, $id_array, $id_string)
 {
     $query = "SELECT $return_id FROM $table WHERE $id_string";
-    $stmt = get_pdo_statement($db, $query, $id_array);
+    $stmt = get_pdo_statement($query, $id_array);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result ? $result[$return_id] : null;
 }
 
-function fetch_table_columns($db, $query, $id_array, $return_id)
+function fetch_table_columns($query, $id_array)
 {
-    $stmt = get_pdo_statement($db, $query, $id_array);
+    $stmt = get_pdo_statement($query, $id_array);
 
     // Extract the values of the specified column into an array
-    return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), $return_id);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetch_all_table_columns($db, $table, $return_id, $id_array, $id_string) {
-    $query = "SELECT $return_id FROM $table WHERE $id_string";
-    return fetch_table_columns($db, $query, $id_array, $return_id);
+function fetch_all_table_columns($table, $return_id, $id_array, $id_string, $group_by) {
+    $query = "SELECT $return_id FROM $table" . ($id_string ? " WHERE $id_string" : "") . ($group_by ? " GROUP BY $group_by" : "");
+    return fetch_table_columns($query, $id_array);
 }
 
-function fetch_distinct_table_columns($db, $table, $return_id, $id_array, $id_string) {
-    $query = "SELECT DISTINCT $return_id FROM $table WHERE $id_string";
-    return fetch_table_columns($db, $query, $id_array, $return_id);
+function fetch_distinct_table_columns($table, $return_id, $id_array, $id_string) {
+    $query = "SELECT DISTINCT $return_id FROM $table" . ($id_string ? " WHERE $id_string" : "");
+    return fetch_table_columns($query, $id_array);
 }
 
 function check_user_ownership($db, $table, $id_array, $id_string)
@@ -1387,34 +1388,34 @@ function check_user_ownership($db, $table, $id_array, $id_string)
         case "Account":
             return $id_array['id'] == $_SESSION['id'];
         case "Category":
-            $account_id = fetch_table_column($db, $table, "account_id", $id_array, $id_string);
+            $account_id = fetch_table_column($table, "account_id", $id_array, $id_string);
             return $account_id == $_SESSION['id'];
         case "Event":
-            $owner_id = fetch_table_column($db, $table, "owner_id", $id_array, $id_string);
+            $owner_id = fetch_table_column($table, "owner_id", $id_array, $id_string);
             return $owner_id == $_SESSION['id'];
         case "Address":
-            $account_id = fetch_table_column($db, $table, "account_id", $id_array, $id_string);
+            $account_id = fetch_table_column($table, "account_id", $id_array, $id_string);
             return $account_id == $_SESSION['id'];
         case "Event_instance":
-            $event_id = fetch_table_column($db, $table, "event_id", $id_array, $id_string);
+            $event_id = fetch_table_column($table, "event_id", $id_array, $id_string);
             if (!$event_id)
                 return false;
-            $account_id = fetch_table_column($db, "Event", "account_id", ["id"=>$event_id], "id = :id");
+            $account_id = fetch_table_column("Event", "account_id", ["id"=>$event_id], "id = :id");
             return $account_id == $_SESSION['id'];
         case "Entrance_fee":
-            $instance_id = fetch_table_column($db, $table, "instance_id", $id_array, $id_string);
+            $instance_id = fetch_table_column($table, "instance_id", $id_array, $id_string);
             if (!$instance_id)
                 return false;
-            $event_id = fetch_table_column($db, "Event_instance", "event_id", ["id"=>$instance_id], "id = :id");
+            $event_id = fetch_table_column("Event_instance", "event_id", ["id"=>$instance_id], "id = :id");
             if (!$event_id)
                 return false;
-            $owner_id = fetch_table_column($db, "Event", "owner_id", ["id"=>$event_id], "id = :id");
+            $owner_id = fetch_table_column("Event", "owner_id", ["id"=>$event_id], "id = :id");
             return $owner_id == $_SESSION['id'];
         case "Registration":
-            $owner_id = fetch_table_column($db, $table, "owner_id", $id_array, $id_string);
+            $owner_id = fetch_table_column($table, "owner_id", $id_array, $id_string);
             return $owner_id == $_SESSION['id'];
         case "Comment":
-            $author_id = fetch_table_column($db, $table, "author_id", $id_array, $id_string);
+            $author_id = fetch_table_column($table, "author_id", $id_array, $id_string);
             return $author_id == $_SESSION['id'];
     }
 }

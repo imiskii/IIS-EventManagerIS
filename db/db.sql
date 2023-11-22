@@ -200,24 +200,24 @@ INSERT INTO Event (event_name, description, icon, rating, time_of_creation, time
 VALUES
     ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, 4.5, NOW(), NOW(), 'aktivní', 'Koncerty', 1),
     ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, 4.2, NOW(), NOW(), 'aktivní', 'Divadlo', 2),
-    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, 4.0, NOW(), NOW(), 'aktivní', 'Výstavy', 3),
-    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, 4.8, NOW(), NOW(), 'aktivní', 'Festivaly', 4),
-    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, 4.3, NOW(), NOW(), 'aktivní', 'Workshopy', 5),
+    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, 3.0, NOW(), NOW(), 'aktivní', 'Výstavy', 3),
+    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, 2.8, NOW(), NOW(), 'aktivní', 'Festivaly', 4),
+    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, 1.3, NOW(), NOW(), 'aktivní', 'Workshopy', 5),
     ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, 4.6, NOW(), NOW(), 'aktivní', 'Kino', 6),
-    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, 4.7, NOW(), NOW(), 'aktivní', 'Sportovní akce', 7),
+    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, 2.7, NOW(), NOW(), 'aktivní', 'Sportovní akce', 7),
     ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, 4.4, NOW(), NOW(), 'aktivní', 'Zábavní parky', 8),
     ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, 4.1, NOW(), NOW(), 'aktivní', 'Cestování', 9),
-    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, 4.9, NOW(), NOW(), 'aktivní', 'Společenské události', 10);
+    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, 5.0, NOW(), NOW(), 'aktivní', 'Společenské události', 10);
 
 
 -- Address table
 INSERT INTO Address (Country, zip, city, street, street_number, state, description, date_of_creation, status, account_id)
 VALUES
     ('Česká republika', 11000, 'Praha', 'Václavské náměstí', '25', 'Hlavní město Praha', 'Moderní koncertní sál', NOW(), 'aktivní', 1),
-    ('Česká republika', 12000, 'Praha', 'Ovocný trh', '6', 'Hlavní město Praha', 'Národní divadlo', NOW(), 'aktivní', 2),
-    ('Česká republika', 13000, 'Praha', 'Dlouhá', '22', 'Hlavní město Praha', 'Galerie umění', NOW(), 'aktivní', 3),
-    ('Česká republika', 14000, 'Praha', 'Strahovská', '18', 'Hlavní město Praha', 'Strahovský stadion', NOW(), 'aktivní', 4),
-    ('Česká republika', 15000, 'Praha', 'Vodičkova', '22', 'Hlavní město Praha', 'Škola umění a designu', NOW(), 'aktivní', 5),
+    ('Česká republika', 12000, 'Brno', 'Ovocný trh', '6', 'Hlavní město Praha', 'Národní divadlo', NOW(), 'aktivní', 2),
+    ('Česká republika', 13000, 'Usti nad Labem', 'Dlouhá', '22', 'Hlavní město Praha', 'Galerie umění', NOW(), 'aktivní', 3),
+    ('Česká republika', 14000, 'Ostrava', 'Strahovská', '18', 'Hlavní město Praha', 'Strahovský stadion', NOW(), 'aktivní', 4),
+    ('Česká republika', 15000, 'Opava', 'Vodičkova', '22', 'Hlavní město Praha', 'Škola umění a designu', NOW(), 'aktivní', 5),
     ('Česká republika', 16000, 'Praha', 'Národní', '20', 'Hlavní město Praha', 'Kino Lucerna', NOW(), 'aktivní', 6),
     ('Česká republika', 17000, 'Praha', 'Letná', '45', 'Hlavní město Praha', 'Letenský zámeček', NOW(), 'aktivní', 7),
     ('Česká republika', 18000, 'Praha', 'Trojská', '171', 'Hlavní město Praha', 'Zábavní park Mirakulum', NOW(), 'aktivní', 8),
@@ -234,10 +234,12 @@ VALUES
     (4, 4, '2023-08-05 20:00:00', '2023-08-05 23:00:00'),
     (5, 5, '2023-09-02 14:00:00', '2023-09-02 17:00:00'),
     (6, 6, '2023-10-20 17:30:00', '2023-10-20 22:30:00'),
-    (7, 7, '2023-11-12 09:00:00', '2023-11-12 13:00:00'),
+    (7, 7, '2023-11-22 09:00:00', '2023-11-28 13:00:00'),
     (8, 8, '2023-12-03 13:00:00', '2023-12-03 18:00:00'),
     (9, 9, '2024-01-18 19:30:00', '2024-01-18 22:30:00'),
-    (10, 10, '2024-02-08 20:00:00', '2024-02-08 23:00:00');
+    (10, 10, '2024-02-08 20:00:00', '2024-02-08 23:00:00'),
+    (10, 10, '2024-04-08 20:00:00', '2024-04-08 23:00:00'),
+    (10, 4, '2024-06-08 20:00:00', '2024-06-08 23:00:00');
 
 -- Entrance_fee table
 INSERT INTO Entrance_fee (instance_id, name, shopping_method, cost, max_tickets, sold_tickets)
