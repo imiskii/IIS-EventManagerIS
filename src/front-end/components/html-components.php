@@ -244,13 +244,20 @@ function generateEventCards(array $events, string $card_type="")
  */
 function generateLocations()
 {
-    /*
-    $locations = getLocations();
+    global $db;
+
+    $locations = fetch_distinct_table_columns($db, "Address", "city", null, "TRUE");
+    if(!$locations) {
+        return;
+    }
+
     foreach ($locations as $location)
     {
-        echo '<li>' . $location . '</li>';
+        echo '<li>';
+        echo '<input type="checkbox" name="locations[]" value="' . $location . '">';
+        echo $location;
+        echo '</li>';
     }
-    */
 }
 
 function getSubcategories($parent_category = null)
@@ -260,7 +267,7 @@ function getSubcategories($parent_category = null)
     $id_array = ($parent_category) ? ["super_category" => $parent_category] : null;
     $id_string = "super_category " . ($parent_category ? "= :super_category" : "IS NULL");
 
-    return fetch_table_columns($db, "Category", "category_name", $id_array, $id_string);
+    return fetch_distinct_table_columns($db, "Category", "category_name", $id_array, $id_string);
 }
 
 /**

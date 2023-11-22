@@ -252,26 +252,26 @@ function fetch_method_tables_for_account_type($account_type, $method)
     switch ($account_type) {
         case "administrator":
             switch ($method){
-                case "GET": 
+                case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
-                case "POST": 
+                case "POST":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment", "Logout"];
-                case"PUT": 
+                case"PUT":
                     return ["Account", "Category", "Event", "Address", "Registration"];
-                case "DELETE": 
+                case "DELETE":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Photos", "Comment"];
                 default:
                     return [];
             }
         case "moderator":
             switch ($method){
-                case "GET": 
+                case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
                 case "POST":
                     return ["Logout"];
                 case "PUT" :
                     return ["Account", "Category", "Event", "Address"];
-                case "DELETE": 
+                case "DELETE":
                     return ["Category", "Event", "Event_Instance", "Address", "Comment"]; // Event_Instance is questionable
                 default:
                     return [];
@@ -280,24 +280,24 @@ function fetch_method_tables_for_account_type($account_type, $method)
             switch ($method){
                 case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
-                case "POST": 
+                case "POST":
                     return ["Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment", "Logout"];
-                case "PUT": 
+                case "PUT":
                     return ["Account", "Registration"];
-                case "DELETE": 
+                case "DELETE":
                     return ["Event", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
                 default:
                     return [];
             }
         case "not_logged_in":
             switch ($method){
-                case "GET": 
+                case "GET":
                     return ["Account", "Event", "Event_Instance", "Entrance_fee", "Photos", "Comment"];
                 case "POST" :
                     return ["Account", "Login"]; // registracia + login
-                case "PUT": 
+                case "PUT":
                     return [];
-                case "DELETE": 
+                case "DELETE":
                     return [];
                 default:
                     return [];
@@ -322,50 +322,50 @@ function fetch_required_columns($table, $method)
         case "POST":
             switch ($table){
                 case "Account": // email is our unofficial id for Account + account_type is used by sessions to validate access -> they are required
-                    return $required_columns = ['email', 'account_type']; 
+                    return $required_columns = ['email', 'account_type'];
                 case "Category":
-                    return $required_columns = ['category_name']; 
+                    return $required_columns = ['category_name'];
                 case "Event":
-                    return $required_columns = []; 
+                    return $required_columns = [];
                 case "Address":
-                    return $required_columns = []; 
+                    return $required_columns = [];
                 case "Event_Instance":
-                    return $required_columns = ['event_id', 'address_id']; 
+                    return $required_columns = ['event_id', 'address_id'];
                 case "Entrance_fee":
-                    return $required_columns = ['instance_id']; 
+                    return $required_columns = ['instance_id'];
                 case "Registration":
-                    return $required_columns = ['instance_id']; 
+                    return $required_columns = ['instance_id'];
                 case "Photos":
-                    return $required_columns = ['event_id', 'address_id']; 
+                    return $required_columns = ['event_id', 'address_id'];
                 case "Comment":
-                    return $required_columns = ['event_id']; 
+                    return $required_columns = ['event_id'];
                 case "Login":
-                    return $required_columns = ['email', 'password']; 
+                    return $required_columns = ['email', 'password'];
                 case "Logout":
-                    return $required_columns = []; 
+                    return $required_columns = [];
             }
         case "GET":
             return [];
         default:
             switch ($table){
                 case "Account": // email is our unofficial id for Account + account_type is used by sessions to validate access -> they are required
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Category":
-                    return $required_columns = ['category_name']; 
+                    return $required_columns = ['category_name'];
                 case "Event":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Address":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Event_Instance":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Entrance_fee":
-                    return $required_columns = ['instance_id', 'name']; 
+                    return $required_columns = ['instance_id', 'name'];
                 case "Registration":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Photos":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
                 case "Comment":
-                    return $required_columns = ['id']; 
+                    return $required_columns = ['id'];
             }
     }
 }
@@ -1344,40 +1344,42 @@ function validate_data($table, $data, $method, $account_type)
     return $isValid;
 }
 
-function fetch_table_column($db, $table, $return_id, $id_array, $id_string)
-{
-    $query = "SELECT $return_id FROM $table WHERE $id_string";
+function get_pdo_statement($db, $query, $id_array) {
     $stmt = $db->prepare($query);
-
     if ($id_array) {
         foreach ($id_array as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
     }
-
     $stmt->execute();
+    return $stmt;
+}
+
+function fetch_table_column($db, $table, $return_id, $id_array, $id_string)
+{
+    $query = "SELECT $return_id FROM $table WHERE $id_string";
+    $stmt = get_pdo_statement($db, $query, $id_array);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result ? $result[$return_id] : null;
 }
 
-function fetch_table_columns($db, $table, $return_id, $id_array, $id_string)
+function fetch_table_columns($db, $query, $id_array, $return_id)
 {
-    $query = "SELECT $return_id FROM $table WHERE $id_string";
-    $stmt = $db->prepare($query);
+    $stmt = get_pdo_statement($db, $query, $id_array);
 
-    if($id_array) {
-        foreach ($id_array as $key => $value) {
-            $stmt->bindValue(":$key", $value);
-        }
-    }
-
-    $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Extract the values of the specified column into an array
-    $values = array_column($results, $return_id);
-    return $values;
+    return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), $return_id);
 }
 
+function fetch_all_table_columns($db, $table, $return_id, $id_array, $id_string) {
+    $query = "SELECT $return_id FROM $table WHERE $id_string";
+    return fetch_table_columns($db, $query, $id_array, $return_id);
+}
+
+function fetch_distinct_table_columns($db, $table, $return_id, $id_array, $id_string) {
+    $query = "SELECT DISTINCT $return_id FROM $table WHERE $id_string";
+    return fetch_table_columns($db, $query, $id_array, $return_id);
+}
 
 function check_user_ownership($db, $table, $id_array, $id_string)
 {
