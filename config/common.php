@@ -1349,14 +1349,35 @@ function fetch_table_column($db, $table, $return_id, $id_array, $id_string)
     $query = "SELECT $return_id FROM $table WHERE $id_string";
     $stmt = $db->prepare($query);
 
-    foreach ($id_array as $key => $value) {
-        $stmt->bindValue(":$key", $value);
+    if ($id_array) {
+        foreach ($id_array as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
     }
 
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result ? $result[$return_id] : null;
 }
+
+function fetch_table_columns($db, $table, $return_id, $id_array, $id_string)
+{
+    $query = "SELECT $return_id FROM $table WHERE $id_string";
+    $stmt = $db->prepare($query);
+
+    if($id_array) {
+        foreach ($id_array as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+    }
+
+    $stmt->execute();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Extract the values of the specified column into an array
+    $values = array_column($results, $return_id);
+    return $values;
+}
+
 
 function check_user_ownership($db, $table, $id_array, $id_string)
 {
