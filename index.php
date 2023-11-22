@@ -3,85 +3,167 @@ require 'config/common.php';
 
 session_start();
 $db = connect_to_db(); // connect to database -> returns pdo that allows us to work with the db
-$path = $_SERVER['PATH_INFO'] ?? '';
-$method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
 
+require "src/front-end/components/html-components.php";
 
-// TESTING START
-// $method = 'POST'; // Login
-// $json_data = '{"email":"jan.novak@email.cz","password":"hashed_password"}';
+makeHead("Eventer");
+makeHeader();
 
-// $method = 'PUT'; // Modify
-// $json_data = '{"id":"6","email":"new_new@email.com"}';
+?>
 
-// $method = 'POST'; // Logout
-$json_data = file_get_contents('php://input');
+<main>
+    <div class="filter-bar">
+        <ul>
+            <li>
+                <a href="#">Categories</a>
+                <div class="filter-opt">
+                    <ul class="category-tree">
+                        <?php
+                        /* uncomment this after getParentCategories() function will be finished */
+                        /**** 
+                        generateCategoryTree();
+                        ****/
+                        ?>
 
-// $method = 'DELETE'; // Delete
-// $json_data = '{"id":"7"}';
+                        <!-- TEST CODE -->
 
-// $method = 'POST'; // Add
-// $json_data = '{"event_name":"TEST_event","description":"Just testing"}';
-// TESTING END
+                        <li><input type="checkbox">Item 1</li>
+                        <li>
+                            <input type="checkbox">Item 2
+                            <ul class="category-tree">
+                                <li><input type="checkbox">item 2.1</li>
+                                <li><input type="checkbox">Item 2.2</li>
+                                <li><input type="checkbox">Item 2.3</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <input type="checkbox">Item 3
+                            <ul class="category-tree">
+                                <li>
+                                    <input type="checkbox">Item 3.1
+                                    <ul class="category-tree">
+                                        <li><input type="checkbox">Item 3.1.1</li>
+                                        <li><input type="checkbox">item 3.1.2</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <input type="checkbox">Item 3.2
+                                    <ul class="category-tree">
+                                        <li><input type="checkbox">Item 3.2.1</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <!-- END OF TEST CODE -->
 
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#">Locations</a>
+                <div class="filter-opt">
+                    <ul>
+                        <?php
+                        /* location generator */
+                        /****
+                        generateLocations();    
+                        ****/
+                        ?>
 
-// 1. Parse the URL
-$parsedUrl = parse_url($path);
+                        <!-- TEST CODE -->
 
-// 2. Explode the Path
-$pathParts = explode('/', $parsedUrl['path'], 2);
-if ($pathParts[0] != "") // only valid path is "/database_table" so after explode: [0] = "" && [1] = db_table
-{
-    sendResponse(400, "Invalid path in request. Correct path assignment is: \"/database_table...\"");
-    exit;
-}
-$table = $pathParts[1] ?? ''; // with path "/db_table" - we want to use index 1 after explode
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
+                        <li><input type="checkbox">Random location 123</li>
 
-$account_type = $_SESSION['account_type'] ?? "not_logged_in";
-$accessible_db_tables = fetch_method_tables_for_account_type($account_type, $method); if (!in_array($table, $accessible_db_tables, true))
-{ 
-    sendResponse(400, 'Bad Request: request is invalid or unauthorized');
-    exit;
-}
+                        <!-- END OF TEST CODE -->
 
-// 3. Handle Query String
-$filters = $_GET; // Directly assign the $_GET array to $filters ($_GET gets URL params. for any method)
-if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
-{
-    sendResponse(400, 'Bad Request: query parameters are only allowed for the GET Method. Send JSON instead.');
-    exit;
-}
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a href="#">Rating</a>
+                <div class="filter-opt">
+                    <ul>
+                        <li>
+                            <div class="rating-input">
+                                <label for="min-r">Min rating</label>
+                                <input type="number" id="min-r" pattern="[0-5]" value="0" oninput="checkRatingFilterInput()">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rating-input">
+                                <label for="max-r">Max rating</label>
+                                <input type="number" id="max-r" pattern="[0-5]" value="5" oninput="checkRatingFilterInput()">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="filter-date">
+                    <label for="date-from-input">Date from:</label>
+                    <input type="date" id="date-from-input">
+                </div>
+            </li>
+            <li>
+                <div class="filter-date">
+                    <label for="date-from-input">Date to:</label>
+                    <input type="date" id="date-from-input">
+                </div>
+            </li>
+            <li>
+                <div class="submit-button">
+                    <button class="button-round-filled-green" type="submit">Submit filters</button>
+                </div>
+            </li>
+        </ul>
+    </div>
 
-// 4. Decode received data from JSON
-// $json_data = file_get_contents('php://input');
-$data = json_decode($json_data, true); 
-if (!$data && $method != 'GET' && $table != 'Logout') {// json_decode can return null if an error occured + if GET data has to be null
-    sendResponse(400, "Error in decoding JSON.\n");
-    exit;
-}
-else{
-    if (!validate_data($table, $data, $method, $account_type)) {
-        sendResponse(400, "PUT Method Failed To Validate Data.");
-        exit;
-    }
-}
-add_missing_data($account_type, $method, $table, $data); // set creation time, init status/account_type etc..
+    <h2>Today</h2>
+    <div class="card-container">
 
-switch ($method) {
-    case 'GET':
-        include 'methods/get.php';
-        break;
-    case 'POST':
-        include 'methods/post.php';
-        break;
-    case 'PUT':
-        include 'methods/put.php';
-        break;
-    case 'DELETE':
-        include 'methods/delete.php';
-        break;
-    default:
-        sendResponse(405, "Unknown Method.");
-        break;
-}
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            $fill = array("a" => "bar", "b" => "foo"); // tmp code
+            generateEventCards($fill);
+        ?>
+
+    </div>
+
+    <h2>This Week</h2>
+    <div class="card-container">
+
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            generateEventCards($fill);
+        ?>
+
+    </div>
+
+    <h2>This Month</h2>
+    <div class="card-container">
+
+        <?php
+            /* generateEventCards(getEventsByDate(date)); */
+            generateEventCards($fill);
+        ?>
+
+    </div>
+</main>
+
+<?php
+
+makeFooter();
+
 ?>
