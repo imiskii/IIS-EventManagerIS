@@ -2,9 +2,9 @@
 function connect_to_db()
 {
     $host = 'localhost';
-    $db_name = 'xkurca01';
-    $username = 'xkurca01';
-    $password = '9emtirde';
+    $db_name = 'xlazik00';
+    $username = 'xlazik00';
+    $password = 'imojbo9n';
     $port = '/var/run/mysql/mysql.sock';
 
     $dsn = "mysql:host=$host;dbname=$db_name;port=$port;charset=utf8mb4";
