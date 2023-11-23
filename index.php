@@ -6,7 +6,6 @@ session_start();
 $db = connect_to_db();
 
 updateSession(["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "search"] );
-var_dump($_SESSION);
 makeHead("Eventer");
 makeHeader();
 
@@ -20,6 +19,7 @@ makeHeader();
                     <a href="#">Categories</a>
                     <div class="filter-opt">
                         <ul class="category-tree">
+                            <script src="src/front-end/js/updateChildCheckboxes.js"></script>
                             <?php
                             generateCategoryTree();
                             ?>
@@ -50,7 +50,7 @@ makeHeader();
                             <li>
                                 <div class="rating-input">
                                     <label for="max-r">Max rating</label>
-                                    <input type="number" id="max-r" pattern="[0-5]" <?php getSessionVal("max_rating", null, 5) ?> oninput="checkRatingFilterInput()" name="max_rating">
+                                    <input type="number" id="max-r" pattern="[0-5]" <?php getSessionVal("max_rating", null, 5) ?> oninput="console.log('function called')" name="max_rating">
                                 </div>
                             </li>
                         </ul>
@@ -81,36 +81,6 @@ makeHeader();
     <?php
         generateEventCards();
     ?>
-
-    <!-- <div class="card-container">
-
-        <?php
-            /* generateEventCards(getEventsByDate(date)); */
-            $fill = array("a" => "bar", "b" => "foo"); // tmp code
-           // generateEventCards($fill);
-        ?>
-
-    </div>
-
-    <h2>This Week</h2>
-    <div class="card-container">
-
-        <?php
-            /* generateEventCards(getEventsByDate(date)); */
-            //generateEventCards($fill);
-        ?>
-
-    </div>
-
-    <h2>This Month</h2>
-    <div class="card-container">
-
-        <?php
-            /* generateEventCards(getEventsByDate(date)); */
-          //  generateEventCards($fill);
-        ?>
-
-    </div> -->
 </main>
 
 <?php

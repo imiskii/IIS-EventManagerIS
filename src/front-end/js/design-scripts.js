@@ -1,7 +1,7 @@
 
 /**
  * Function show profile menu nav bar
- * 
+ *
  */
 function menuToggle()
 {
@@ -12,10 +12,11 @@ function menuToggle()
 
 /**
  * Check if filter inputs for rating is from 0 to 5
- * 
+ *
  */
 function checkRatingFilterInput()
 {
+    console.log("function called");
     const minInput = document.getElementById('min-r');
     const maxInput = document.getElementById('max-r');
 
@@ -49,7 +50,7 @@ function checkRatingFilterInput()
 
 /**
  *  Check if input for rating is from 0 to 5
- * 
+ *
  */
 function checkRatingInput()
 {
@@ -70,8 +71,8 @@ function checkRatingInput()
 
 /**
  * Check if input is positive number or 0
- * 
- * @param {*} input 
+ *
+ * @param {*} input
  */
 function checkNegativeInput(input)
 {
@@ -88,7 +89,7 @@ function checkNegativeInput(input)
 
 /**
  * Function show ticket types table of given ticked id
- * 
+ *
  * @param {*} ticketID id of ticket component
  */
 function toggleTicketDetail(ticketID)
@@ -111,7 +112,7 @@ function toggleTicketDetail(ticketID)
 
 /**
  * Function calculate final price of registration in choosen ticket type
- * 
+ *
  * @param {*} ticketID id of ticket component
  * @param {*} ticketTypesNumber number of ticket types
  */
@@ -140,7 +141,7 @@ function calcTicketsVal(ticketID, ticketTypesNumber)
 
 /**
  * Show gallery popup with given imageList
- * 
+ *
  * @param {*} imageList list with paths to the images
  */
 function toggleGallery(imageList)
@@ -179,7 +180,7 @@ function toggleGallery(imageList)
 
 /**
  * Show comment edit popup
- * 
+ *
  * @param {*} commentID id of comment
  * @param {*} commentText text of comment
  */
@@ -203,7 +204,7 @@ function toggleEditCommentPopUp(commentID, commentText)
 
 /**
  * Function open a popup with pre filled profile informations
- * 
+ *
  * @param {*} nick profile nick
  * @param {*} f_name profile first name
  * @param {*} l_name profile last name
@@ -237,7 +238,7 @@ function toggleEditProfilePopUp(nick='', f_name='', l_name='', email='', role=''
 
 /**
  * Show password change popup
- * 
+ *
  */
 function togglePasswordChangeProfilePopUp()
 {
@@ -254,7 +255,7 @@ function togglePasswordChangeProfilePopUp()
 
 /**
  * Show category form popup for creating new category
- * 
+ *
  */
 function toggleAddCategoryPopUp()
 {
@@ -271,7 +272,7 @@ function toggleAddCategoryPopUp()
 
 /**
  * Show category form popup for editing existing category
- * 
+ *
  * @param {*} c_name category name
  * @param {*} parent_id id of parent category
  */
@@ -279,7 +280,7 @@ function toggleEditCategoryPopUp(c_name, parent_id)
 {
     const popup = document.getElementById('add-category-popup');
     const closeBtn = document.getElementById('close-category-popup-btn');
-    
+
     const nameInput = document.getElementById('category-name');
     const parentSelect = document.getElementById('category-parent');
     nameInput.value = c_name;
@@ -295,7 +296,7 @@ function toggleEditCategoryPopUp(c_name, parent_id)
 
 /**
  * Show category form popup for creating new location
- * 
+ *
  */
 function toggleAddLocationPopUp()
 {
@@ -312,7 +313,7 @@ function toggleAddLocationPopUp()
 
 /**
  * Show category form popup for editing existing location
- * 
+ *
  * @param {*} country location country
  * @param {*} city location city
  * @param {*} s_name street name
@@ -349,7 +350,7 @@ function toggleEditLocationPopUp(country, city, s_name, s_num, region, zip)
 
 /**
  * Create new event instance form
-*/ 
+*/
 let eventVariantCount = 1;
 function addEventVariant() {
     if((eventVariantCount == 1) && (document.getElementById('tickets-variants').childElementCount > 1))7
@@ -423,7 +424,7 @@ function addEventVariant() {
 
 /**
  * Add new ticekt type to existing variant of ticket
- * 
+ *
  * @param {*} variantId id of variant to which new ticket type will be added
  */
 function addTicketType(variantId) {
@@ -446,7 +447,7 @@ function addTicketType(variantId) {
 
 /**
  * Remove ticket type of specific ticket variant
- * 
+ *
  * @param {*} button remove button
  */
 function removeTicketType(button) {
@@ -459,8 +460,8 @@ function removeTicketType(button) {
 
 
 /**
- * 
- * 
+ *
+ *
  * @param {*} variantId id of variant which will be deleted
  */
 function removeEventVariant(variantId) {
@@ -468,5 +469,18 @@ function removeEventVariant(variantId) {
     {
         const variantDiv = document.getElementById('event-variant-' + variantId);
         variantDiv.parentNode.removeChild(variantDiv);
+    }
+}
+
+function toggleChildren(checkbox) {
+    // Get the data-parent attribute value
+    var parentCategory = checkbox.getAttribute('data-parent');
+
+    // Get all checkboxes with the same data-parent value
+    var childCheckboxes = document.querySelectorAll('[data-parent="' + parentCategory + '"]');
+
+    // Set the state of child checkboxes to match the parent checkbox
+    for (var i = 0; i < childCheckboxes.length; i++) {
+        childCheckboxes[i].checked = checkbox.checked;
     }
 }
