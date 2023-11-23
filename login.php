@@ -6,8 +6,11 @@
  * @date 06.10.2023
  */
 
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
 
-require "components/html-components.php";
+session_start();
+$db = connect_to_db();
 
 makeHead("Eventer | Sign in");
 
@@ -17,7 +20,7 @@ makeHead("Eventer | Sign in");
     <div class="center-block">
         <div class="form-container">
             <h2>Log in</h2>
-            <form action="" method="post">
+            <form action="validate_login.php" method="post">
                 <ul>
                     <li>
                         <div class="input-row">
@@ -39,6 +42,7 @@ makeHead("Eventer | Sign in");
                         <div class="buttons">
                             <button class="button-round-filled" type="submit">Log in</button>
                             <a href="#" class="button-round-empty">Create new account</a>
+                            <!-- FIXME $_SESSION['return_to'] -->
                             <a href="#" class="button-round-empty"><i class="fa-solid fa-arrow-left"></i>Go back Home</a>
                         </div>
                     </li>
@@ -49,10 +53,7 @@ makeHead("Eventer | Sign in");
 </main>
 
 <?php
-
 makeFooter();
-
 ?>
 
 </html>
-

@@ -10,6 +10,7 @@ require_once 'config/common.php';
 require_once "src/front-end/components/html-components.php";
 
 session_start();
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 $db = connect_to_db();
 
 updateSession(["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "search"] );
