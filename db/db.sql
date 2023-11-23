@@ -12,22 +12,22 @@ DROP TABLE IF EXISTS Account;
 ALTER DATABASE xlazik00 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 CREATE TABLE Account (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    account_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(256) NOT NULL,
     first_name VARCHAR(128),
     last_name VARCHAR(128),
     nick VARCHAR(128),
     password VARCHAR(128),
     account_type VARCHAR(32),
-    photo BLOB,
-    status VARCHAR(64)
+    account_photo BLOB,
+    account_status VARCHAR(64)
 );
 
 CREATE TABLE Category (
     category_name VARCHAR(128) PRIMARY KEY,
-    description MEDIUMTEXT,
+    category_description MEDIUMTEXT,
     time_of_creation DATETIME,
-    status VARCHAR(64),
+    category_status VARCHAR(64),
 
     super_category VARCHAR(128),
     account_id INT,
@@ -38,21 +38,21 @@ CREATE TABLE Category (
 
     CONSTRAINT fk_category_proposed_by_account
     FOREIGN KEY (account_id)
-    REFERENCES Account(id)
+    REFERENCES Account(account_id)
 );
 
 CREATE TABLE Event (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
     event_name VARCHAR(128),
-    description MEDIUMTEXT,
-    icon BLOB,
+    event_description MEDIUMTEXT,
+    event_icon BLOB,
     rating FLOAT,
     time_of_creation DATETIME,
     time_of_last_edit DATETIME,
-    status VARCHAR(64),
+    event_status VARCHAR(64),
 
     category_name VARCHAR(128),
-    owner_id INT,
+    account_id INT,
 
     CONSTRAINT fk_event_category
     FOREIGN KEY (category_name)
@@ -61,77 +61,79 @@ CREATE TABLE Event (
     CONSTRAINT fk_event_owner /* merged owner and proposal statuses - they can
                                  be differentiated in the status field */
 
-    FOREIGN KEY (owner_id)
-    REFERENCES Account(id)
+    FOREIGN KEY (account_id)
+    REFERENCES Account(account_id)
 );
 
 CREATE TABLE Address (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    Country VARCHAR(128),
+    address_id INT AUTO_INCREMENT PRIMARY KEY,
+    country VARCHAR(128),
     zip INT,
     city VARCHAR(128),
     street VARCHAR(128),
     street_number VARCHAR(128), -- VARCHAR so it is possible to type 1982/54 etc.
     state VARCHAR(128),
-    description MEDIUMTEXT,
+    address_description MEDIUMTEXT,
     date_of_creation DATETIME,
-    status VARCHAR(64),
+    address_status VARCHAR(64),
     account_id INT,
 
     CONSTRAINT fk_address_proposed_by_account
     FOREIGN KEY (account_id)
-    REFERENCES Account(id)
+    REFERENCES Account(account_id)
 );
 
 CREATE TABLE Event_instance (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    instance_id INT AUTO_INCREMENT PRIMARY KEY,
     event_id INT,
     address_id INT,
-    time_from DATETIME,
-    time_to DATETIME,
+    date_from DATE,
+    time_from TIME,
+    date_to DATE,
+    time_to TIME,
 
     CONSTRAINT fk_instance_of_event
     FOREIGN KEY (event_id)
-    REFERENCES Event(id) ON DELETE CASCADE,
+    REFERENCES Event(event_id) ON DELETE CASCADE,
 
     CONSTRAINT fk_address_of_instance
     FOREIGN KEY (address_id)
-    REFERENCES Address(id) ON DELETE CASCADE
+    REFERENCES Address(address_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Entrance_fee (
     instance_id INT,
-    name VARCHAR(128),
+    fee_name VARCHAR(128),
     shopping_method VARCHAR(64),
     cost DECIMAL,
     max_tickets INT,
     sold_tickets INT,
 
-    PRIMARY KEY(instance_id, name),
+    PRIMARY KEY(instance_id, fee_name),
 
     CONSTRAINT fk_event_instance_fee
     FOREIGN KEY (instance_id)
-    REFERENCES Event_instance(id) ON DELETE CASCADE
+    REFERENCES Event_instance(instance_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Registration (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    owner_id INT,
+    reg_id INT AUTO_INCREMENT PRIMARY KEY,
+    account_id INT,
     instance_id INT,
     time_of_confirmation DATETIME,
     fee_name VARCHAR(128),
 
     CONSTRAINT fk_fee_registration
     FOREIGN KEY (instance_id, fee_name)
-    REFERENCES Entrance_fee(instance_id, name) ON DELETE CASCADE,
+    REFERENCES Entrance_fee(instance_id, fee_name) ON DELETE CASCADE,
 
     CONSTRAINT fk_account_registered
-    FOREIGN KEY (owner_id)
-    REFERENCES Account(id) ON DELETE CASCADE
+    FOREIGN KEY (account_id)
+    REFERENCES Account(account_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Photos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    photo_id INT AUTO_INCREMENT PRIMARY KEY,
     photo BLOB,
 
     event_id INT,
@@ -139,37 +141,37 @@ CREATE TABLE Photos (
 
     CONSTRAINT fk_event_photo
     FOREIGN KEY (event_id)
-    REFERENCES Event(id) ON DELETE CASCADE,
+    REFERENCES Event(event_id) ON DELETE CASCADE,
 
     CONSTRAINT fk_address_photo
     FOREIGN KEY (address_id)
-    REFERENCES Address(id) ON DELETE CASCADE
+    REFERENCES Address(address_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Comment (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
     time_of_posting DATETIME,
     comment_text MEDIUMTEXT,
 
-    author_id INT,
+    account_id INT,
     super_comment INT,
     event_id INT,
 
     CONSTRAINT fk_comment_author
-    FOREIGN KEY (author_id)
-    REFERENCES Account(id),
+    FOREIGN KEY (account_id)
+    REFERENCES Account(account_id),
 
     CONSTRAINT fk_super_comment
     FOREIGN KEY (super_comment)
-    REFERENCES Comment(id) ON DELETE CASCADE,
+    REFERENCES Comment(comment_id) ON DELETE CASCADE,
 
     CONSTRAINT fk_comment_on_event
     FOREIGN KEY (event_id)
-    REFERENCES Event(id) ON DELETE CASCADE
+    REFERENCES Event(event_id) ON DELETE CASCADE
 );
 
 -- Account table
-INSERT INTO Account (email, first_name, last_name, nick, password, account_type, photo, status)
+INSERT INTO Account (email, first_name, last_name, nick, password, account_type, account_photo, account_status)
 VALUES
     ('jan.novak@email.cz', 'Jan', 'Novák', 'jannov', 'hashed_password', 'regular', NULL, 'active'),
     ('eva.hodkova@email.cz', 'Eva', 'Hodková', 'evahod', 'hashed_password', 'regular', NULL, 'active'),
@@ -183,7 +185,7 @@ VALUES
     ('nikola.bartosova@email.cz', 'Nikola', 'Bartošová', 'nikbart', 'hashed_password', 'regular', NULL, 'active');
 
 -- Category table
-INSERT INTO Category (category_name, description, time_of_creation, status, super_category, account_id)
+INSERT INTO Category (category_name, category_description, time_of_creation, category_status, super_category, account_id)
 VALUES
     ('Hudební Události', 'Kategorie pro hudební události jako festivaly a koncerty', NOW(), 'Active', NULL, 1),
     ('Koncerty', 'Kategorie pro koncerty', NOW(), 'aktivní', 'Hudební Události', 1),
@@ -198,7 +200,7 @@ VALUES
     ('Společenské události', 'Kategorie pro společenské události a večírky', NOW(), 'aktivní', NULL, 10);
 
 -- Event table
-INSERT INTO Event (event_name, description, icon, rating, time_of_creation, time_of_last_edit, status, category_name, owner_id)
+INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)
 VALUES
     ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, 4.5, NOW(), NOW(), 'aktivní', 'Koncerty', 1),
     ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, 4.2, NOW(), NOW(), 'aktivní', 'Divadlo', 2),
@@ -213,7 +215,7 @@ VALUES
 
 
 -- Address table
-INSERT INTO Address (Country, zip, city, street, street_number, state, description, date_of_creation, status, account_id)
+INSERT INTO Address (country, zip, city, street, street_number, state, address_description, date_of_creation, address_status, account_id)
 VALUES
     ('Česká republika', 11000, 'Praha', 'Václavské náměstí', '25', 'Hlavní město Praha', 'Moderní koncertní sál', NOW(), 'aktivní', 1),
     ('Česká republika', 12000, 'Brno', 'Ovocný trh', '6', 'Hlavní město Praha', 'Národní divadlo', NOW(), 'aktivní', 2),
@@ -228,23 +230,23 @@ VALUES
 
 
 -- Event_instance table
-INSERT INTO Event_instance (event_id, address_id, time_from, time_to)
+INSERT INTO Event_instance (event_id, address_id, date_from, time_from, date_to, time_to)
 VALUES
-    (1, 1, '2023-05-01 19:00:00', '2023-05-01 22:00:00'),
-    (2, 2, '2023-06-15 18:30:00', '2023-06-15 22:30:00'),
-    (3, 3, '2023-07-10 10:00:00', '2023-07-10 18:00:00'),
-    (4, 4, '2023-08-05 20:00:00', '2023-08-05 23:00:00'),
-    (5, 5, '2023-09-02 14:00:00', '2023-09-02 17:00:00'),
-    (6, 6, '2023-10-20 17:30:00', '2023-10-20 22:30:00'),
-    (7, 7, '2023-11-22 09:00:00', '2023-11-28 13:00:00'),
-    (8, 8, '2023-12-03 13:00:00', '2023-12-03 18:00:00'),
-    (9, 9, '2024-01-18 19:30:00', '2024-01-18 22:30:00'),
-    (10, 10, '2024-02-08 20:00:00', '2024-02-08 23:00:00'),
-    (10, 10, '2024-04-08 20:00:00', '2024-04-08 23:00:00'),
-    (10, 4, '2024-06-08 20:00:00', '2024-06-08 23:00:00');
+    (1, 1, '2023-05-01', '19:00:00', '2023-05-01', '22:00:00'),
+    (2, 2, '2023-06-15', '18:30:00', '2023-06-15', '22:30:00'),
+    (3, 3, '2023-07-10', '10:00:00', '2023-07-10', '18:00:00'),
+    (4, 4, '2023-08-05', '20:00:00', '2023-08-05', '23:00:00'),
+    (5, 5, '2023-09-02', '14:00:00', '2023-09-02', '17:00:00'),
+    (6, 6, '2023-10-20', '17:30:00', '2023-10-20', '22:30:00'),
+    (7, 7, '2023-11-22', '09:00:00', '2023-11-28', '13:00:00'),
+    (8, 8, '2023-12-03', '13:00:00', '2023-12-03', '18:00:00'),
+    (9, 9, '2024-01-18', '19:30:00', '2024-01-18', '22:30:00'),
+    (10, 10, '2024-02-08', '20:00:00', '2024-02-08', '23:00:00'),
+    (10, 10, '2024-04-08', '20:00:00', '2024-04-08', '23:00:00'),
+    (10, 4, '2024-06-08', '20:00:00', '2024-06-08', '23:00:00');
 
 -- Entrance_fee table
-INSERT INTO Entrance_fee (instance_id, name, shopping_method, cost, max_tickets, sold_tickets)
+INSERT INTO Entrance_fee (instance_id, fee_name, shopping_method, cost, max_tickets, sold_tickets)
 VALUES
     (1, 'Vstupenka standard', 'Online', 250.00, 500, 150),
     (2, 'Vstupenka VIP', 'Online', 450.00, 100, 75),
@@ -258,7 +260,7 @@ VALUES
     (10, 'Vstupenka VIP', 'Online', 350.00, 200, 120);
 
 -- Registration table
-INSERT INTO Registration (owner_id, instance_id, time_of_confirmation, fee_name)
+INSERT INTO Registration (account_id, instance_id, time_of_confirmation, fee_name)
 VALUES
     (1, 1, NOW(), 'Vstupenka standard'),
     (2, 2, NOW(), 'Vstupenka VIP'),
@@ -272,7 +274,7 @@ VALUES
     (10, 10, NOW(), 'Vstupenka VIP');
 
 -- Comment
-INSERT INTO Comment (time_of_posting, comment_text, author_id, super_comment, event_id)
+INSERT INTO Comment (time_of_posting, comment_text, account_id, super_comment, event_id)
 VALUES
     ('2023-05-02 08:45:00', 'Skvělý koncert, nemohl jsem si ho nechat ujít!', 1, NULL, 1),
     ('2023-06-16 15:20:00', 'Hamlet byl úžasný, skvělá herecká představení!', 2, NULL, 2),
