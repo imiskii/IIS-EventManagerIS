@@ -200,10 +200,6 @@ function dateENG(string $datetime) {
     return "DATE_FORMAT($datetime, '%Y-%m-%d')";
 }
 
-function yearmonthENG(string $datetime) {
-    return "DATE_FORMAT($datetime, '%Y-%m')";
-}
-
 function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
     $return_id = 'event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, '. dateCZ("MIN(time_from)") .
     ' AS earliest_date, '. dateCZ("MAX(time_to)"). ' AS latest_date';
@@ -222,6 +218,42 @@ function generateEventCardSet($id_array, $filter, $restrain_function = null, $ar
             generateEventCard($event);
         }
         echo '</div>';
+    }
+}
+
+function updateSession($session_items) {
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        return;
+    }
+    foreach($session_items as $item) {
+        if(isset($_POST[$item])) {
+            $_SESSION[$item] = $_POST[$item];
+        } else if (isset($_SESSION[$item])) {
+            unset($_SESSION[$item]);
+        }
+    }
+}
+
+function getSessionVal($value, $index = null, $default = null) {
+    if(!isset($_SESSION[$value])) {
+        if ($default) {
+            echo "value=\"$default\"";
+        } else {
+            return;
+        }
+    }
+    if(is_array($value)) {
+        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
+    } else {
+        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
+    }
+}
+
+function getCheckBoxSessionState($checkbox_name, $value) {
+    if(isset($_SESSION[$checkbox_name]) && in_array($value, $_SESSION[$checkbox_name])) {
+        return " checked ";
+    } else {
+        return "";
     }
 }
 
@@ -271,19 +303,17 @@ function generateEventCards(string $card_type="")
             addFilter($_POST["date_to"], $id_array, $query_parts, "time_to", "<=");
             $date_set = true;
         }
-    }
+        $id_string = implode(" and ", $query_parts);
 
-
-    $id_string = implode(" and ", $query_parts);
-
-    if($date_set) {
-        generateEventCardSet($id_array, $id_string);
-    } else {
-        generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
-        generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
-        generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
-        generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
-        generateEventCardSet($id_array, $id_string, null, null, "All");
+        if($date_set) {
+            generateEventCardSet($id_array, $id_string);
+        } else {
+            generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
+            generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
+            generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
+            generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
+            generateEventCardSet($id_array, $id_string, null, null, "All");
+        }
     }
 }
 
@@ -295,8 +325,6 @@ function generateEventCards(string $card_type="")
  */
 function generateLocations()
 {
-    global $db;
-
     $locations = fetch_distinct_table_columns("Address", "city", null, null);
     if(!$locations) {
         return;
@@ -305,7 +333,7 @@ function generateLocations()
     foreach ($locations as $location)
     {
         echo '<li>';
-        echo '<input type="checkbox" name="locations[]" value="' . $location["city"] . '">';
+        echo '<input type="checkbox" name="locations[]" value="' . $location["city"] . '"' . getCheckBoxSessionState("locations", $location["city"]) . '>';
         echo $location["city"];
         echo '</li>';
     }
@@ -341,7 +369,7 @@ function generateCategoryTree($parent_category = null)
     foreach ($categories as $category)
     {
         echo '<li>';
-        echo '<input type="checkbox" name="categories[]" value="' . $category["category_name"] . '">';
+        echo '<input type="checkbox" name="categories[]" value="' . $category["category_name"] . '"' . getCheckBoxSessionState("categories", $category["category_name"]) . '>';
         echo $category["category_name"];
         generateCategoryTree($category["category_name"]);
         echo '</li>';
