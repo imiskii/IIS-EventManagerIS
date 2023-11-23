@@ -45,7 +45,7 @@ function generateProfilMenu()
 
     <div class="profile-menu">
         <ul>
-            <li><i class='fa-solid fa-user'></i><a href="#">Profile</a></li>
+            <li><i class='fa-solid fa-user'></i><a href="profile.php?account_id=<?php echo $_SESSION["USER"]["account_id"] ?>">Profile</a></li>
 
     <?php
     /*
@@ -432,7 +432,7 @@ function generateEventTickets($eventID)
     // getEventTickets return basically 'Event instance' table for choosen event
     // but there also has to be 'event_name', and some address info so maybe consider join it with 'Event' and 'Address' table
     $tables_joined = "Event e NATURAL JOIN Event_instance ei JOIN Address a ON ei.address_id = a.address_id";
-    $result_id = "instance_id, event_name, date_from, date_to, time_from, time_to, country, city, street_number";
+    $result_id = "instance_id, event_name, date_from, date_to, time_from, time_to, country, city, street, street_number";
     $event_instances = fetch_all_table_columns($tables_joined, $result_id, ["event_id" => $eventID] ,"event_id = :event_id", null);
     //var_dump($event_instances);
     $cnt_t = 1;  // counter for tickets
@@ -443,7 +443,9 @@ function generateEventTickets($eventID)
                 <div class="ticket-info">
                     <h3>'.$event_instance['event_name'].'</h3>
                     <p>
-                        od: '.$event_instance['date_from'] . ' ' . $event_instance['time_from'] . '<br>do: ' . $event_instance['date_to'] . ' ' . $event_instance['time_to'] . '<br>' . $event_instance['country'] . ', ' . $event_instance['city'] . ', ' . $event_instance['street_number'] .'
+                        from: '.formatTime($event_instance, 'date_from', 'time_from').
+                        '<br>to: ' .formatTime($event_instance, 'date_to', 'time_to').
+                        '<br>' . formatAddress($event_instance) .'
                     </p>
                 </div>
                 <button ticket-arrow-button="ticket-'.$cnt_t.'" class="arrow-button" onclick="toggleTicketDetail(\'ticket-'.$cnt_t.'\')">▼</button>
@@ -632,47 +634,13 @@ function makeRoleSelector()
  */
 function makeProfileInfo($profileID)
 {
-
-    // TEST CODE
-    ?>
-    <div class="icon-container">
-        <img src="1.png">
-        <form action="" method="post" enctype="multipart/form-data">
-            <input type="file">
-            <button type="submit" class="button-round-filled">Change Profile Icon</button>
-        </form>
-    </div>
-    <div class="description-container">
-        <div class="nick-container">
-            <!-- replace -->
-            <h3>Profile name</h3>
-            <p>role</p>
-        </div>
-        <div class="name-container">
-            <p>First name</p>
-            <p>Last name</p>
-        </div>
-        <p>Email</p>
-        <span>
-            <button class="button-round-filled" onclick="toggleEditProfilePopUp('Profile name', 'First name', 'Last name', 'Email', 'user')">Edit profile</button>
-            <button class="button-round-filled" onclick="togglePasswordChangeProfilePopUp()">Change password</button>
-            <form action="" method="post">
-                <input type="hidden" value="">
-                <button class="button-round-filled">Delete account</button>
-            </form>
-        </span>
-    </div>
-    <?php
-    // END OF TEST CODE
-
-    /*
     // get information from databese
-    $profile = getProfileInfo($profileID);
+    $profile = getProfileAttributes($profileID);
 
     ?>
 
     <div class="icon-container">
-        <img src="<?php $profile['icon'] ?>">
+        <img src="<?php echo selectUserIcon($profile['user_icon']); ?>">
         <form action="" method="post" enctype="multipart/form-data">
             <input type="file">
             <button type="submit" class="button-round-filled">Change Profile Icon</button>
@@ -681,26 +649,25 @@ function makeProfileInfo($profileID)
     <div class="description-container">
         <div class="nick-container">
             <!-- replace -->
-            <h3><?php $profile['nick'] ?></h3>
-            <p><?php $profile['role'] ?></p>
+            <h3><?php echo $profile['nick']; ?></h3>
+            <p><?php echo $profile['account_type']; ?></p>
         </div>
         <div class="name-container">
-            <p><?php $profile['first_name'] ?></p>
-            <p><?php $profile['last_name'] ?></p>
+            <p><?php echo $profile['first_name']; ?></p>
+            <p><?php echo $profile['last_name']; ?></p>
         </div>
-        <p><?php $profile['email'] ?></p>
+        <p><?php echo $profile['email']; ?></p>
         <span>
             <button class="button-round-filled" onclick="toggleEditProfilePopUp('Profile name', 'First name', 'Last name', 'Email', 'user')">Edit profile</button>
             <button class="button-round-filled" onclick="togglePasswordChangeProfilePopUp()">Change password</button>
             <form action="" method="post">
-                <input type="hidden" value="<?php $profile['account_id'] ?>">
+                <input type="hidden" value="<?php echo $profile['account_id']; ?>">
                 <button class="button-round-filled">Delete account</button>
             </form>
         </span>
     </div>
 
     <?php
-    */
 }
 
 
@@ -710,72 +677,47 @@ function makeProfileInfo($profileID)
  * @param int $profileID ID of profile, which tickets will be generated
  * @return void
  */
-function generateProfileTickets($profileID)
+function generateProfileTickets($account_id)
 {
-    // TEST CODE
-    ?>
-    <a href="#" class="ticket-ticket profile-ticket">
-        <span>
-            <h3>Event name</h3>
-            <p>Date</p>
-            <p>Time from - Time to</p>
-            <p>Location</p>
-        </span>
-        <span>
-            <h4>Confirmed Tickets</h4>
-            <p>2x Adult</p>
-            <p>2x Kid</p>
-        </span>
-        <span>
-            <h4>Unconfirmed Tickets</h4>
-            <p>3x VIP</p>
-        </span>
-    </a>
-    <?php
-    // END OF TEST CODE
-
-    /*
     // get all tickets for particular user
     // they should be group by status and then group by ticket type
     // it could be done with queries or make some function for this
-    $pTickets = getUserTickets($profileID);
+    $tickets = getUserTickets($account_id);
 
-    while ($row = $pTickets->fetch_assoc())
+    foreach($tickets as $ticket)
     {
 
 
         // getEventLink() get link to event-detail page of particular event
-        $eventLink = getEventLink($row['eventID']);
-
-        // href is link to page with particular event
-        echo '<a href="'.$eventLink.'" class="ticket-ticket profile-ticket">';
+        echo '<a href="'.getEventLink($ticket['event_id']).'" class="ticket-ticket profile-ticket">';
         echo '<span>
-        <h3>Event name</h3>
-            <p>'.$row['date'].'</p>
-            <p>'.$row['time_from'].'-'.$row['time_to'].'</p>
-            <p>'.$row['location'].'</p>
-        </span>
+        <h3>'.$ticket['event_name'].'</h3>
+            <p>from: '.formatTime($ticket, 'date_from', 'time_from').'</p>';
+        echo '<p>to: '.formatTime($ticket, 'date_to', 'time_to').'</p>
+            <p>'.formatAddress($ticket).'</p>';
+        echo '</span>
         <span>
         <h4>Confirmed Tickets</h4>';
 
         // $ticketsConfirmed is an array/dict with type of ticket and number of tickets of that type
-        foreach ($ticketsConfirmed as $ticketType)
+        $confirmed_registrations = getRegistrations($account_id, $ticket['instance_id'],true);
+        foreach ($confirmed_registrations as $registration)
         {
-            echo '<p>'.$ticketType['num'].' '.$ticketType['name'].'</p>';
+            echo '<p>'.$registration['tickets_total'].' '.$registration['fee_name'].'</p>';
         }
 
         echo '</span>
         <span>
         <h4>Unconfirmed Tickets</h4>';
 
-        foreach ($ticketsUnconfirmed as $ticketType)
+        $unconfirmed_registrations = getRegistrations($account_id, $ticket['instance_id'],false);
+        foreach ($unconfirmed_registrations as $registration)
         {
-            echo '<p>'.$ticketType['num'].' '.$ticketType['name'].'</p>';
+            echo '<p>'.$registration['tickets_total'].' '.$registration['fee_name'].'</p>';
         }
         echo '</span>
         </a>';
     }
-    */
 }
 
 

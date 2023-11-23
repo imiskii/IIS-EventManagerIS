@@ -1496,4 +1496,55 @@ function sendResponse($statusCode, $message)
     header('Content-Type: application/json');
     echo json_encode(['status' => $statusCode, 'message' => $message]);
 }
+
+function redirect($path = "index.php") {
+    header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : $path));
+}
+
+function redirectHome() {
+    header('Location: index.php');
+}
+
+function getUserAttribute($attribute = 'account_id') {
+    return $_SESSION["USER"][$attribute];
+}
+
+function echoUserAttribute($attribute = 'account_id') {
+    echo $_SESSION["USER"][$attribute];
+}
+
+function getProfileAttributes($account_id) {
+    return fetch_table_entry("Account", "*", ['account_id' => $account_id], "account_id = :account_id");
+}
+
+function getUserTickets($account_id) {
+    $tables = 'Address a JOIN Event_instance ei ON a.address_id = ei.address_id JOIN Event e ON e.event_id = ei.event_id
+    JOIN Entrance_fee ef ON ef.instance_id = ei.instance_id JOIN Registration r on r.instance_id = ef.instance_id';
+    $return_id = 'e.event_name, e.event_id, ei.instance_id, ei.date_from, ei.time_from, ei.date_to, ei.time_to, a.city,
+    a.street, a.street_number, a.country';
+    return fetch_all_table_columns($tables, $return_id, ["account_id" => $account_id], 'r.account_id = :account_id', $return_id);
+}
+
+function getRegistrations($account_id, $instance_id, bool $confirmed) {
+    $condition = $confirmed ? "IS NOT NULL" : "IS NULL";
+    $tables = 'Entrance_fee ef JOIN Registration r ON ef.fee_name = r.fee_name AND ef.instance_id = r.instance_id';
+    $return_id = 'ef.fee_name, SUM(r.ticket_count) as tickets_total';
+    $group_by = 'ef.fee_name';
+    $id_string = "r.account_id = :account_id and r.time_of_confirmation $condition and ef.instance_id = :instance_id";
+    $id_array = ['account_id' => $account_id, 'instance_id' => $instance_id];
+    return fetch_all_table_columns($tables, $return_id, $id_array, $id_string, $group_by);
+}
+
+function getEventLink($event_id) {
+    return "event-detail.php?event_id=" . $event_id;
+}
+
+function formatAddress(array &$address) {
+    return $address['country'] . ', ' . $address['city'] . ', ' . $address['street']. ' ' . $address['street_number'];
+}
+
+function formatTime(array &$time, $date_column, $time_column) {
+    return $time[$date_column].' '.$time[$time_column];
+}
+
 ?>

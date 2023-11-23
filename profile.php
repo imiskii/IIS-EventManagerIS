@@ -6,12 +6,21 @@
  * @date 06.10.2023
  */
 
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
 
-require "components/html-components.php";
+session_start();
+$db = connect_to_db();
 
 makeHead("Eventer | Profile");
 makeHeader();
 
+if (!isset($_GET["account_id"]) || !isset($_SESSION["USER"]) || $_SESSION["USER"]['account_id'] != $_GET["account_id"]) {
+    // unauthorized access gets redirected to home page
+    // TODO: Add access to admins
+    redirectHome();
+}
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 ?>
 
 <main class="profile-main-container">
@@ -68,18 +77,16 @@ makeHeader();
             <button type="submit" class="button-round-filled-green">Submit Edit</button>
         </form>
     </div>
-    <!-- Prfole Info -->
+    <!-- Profile Info -->
     <div class="info-container">
-        <!-- Replace null with profileID !!! -->
-        <?php makeProfileInfo(null) ?>
+        <?php makeProfileInfo(getUserAttribute()) ?>
     </div>
     <!-- Profile tickets -->
     <div class="part-lable">
         <h2>My Tickets</h2>
     </div>
     <div class="ticket">
-        <!-- Replace null with profileID !!! -->
-        <?php generateProfileTickets(null) ?>
+        <?php generateProfileTickets(getUserAttribute()) ?>
     </div>
     <!-- Profile events -->
     <div class="part-lable">
@@ -91,7 +98,7 @@ makeHeader();
         <?php
             /* generateEventCards(getEventCardsByUser($userID), "owner"); */
             $fill = array("a" => "bar", "b" => "foo"); // tmp code
-            generateEventCards($fill, "owner");
+            //generateEventCards($fill, "owner"); FIXME
         ?>
         </div>
     </div>
@@ -102,4 +109,3 @@ makeHeader();
 makeFooter();
 
 ?>
-
