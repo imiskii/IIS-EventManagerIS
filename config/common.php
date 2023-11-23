@@ -1471,7 +1471,7 @@ function session_handler($table, $data, $account_type)
                 $_SESSION["USER"][$attribute] = $value;
             }
             // FIXME relative path
-            header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : "~xlazik00/IIS/index.php"));
+            header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : "index.php"));
         }
         else{
             sendResponse(401, "Log in failed: No email-password configuration found or valid.\n");
