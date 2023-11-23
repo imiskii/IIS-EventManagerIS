@@ -83,7 +83,7 @@ function makeHeader()
         <div class="top-bar">
             <a id="logo" href="index.php"><p>EVENTER</p></a>
             <div class="search-bar">
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="get">
                     <input type="text" placeholder="Search events..." name="search" <?php getSessionVal("search") ?> >
                     <button><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
@@ -170,12 +170,12 @@ function dateENG(string $datetime) {
 }
 
 function updateSession($session_items) {
-    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    if ($_SERVER["REQUEST_METHOD"] != "GET") {
         return;
     }
     foreach($session_items as $item) {
-        if(isset($_POST[$item])) {
-            $_SESSION[$item] = $_POST[$item];
+        if(isset($_GET[$item])) {
+            $_SESSION[$item] = $_GET[$item];
         } else if (isset($_SESSION[$item])) {
             unset($_SESSION[$item]);
         }
@@ -184,7 +184,7 @@ function updateSession($session_items) {
 
 function getSessionVal($value, $index = null, $default = null) {
     if(!isset($_SESSION[$value])) {
-        if ($default) {
+        if ($default || $default === 0) {
             echo "value=\"$default\"";
         } else {
             return;
@@ -279,30 +279,30 @@ function generateEventCards(string $card_type="")
     $date_set = false;
 
     // Check if the form has been submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
         // Check if the "categories" array is set in the POST data
-        if (isset($_POST["categories"])) {
-            addFilter($_POST["categories"], $id_array, $query_parts, "category_name", "in");
+        if (isset($_GET["categories"])) {
+            addFilter($_GET["categories"], $id_array, $query_parts, "category_name", "in");
         }
-        if (isset($_POST["locations"])) {
-            addFilter($_POST["locations"], $id_array, $query_parts, "city", "in");
+        if (isset($_GET["locations"])) {
+            addFilter($_GET["locations"], $id_array, $query_parts, "city", "in");
         }
-        if (isset($_POST["min_rating"])) {
-            addFilter($_POST["min_rating"], $id_array, $query_parts, "rating", ">=");
+        if (isset($_GET["min_rating"])) {
+            addFilter($_GET["min_rating"], $id_array, $query_parts, "rating", ">=");
         }
-        if (isset($_POST["max_rating"])) {
-            addFilter($_POST["max_rating"], $id_array, $query_parts, "rating", "<=");
+        if (isset($_GET["max_rating"])) {
+            addFilter($_GET["max_rating"], $id_array, $query_parts, "rating", "<=");
         }
-        if (isset($_POST["date_from"]) && $_POST["date_from"] != "") {
-            addFilter($_POST["date_from"], $id_array, $query_parts, "time_from", ">=");
+        if (isset($_GET["date_from"]) && $_GET["date_from"] != "") {
+            addFilter($_GET["date_from"], $id_array, $query_parts, "time_from", ">=");
             $date_set = true;
         }
-        if (isset($_POST["date_to"]) && $_POST["date_to"] != "") {
-            addFilter($_POST["date_to"], $id_array, $query_parts, "time_to", "<=");
+        if (isset($_GET["date_to"]) && $_GET["date_to"] != "") {
+            addFilter($_GET["date_to"], $id_array, $query_parts, "time_to", "<=");
             $date_set = true;
         }
-        if(isset($_POST["search"])) {
-            addFilter($_POST["search"], $id_array, $query_parts, "event_name", "LIKE", "%", "%");
+        if(isset($_GET["search"])) {
+            addFilter($_GET["search"], $id_array, $query_parts, "event_name", "LIKE", "%", "%");
         }
         $id_string = implode(" and ", $query_parts);
 

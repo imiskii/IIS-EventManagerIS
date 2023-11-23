@@ -12,7 +12,7 @@ makeHeader();
 ?>
 
 <main>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div class="filter-bar">
             <ul>
                 <li>
