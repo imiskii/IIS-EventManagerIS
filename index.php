@@ -5,14 +5,15 @@ require "src/front-end/components/html-components.php";
 session_start();
 $db = connect_to_db();
 
-updateSession(["categories", "locations", "min_rating", "max_rating", "date_from", "date_to"] );
+updateSession(["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "search"] );
+var_dump($_SESSION);
 makeHead("Eventer");
 makeHeader();
 
 ?>
 
 <main>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div class="filter-bar">
             <ul>
                 <li>
