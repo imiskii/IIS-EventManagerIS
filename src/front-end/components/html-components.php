@@ -489,6 +489,7 @@ function generateEventTickets($eventID)
             $cnt_tt += 1;
         }
 
+        // TODO: implement functionality
         echo '<tr class="tickets-reserved">
                         <td><p>Total: </p></td>
                         <td><p id="total-ticket-'.$cnt_t.'">0.00,-</p></td>
@@ -512,38 +513,15 @@ function generateEventTickets($eventID)
  */
 function makeEventInfo($eventID)
 {
-    ?>
-    <!-- TEST CODE -->
-    <div class="gallery-popup">
-        <div class="gallery-popup-top-bar">
-            <span class="close-btn"><i class="fa-solid fa-xmark"></i></span>
-        </div>
-        <button class="arrow-btn left-arrow"><i class="fa-solid fa-arrow-left"></i></button>
-        <button class="arrow-btn right-arrow"><i class="fa-solid fa-arrow-right"></i></button>
-        <img class="large-image">
-        <h1 class="image-index">1</h1>
-    </div>
-    <div class="icon-container">
-        <img src="1.png">
-        <button class="button-round-filled" onclick="toggleGallery(['1.png', '1.png', '1.png'])">Gallery</button>
-    </div>
-    <div class="description-container">
-        <!-- replace -->
-        <h3>Random Event</h3>
-        <p>Description</p>
-    </div>
-    <!-- END OF TEST CODE -->
-
-    <?php
-
-    /*
     // getEventInfo() return event details so basically 'Event' table
     // also get pohotos
-    $eventInfo = getEventInfo($eventID);
+    //$eventInfo = getEventInfo($eventID);
+    $event = fetch_table_entry("Event", "event_icon, event_name, event_description", ["event_id" => $eventID], "event_id = :event_id");
+    $event_images = fetch_all_table_columns("Photos", "photo_path", ["event_id" => $eventID], "event_id = :event_id");
 
-    ?>
 
-    <div class="gallery-popup">
+    echo '<div class="gallery-popup">
+        <script src="src/front-end/js/toggleGallery.js"></script>
         <div class="gallery-popup-top-bar">
             <span class="close-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
@@ -553,21 +531,19 @@ function makeEventInfo($eventID)
         <h1 class="image-index">1</h1>
     </div>
     <div class="icon-container">
-        <img src="<?php $eventInfo['icon']" ?>>
-        <!-- getEventImages($eventID) return list of event images paths -->
-        <button class="button-round-filled" onclick="toggleGallery(<?php json_encode(getEventImages($eventID)) ?>)">Gallery</button>
+        <img src="'.(isset($event['event_icon']) ? $event['event_icon'] : 'event-icons/default.jpg').'">
+        <button class="button-round-filled" onclick="toggleGallery('.json_encode($event_images).')">Gallery</button>
     </div>
     <div class="description-container">
-        <!-- replace -->
-        <h3><?php $eventInfo['event_name'] ?></h3>
-        <p><?php $eventInfo['description'] ?></p>
-    </div>
+        <h3>'.$event["event_name"].'</h3>
+        <p>'.$event['event_description'].'</p>
+    </div>';
 
-
-    <?php
-    */
 }
 
+function selectUserIcon(&$path) {
+    return isset($path) ? $path : "user-icons/default.webp";
+}
 
 /**
  * Generator for event comments
@@ -579,43 +555,11 @@ function generateComments($eventID)
 {
     date_default_timezone_set('Europe/Prague');
 
-    ?>
-
-    <!-- TEST CODE -->
-    <div class="comment">
-        <div class="comment-header">
-            <span>
-                <div class="profile-icon">
-                    <img src="1.png">
-                </div>
-                <div class="comment-header-text">
-                    <h3>User nick</h3>
-                    <p>date-time</p>
-                </div>
-                <p class="rating-text">4/5</p>
-                <i class="fa-regular fa-star"></i>
-            </span>
-            <div class="comment-header-buttons">
-                <button class="button-round-filled" onclick="toggleEditCommentPopUp(1, 'Comment text')">Edit</button>
-                <form action="">
-                    <input type="hidden" value="">
-                    <button type="submit" class="button-round-filled">Delete</button>
-                </form>
-            </div>
-        </div>
-        <div class="comment-body">
-            <p>Comment text</p>
-        </div>
-    </div>
-    <!-- END OF TEST CODE -->
-
-    <?php
-
-    /*
     // fetch comments + nick and profile image of comment author
-    $allComments = getEventComments($eventID);
+    //$allComments = getEventComments($eventID);
+    $comments = fetch_distinct_table_columns("Comment natural join Account", "*", ["event_id" => $eventID], "event_id = :event_id");
 
-    while ($row = $allComments->fetch_assoc())
+    foreach ($comments as $comment)
     {
         // echo header (profile icon, nick, datetime)
         echo '
@@ -623,25 +567,25 @@ function generateComments($eventID)
             <div class="comment-header">
                 <span>
                     <div class="profile-icon">
-                        <img src="'.$row['profile_icon'].'">
+                        <img src="'.selectUserIcon($comment['profile_icon']).'">
                     </div>
                     <div class="comment-header-text">
-                        <h3>'.$row['nick'].'</h3>
-                        <p>'.$row['datetime'].'</p>
+                        <h3>'.$comment['nick'].'</h3>
+                        <p>'.$comment['time_of_posting'].'</p>
                     </div>
-                    <p class="rating-text">'.$row['rating'].'/5</p>
+                    <p class="rating-text">'.$comment['comment_rating'].'/5</p>
                     <i class="fa-regular fa-star"></i>
                 </span>
         ';
 
-        // if l(ogged user is author of the comment or moderator or administrator)
-        if ()
+        // if logged user is author of the comment or moderator or administrator
+        if (false) // FIXME
         {
             echo '
             <div class="comment-header-buttons">
-                <button class="button-round-filled" onclick="toggleEditCommentPopUp('.$row['comment_id'].', '.ln2br($row['comment_text']).')">Edit</button>
+                <button class="button-round-filled" onclick="toggleEditCommentPopUp('.$comment['comment_id'].', '.nl2br($comment['comment_text']).')">Edit</button>
                 <form action="">
-                    <input type="hidden" value="'.$row['comment_id'].'">
+                    <input type="hidden" value="'.$comment['comment_id'].'">
                     <button type="submit" class="button-round-filled">Delete</button>
                 </form>
             </div>
@@ -652,12 +596,11 @@ function generateComments($eventID)
         echo '
             </div>
             <div class="comment-body">
-                <p>'.ln2br($row['comment_text']).'</p>
+                <p>'.nl2br($comment['comment_text']).'</p>
             </div>
         </div>
         ';
     }
-    */
 }
 
 

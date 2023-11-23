@@ -19,7 +19,7 @@ CREATE TABLE Account (
     nick VARCHAR(128),
     password VARCHAR(128),
     account_type VARCHAR(32),
-    account_photo BLOB,
+    profile_icon VARCHAR(256),
     account_status VARCHAR(64)
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Event (
     event_id INT AUTO_INCREMENT PRIMARY KEY,
     event_name VARCHAR(128),
     event_description MEDIUMTEXT,
-    event_icon BLOB,
+    event_icon VARCHAR(256),
     rating FLOAT,
     time_of_creation DATETIME,
     time_of_last_edit DATETIME,
@@ -134,7 +134,7 @@ CREATE TABLE Registration (
 
 CREATE TABLE Photos (
     photo_id INT AUTO_INCREMENT PRIMARY KEY,
-    photo BLOB,
+    photo_path VARCHAR(256),
 
     event_id INT,
     address_id INT,
@@ -148,10 +148,12 @@ CREATE TABLE Photos (
     REFERENCES Address(address_id) ON DELETE CASCADE
 );
 
+-- FIXME: event rating needs to be computed from comment rating
 CREATE TABLE Comment (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     time_of_posting DATETIME,
     comment_text MEDIUMTEXT,
+    comment_rating FLOAT,
 
     account_id INT,
     super_comment INT,
@@ -171,7 +173,7 @@ CREATE TABLE Comment (
 );
 
 -- Account table
-INSERT INTO Account (email, first_name, last_name, nick, password, account_type, account_photo, account_status)
+INSERT INTO Account (email, first_name, last_name, nick, password, account_type, profile_icon, account_status)
 VALUES
     ('jan.novak@email.cz', 'Jan', 'Novák', 'jannov', 'hashed_password', 'regular', NULL, 'active'),
     ('eva.hodkova@email.cz', 'Eva', 'Hodková', 'evahod', 'hashed_password', 'regular', NULL, 'active'),
@@ -393,15 +395,15 @@ VALUES
 
 
 -- Comment
-INSERT INTO Comment (time_of_posting, comment_text, account_id, super_comment, event_id)
+INSERT INTO Comment (time_of_posting, comment_text, account_id, super_comment, event_id, comment_rating)
 VALUES
-    ('2023-05-02 08:45:00', 'Skvělý koncert, nemohl jsem si ho nechat ujít!', 1, NULL, 1),
-    ('2023-06-16 15:20:00', 'Hamlet byl úžasný, skvělá herecká představení!', 2, NULL, 2),
-    ('2023-07-11 12:30:00', 'Výstava mě opravdu inspiruje, skvělé umění!', 3, NULL, 3),
-    ('2023-08-06 22:10:00', 'Festival elektronické hudby mě dostal do varu, super zážitek!', 4, NULL, 4),
-    ('2023-09-03 16:40:00', 'Workshop byl skvělý, hodně jsem se naučil!', 5, NULL, 5),
-    ('2023-10-21 19:05:00', 'Film "Přežít" byl napínavý, moc dobrý!', 6, NULL, 6),
-    ('2023-11-13 10:55:00', 'Běžecký maratón byl úžasný, skvělá organizace!', 7, NULL, 7),
-    ('2023-12-04 14:25:00', 'Zábavní park byl parádní, atrakce jsou skvělé!', 8, NULL, 8),
-    ('2024-01-19 20:15:00', 'Cestování po Asii bylo dobrodružství, krásné zážitky!', 9, NULL, 9),
-    ('2024-02-09 21:30:00', 'Společenský večírek byl elegantní, skvělá atmosféra!', 10, NULL, 10);
+    ('2023-05-02 08:45:00', 'Skvělý koncert, nemohl jsem si ho nechat ujít!', 1, NULL, 1, 5),
+    ('2023-06-16 15:20:00', 'Hamlet byl úžasný, skvělá herecká představení!', 2, NULL, 2, 4),
+    ('2023-07-11 12:30:00', 'Výstava mě opravdu inspiruje, skvělé umění!', 3, NULL, 3, 3),
+    ('2023-08-06 22:10:00', 'Festival elektronické hudby mě dostal do varu, super zážitek!', 4, NULL, 4, 5),
+    ('2023-09-03 16:40:00', 'Workshop byl skvělý, hodně jsem se naučil!', 5, NULL, 5, 4),
+    ('2023-10-21 19:05:00', 'Film "Přežít" byl napínavý, moc dobrý!', 6, NULL, 6, 4),
+    ('2023-11-13 10:55:00', 'Běžecký maratón byl úžasný, skvělá organizace!', 7, NULL, 7, 4),
+    ('2023-12-04 14:25:00', 'Zábavní park byl parádní, atrakce jsou skvělé!', 8, NULL, 8, 5),
+    ('2024-01-19 20:15:00', 'Cestování po Asii bylo dobrodružství, krásné zážitky!', 9, NULL, 9, 5),
+    ('2024-02-09 21:30:00', 'Společenský večírek byl elegantní, skvělá atmosféra!', 10, NULL, 10, 4);
