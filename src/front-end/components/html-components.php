@@ -24,7 +24,6 @@ function makeHead(string $title)
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo $title ?></title>
-        <!-- change styles hardcoded path -->
         <link rel="stylesheet" href="src/front-end/styles/style.css">
         <script src="https://kit.fontawesome.com/2ff75daa4b.js" crossorigin="anonymous"></script>
         <script src="src/front-end/js/design-scripts.js"></script>
@@ -84,9 +83,8 @@ function makeHeader()
         <div class="top-bar">
             <a id="logo" href="index.php"><p>EVENTER</p></a>
             <div class="search-bar">
-                <!-- action is a function in BG that will search the result -->
-                <form action="" method="get">
-                    <input type="text" placeholder="Search events...">
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="post">
+                    <input type="text" placeholder="Search events..." name="search" <?php getSessionVal("search") ?> >
                     <button><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
@@ -113,7 +111,7 @@ function makeHeader()
                     // TEST CODE
 
                     echo '<div class="profile-icon" onclick="menuToggle();">';
-                    echo "<img src=/iis/1.png>";
+                    echo "<img src=src/front-end/1.png>";
 
                     // echo "<div class='login-btns'>";
                     // echo "<a href='' class='button-sharp-filled'>log in</a>";
@@ -163,62 +161,12 @@ function makeFooter()
     <?php
 }
 
-function addFilter(&$filter_value, array &$id_array, array &$query_parts, $filter_name, $operator) {
-    static $cnt = 0;
-    $filter = is_array($filter_value) ? $filter_value : [$filter_value];
-    for($i = 0; $i < sizeof($filter); $i++, $cnt++) {
-        $id_array[$filter_name . $cnt] = $filter[$i];
-        $filter[$i] = ':' . $filter_name . $cnt;
-    }
-    $values = implode(', ', $filter);
-
-    array_push($query_parts, "$filter_name $operator ($values)");
-}
-
-function generateEventCard(&$event) {
-    echo '<a href="" class="event-card">';
-    echo '<img src="src/front-end/1.png">';
-    echo '<div class="name-rating">';
-    echo '    <h3>' . $event["event_name"] . '</h3>';
-    echo '    <div class="rating">';
-    echo '        <p>' . $event["rating"] . '</p>';
-    echo '        <i class="fa-regular fa-star"></i>';
-    echo '    </div>';
-    echo '</div>';
-    echo '<ul>';
-    echo '    <li><i class="fa-solid fa-calendar-days"></i>' . $event["earliest_date"] . ' - ' . $event["latest_date"] . '</li>';
-    echo '    <li><i class="fa-solid fa-location-dot"></i>' . $event["cities"] .  '</li>';
-    echo '</ul>';
-    echo '</a>';
-}
-
 function dateCZ(string $datetime) {
     return "DATE_FORMAT($datetime, '%d.%m.%Y')";
 }
 
 function dateENG(string $datetime) {
     return "DATE_FORMAT($datetime, '%Y-%m-%d')";
-}
-
-function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
-    $return_id = 'event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, '. dateCZ("MIN(time_from)") .
-    ' AS earliest_date, '. dateCZ("MAX(time_to)"). ' AS latest_date';
-    $table = "Event JOIN Event_instance ON Event.id = Event_instance.event_id JOIN Address ON Event_instance.address_id = Address.id";
-    $group_by = "event_name, rating";
-    if ($restrain_function) {
-        $filter .= " and $restrain_function(NOW() $args) between $restrain_function(time_from $args) and $restrain_function(time_to $args)";
-    }
-    $events = fetch_all_table_columns($table, $return_id, $id_array, $filter, $group_by);
-    if(!empty($events)) {
-        if ($title) {
-            echo '<h2>' . $title . '</h2>';
-        }
-        echo '<div class="card-container">';
-        foreach($events as &$event) {
-            generateEventCard($event);
-        }
-        echo '</div>';
-    }
 }
 
 function updateSession($session_items) {
@@ -256,6 +204,57 @@ function getCheckBoxSessionState($checkbox_name, $value) {
         return "";
     }
 }
+
+function addFilter(&$filter_value, array &$id_array, array &$query_parts, $filter_name, $operator, $front_value_modifier = null, $back_value_modifier = null) {
+    static $cnt = 0;
+    $filter = is_array($filter_value) ? $filter_value : [$filter_value];
+    for($i = 0; $i < sizeof($filter); $i++, $cnt++) {
+        $id_array[$filter_name . $cnt] = $front_value_modifier . $filter[$i] . $back_value_modifier;
+        $filter[$i] = ':' . $filter_name . $cnt;
+    }
+    $values = implode(', ', $filter);
+
+    array_push($query_parts, "$filter_name $operator ($values)");
+}
+
+function generateEventCard(&$event) {
+    echo '<a href="" class="event-card">';
+    echo '<img src="src/front-end/1.png">';
+    echo '<div class="name-rating">';
+    echo '    <h3>' . $event["event_name"] . '</h3>';
+    echo '    <div class="rating">';
+    echo '        <p>' . $event["rating"] . '</p>';
+    echo '        <i class="fa-regular fa-star"></i>';
+    echo '    </div>';
+    echo '</div>';
+    echo '<ul>';
+    echo '    <li><i class="fa-solid fa-calendar-days"></i>' . $event["earliest_date"] . ' - ' . $event["latest_date"] . '</li>';
+    echo '    <li><i class="fa-solid fa-location-dot"></i>' . $event["cities"] .  '</li>';
+    echo '</ul>';
+    echo '</a>';
+}
+
+function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
+    $return_id = 'event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, '. dateCZ("MIN(time_from)") .
+    ' AS earliest_date, '. dateCZ("MAX(time_to)"). ' AS latest_date';
+    $table = "Event JOIN Event_instance ON Event.id = Event_instance.event_id JOIN Address ON Event_instance.address_id = Address.id";
+    $group_by = "event_name, rating";
+    if ($restrain_function) {
+        $filter .= " and $restrain_function(NOW() $args) between $restrain_function(time_from $args) and $restrain_function(time_to $args)";
+    }
+    $events = fetch_all_table_columns($table, $return_id, $id_array, $filter, $group_by);
+    if(!empty($events)) {
+        if ($title) {
+            echo '<h2>' . $title . '</h2>';
+        }
+        echo '<div class="card-container">';
+        foreach($events as &$event) {
+            generateEventCard($event);
+        }
+        echo '</div>';
+    }
+}
+
 
 /**
  * Function generates Event Cards
@@ -302,6 +301,9 @@ function generateEventCards(string $card_type="")
         if (isset($_POST["date_to"]) && $_POST["date_to"] != "") {
             addFilter($_POST["date_to"], $id_array, $query_parts, "time_to", "<=");
             $date_set = true;
+        }
+        if(isset($_POST["search"])) {
+            addFilter($_POST["search"], $id_array, $query_parts, "event_name", "LIKE", "%", "%");
         }
         $id_string = implode(" and ", $query_parts);
 
