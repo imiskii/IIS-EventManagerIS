@@ -189,8 +189,7 @@ function getSessionVal($value, $index = null, $default = null) {
         } else {
             return;
         }
-    }
-    if(is_array($value)) {
+    } else if(is_array($value)) {
         echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
     } else {
         echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
@@ -371,7 +370,14 @@ function generateCategoryTree($parent_category = null)
     foreach ($categories as $category)
     {
         echo '<li>';
-        echo '<input type="checkbox" name="categories[]" value="' . $category["category_name"] . '"' . getCheckBoxSessionState("categories", $category["category_name"]) . '>';
+        echo '<input
+                type="checkbox"
+                name="categories[]"
+                value="' . $category["category_name"] .
+                '" parent="' . $parent_category . '"' .
+                ' onchange="updateChildCheckboxes(this)"' .
+                getCheckBoxSessionState("categories", $category["category_name"]) .
+            '>';
         echo $category["category_name"];
         generateCategoryTree($category["category_name"]);
         echo '</li>';
