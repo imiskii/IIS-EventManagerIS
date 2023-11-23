@@ -91,38 +91,21 @@ function makeHeader()
             <!-- src is profile icon-->
             <div class="profile">
                 <?php
-                    /*
-                    if (user is logged in )
+                    if (isset($_SESSION["USER"]))
                     {
                         echo '<div class="profile-icon" onclick="menuToggle();">';
-                        echo "<img src='profil icon'>";
+                        echo '<img src="'.selectUserIcon($_SESSION["USER"]["user_icon"]).'">';
                         echo "</div>";
                         generateProfilMenu();
                     }
                     else
                     {
                         echo "<div class='login-btns'>";
-                        echo "<a href='' class='button-sharp-filled'>log in</a>";
-                        echo "<a href='' class='button-sharp-filled'>sign in</a>";
+                        echo "<a href='login.php' class='button-sharp-filled'>log in</a>";
+                        echo "<a href='' class='button-sharp-filled'>sign up</a>";
                         echo "</div>";
                     }
-                    */
-
-                    // TEST CODE
-
-                    echo '<div class="profile-icon" onclick="menuToggle();">';
-                    echo "<img src=src/front-end/1.png>";
-
-                    // echo "<div class='login-btns'>";
-                    // echo "<a href='' class='button-sharp-filled'>log in</a>";
-                    // echo "<a href='' class='button-sharp-filled'>sign in</a>";
-
-                    echo "</div>";
-
-                    // END OF TEST COED
-
                 ?>
-
                 <div class="profile-menu">
                     <h3>Name Surname<br><span>Normall user</span></h3>
                     <ul>

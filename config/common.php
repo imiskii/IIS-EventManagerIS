@@ -1453,26 +1453,25 @@ function extract_id(&$data, $table)
     return $id;
 }
 
-function session_handler($db, $table, $data, $account_type)
+function session_handler($table, $data, $account_type)
 {
     if ($table == "Login" && $account_type == "not_logged_in") {
-        $query = "SELECT id, password, account_type FROM Account WHERE email = :email";
+        $account = fetch_table_entry("Account", "*", ["email" => $data['email']], "email = :email");
 
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':email', $data['email']);
-        $stmt->execute();
-        $stored_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$stored_data){
+        if (!$account){
             sendResponse(401, "No user with provided email exists.\n");
             return;
         }
 
         // if (password_verify($data['pwd'], $stored_data['pwd'])) { // right now we don't hash passwords
-        if ($stored_data['password'] == $data['password']){
-            $_SESSION['account_type'] = $stored_data['account_type'];
-            $_SESSION['id'] = $stored_data['id'];
-            sendResponse(200, "Log in successfull.\n");
+        if ($account['password'] == $data['password']){
+            $_SESSION["USER"] = [];
+            foreach($account as $attribute => $value) {
+                $_SESSION["USER"][$attribute] = $value;
+            }
+            // FIXME relative path
+            header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : "~xlazik00/IIS/index.php"));
         }
         else{
             sendResponse(401, "Log in failed: No email-password configuration found or valid.\n");

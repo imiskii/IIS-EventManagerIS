@@ -9,7 +9,10 @@
 require_once "config/common.php";
 require "src/front-end/components/html-components.php";
 
+
 session_start();
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+
 $db = connect_to_db();
 
 makeHead("Eventer | Event Detail");
