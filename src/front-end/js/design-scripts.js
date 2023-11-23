@@ -110,33 +110,6 @@ function toggleTicketDetail(ticketID)
 }
 
 
-/**
- * Function calculate final price of registration in choosen ticket type
- *
- * @param {*} ticketID id of ticket component
- * @param {*} ticketTypesNumber number of ticket types
- */
-function calcTicketsVal(ticketID, ticketTypesNumber)
-{
-    var totalValue = 0;
-    for (var i = 1; i <= ticketTypesNumber; i++)
-    {
-        var quantityInput = document.getElementById(`ticket-${ticketID}-quantity-${i}`);
-        var quantity = parseInt(quantityInput.value);
-        var price = parseFloat(document.getElementById(`ticket-${ticketID}-price-${i}`).textContent.slice(1));
-
-        if (quantity < 0 || isNaN(quantity))
-        {
-            quantity = 0;
-            quantityInput.value = 0;
-        }
-
-        totalValue += (price * quantity);
-    }
-
-    var totalPriceElement = document.getElementById(`total-ticket-${ticketID}`);
-    totalPriceElement.textContent = `$${totalValue}`;
-}
 
 
 /**
