@@ -1365,6 +1365,13 @@ function fetch_table_column($table, $return_id, $id_array, $id_string)
     return $result ? $result[$return_id] : null;
 }
 
+function fetch_table_entry($table, $return_id, $id_array, $id_string) {
+    $query = "SELECT $return_id FROM $table WHERE $id_string";
+    $stmt = get_pdo_statement($query, $id_array);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
 function fetch_table_columns($query, $id_array)
 {
     $stmt = get_pdo_statement($query, $id_array);
@@ -1373,7 +1380,7 @@ function fetch_table_columns($query, $id_array)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetch_all_table_columns($table, $return_id, $id_array, $id_string, $group_by) {
+function fetch_all_table_columns($table, $return_id, $id_array, $id_string, $group_by = null) {
     $query = "SELECT $return_id FROM $table" . ($id_string ? " WHERE $id_string" : "") . ($group_by ? " GROUP BY $group_by" : "");
     return fetch_table_columns($query, $id_array);
 }

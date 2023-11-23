@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file index.php
+ * @brief index
+ * @author Michal Ľaš (xlasmi00)
+ * @date 05.10.2023
+ */
+
 require_once 'config/common.php';
 require_once "src/front-end/components/html-components.php";
 
@@ -33,7 +40,6 @@ makeHeader();
                             <?php
                             generateLocations();
                             ?>
-
                         </ul>
                     </div>
                 </li>
@@ -50,7 +56,7 @@ makeHeader();
                             <li>
                                 <div class="rating-input">
                                     <label for="max-r">Max rating</label>
-                                    <input type="number" id="max-r" pattern="[0-5]" <?php getSessionVal("max_rating", null, 5) ?> oninput="console.log('function called')" name="max_rating">
+                                    <input type="number" id="max-r" pattern="[0-5]" <?php getSessionVal("max_rating", null, 5) ?> oninput="checkRatingFilterInput()" name="max_rating">
                                 </div>
                             </li>
                         </ul>
@@ -76,15 +82,11 @@ makeHeader();
             </ul>
         </div>
     </form>
-
-
     <?php
-        generateEventCards();
+    generateEventCards();
     ?>
 </main>
 
 <?php
-
 makeFooter();
-
 ?>

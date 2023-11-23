@@ -15,12 +15,14 @@ $db = connect_to_db();
 makeHead("Eventer | Event Detail");
 makeHeader();
 
+//FIXME: Handle missing or wrong event ID
+
 ?>
 
 <main class="event-detail-main-container">
     <div class="info-container">
         <!-- Replace null with eventID !!! -->
-        <?php makeEventInfo(null) ?>
+        <?php makeEventInfo($_GET["event_id"]) ?>
     </div>
     <div class="part-lable">
         <h2>Tickets</h2>
@@ -35,7 +37,6 @@ makeHeader();
         ?>
     </div>
     <div class="tickets-container">
-        <!-- FIXME: define default behavior for no ticket -->
         <script src="src/front-end/js/calcTicketsVal.js"></script>
         <?php generateEventTickets($_GET["event_id"]) ?>
     </div>
@@ -70,8 +71,7 @@ makeHeader();
                     <button type="submit" class="button-round-filled-green">Submit Edit</button>
                 </form>
             </div>
-            <!-- Replace null with eventID !!! -->
-            <?php generateComments(null) ?>
+            <?php generateComments($_GET["event_id"]) ?>
         </div>
     </div>
 </main>
