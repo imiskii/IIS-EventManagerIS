@@ -6,8 +6,11 @@
  * @date 06.10.2023
  */
 
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
 
-require "components/html-components.php";
+session_start();
+$db = connect_to_db();
 
 makeHead("Eventer | Event Detail");
 makeHeader();
@@ -22,7 +25,7 @@ makeHeader();
     <div class="part-lable">
         <h2>Tickets</h2>
         <?php
-        /* 
+        /*
         if(user is event owner || moderator || administrator)
         {
             // link to ticket-manage page
@@ -32,8 +35,9 @@ makeHeader();
         ?>
     </div>
     <div class="tickets-container">
-        <!-- Replace null with eventID !!! -->
-        <?php generateEventTickets(null) ?>
+        <!-- FIXME: define default behavior for no ticket -->
+        <script src="src/front-end/js/calcTicketsVal.js"></script>
+        <?php generateEventTickets($_GET["event_id"]) ?>
     </div>
     <div class="part-lable">
         <h2>Comments</h2>
@@ -77,4 +81,3 @@ makeHeader();
 makeFooter();
 
 ?>
-

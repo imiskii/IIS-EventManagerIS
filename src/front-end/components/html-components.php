@@ -217,7 +217,7 @@ function addFilter(&$filter_value, array &$id_array, array &$query_parts, $filte
 }
 
 function generateEventCard(&$event) {
-    echo '<a href="" class="event-card">';
+    echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card">';
     echo '<img src="src/front-end/1.png">';
     echo '<div class="name-rating">';
     echo '    <h3>' . $event["event_name"] . '</h3>';
@@ -234,12 +234,12 @@ function generateEventCard(&$event) {
 }
 
 function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
-    $return_id = 'event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, '. dateCZ("MIN(time_from)") .
-    ' AS earliest_date, '. dateCZ("MAX(time_to)"). ' AS latest_date';
-    $table = "Event JOIN Event_instance ON Event.id = Event_instance.event_id JOIN Address ON Event_instance.address_id = Address.id";
-    $group_by = "event_name, rating";
+    $return_id = 'event_id, event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
+    $table = "Event_instance NATURAL JOIN Event JOIN Address ON Event_instance.address_id = Address.address_id"; //TODO: verify
+    $group_by = "event_id, event_name, rating";
     if ($restrain_function) {
-        $filter .= " and $restrain_function(NOW() $args) between $restrain_function(time_from $args) and $restrain_function(time_to $args)";
+        $filter .= ($filter ? " and " : "");
+        $filter .= "$restrain_function(NOW() $args) between $restrain_function(date_from $args) and $restrain_function(date_to $args)";
     }
     $events = fetch_all_table_columns($table, $return_id, $id_array, $filter, $group_by);
     if(!empty($events)) {
@@ -294,27 +294,28 @@ function generateEventCards(string $card_type="")
             addFilter($_GET["max_rating"], $id_array, $query_parts, "rating", "<=");
         }
         if (isset($_GET["date_from"]) && $_GET["date_from"] != "") {
-            addFilter($_GET["date_from"], $id_array, $query_parts, "time_from", ">=");
+            addFilter($_GET["date_from"], $id_array, $query_parts, "date_from", ">=");
             $date_set = true;
         }
         if (isset($_GET["date_to"]) && $_GET["date_to"] != "") {
-            addFilter($_GET["date_to"], $id_array, $query_parts, "time_to", "<=");
+            addFilter($_GET["date_to"], $id_array, $query_parts, "date_to", "<=");
             $date_set = true;
         }
         if(isset($_GET["search"])) {
             addFilter($_GET["search"], $id_array, $query_parts, "event_name", "LIKE", "%", "%");
         }
-        $id_string = implode(" and ", $query_parts);
+    }
 
-        if($date_set) {
-            generateEventCardSet($id_array, $id_string);
-        } else {
-            generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
-            generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
-            generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
-            generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
-            generateEventCardSet($id_array, $id_string, null, null, "All");
-        }
+    $id_string = implode(" and ", $query_parts);
+
+    if($date_set) {
+        generateEventCardSet($id_array, $id_string);
+    } else {
+        generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
+        generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
+        generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
+        generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
+        generateEventCardSet($id_array, $id_string, null, null, "All");
     }
 }
 
@@ -445,136 +446,61 @@ function generateLocationSelecetOptions()
  */
 function generateEventTickets($eventID)
 {
-    ?>
-    <!-- TEST CODE -->
-    <div class="ticket">
-        <div class="ticket-ticket">
-            <div class="ticket-info">
-                <h3>Event name</h3>
-                <p>
-                    date from - date to <br> Time from - Time to <br> Location <br>
-                </p>
-            </div>
-            <button ticket-arrow-button="ticket-1" class="arrow-button" onclick="toggleTicketDetail('ticket-1')">▼</button>
-        </div>
-        <div class="ticket-types" id="ticket-1">
-            <table>
-                <tr>
-                    <td>Normal ticket</td>
-                    <td id="ticket-1-price-1">$32</td>
-                    <td>200 left</td>
-                    <td class="row-10"><input type="number" min="0" value="0" id="ticket-1-quantity-1" oninput="calcTicketsVal(1,2)"></td>
-                </tr>
-                <tr>
-                    <td>VIP ticket</td>
-                    <td id="ticket-1-price-2">$52</td>
-                    <td>50 left</td>
-                    <td class="row-10"><input type="number" min="0" value="0" id="ticket-1-quantity-2" oninput="calcTicketsVal(1,2)"></td>
-                </tr>
-                <tr class="tickets-reserved">
-                    <td><p>Total: </p></td>
-                    <td><p id="total-ticket-1">$0</p></td>
-                    <td></td>
-                    <td class="row-10"><button class="button-round-empty">Reserve</button></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="ticket">
-        <div class="ticket-ticket">
-            <div class="ticket-info">
-                <h3>Event name</h3>
-                <p>
-                    date from - date to <br> Time from - Time to <br> Location <br>
-                </p>
-            </div>
-            <button ticket-arrow-button="ticket-2" class="arrow-button" onclick="toggleTicketDetail('ticket-2')">▼</button>
-        </div>
-        <div class="ticket-types" id="ticket-2">
-            <table>
-                <tr>
-                    <td>Normal ticket</td>
-                    <td id="ticket-2-price-1">$32</td>
-                    <td>200 left</td>
-                    <td class="row-10"><input type="number" min="0" value="0" id="ticket-2-quantity-1" oninput="calcTicketsVal(2,2)"></td>
-                </tr>
-                <tr>
-                    <td>VIP ticket</td>
-                    <td id="ticket-2-price-2">$52</td>
-                    <td>50 left</td>
-                    <td class="row-10"><input type="number" min="0" value="0" id="ticket-2-quantity-2" oninput="calcTicketsVal(2,2)"></td>
-                </tr>
-                <tr class="tickets-reserved">
-                    <td><p>Total: </p></td>
-                    <td><p id="total-ticket-2">$0</p></td>
-                    <td></td>
-                    <td class="row-10"><button class="button-round-empty">Reserve</button></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <!-- END OF TEST CODE -->
-    <?php
-
-    /*
     // getEventTickets return basically 'Event instance' table for choosen event
     // but there also has to be 'event_name', and some address info so maybe consider join it with 'Event' and 'Address' table
-    $eventTickets = getEventTickets($eventID);
-
+    $tables_joined = "Event e NATURAL JOIN Event_instance ei JOIN Address a ON ei.address_id = a.address_id";
+    $result_id = "instance_id, event_name, date_from, date_to, time_from, time_to, country, city, street_number";
+    $event_instances = fetch_all_table_columns($tables_joined, $result_id, ["event_id" => $eventID] ,"event_id = :event_id", null);
+    //var_dump($event_instances);
     $cnt_t = 1;  // counter for tickets
-
-    foreach ($eventTickets as $ticket)
+    foreach ($event_instances as $event_instance)
     {
-        ?>
-        <div class="ticket">
+        echo '<div class="ticket">
             <div class="ticket-ticket">
                 <div class="ticket-info">
-                    <h3><?php $ticket['event_name'] ?></h3>
+                    <h3>'.$event_instance['event_name'].'</h3>
                     <p>
-                        <?php $ticket['date_from'] . '-' . $ticket['date_to'] . '<br>' . $ticket['time_from'] . '-' . $ticket['time_to'] . '<br>' . $ticket['Country'] . ', ' . $ticket['city'] . ', ' . $ticket['street_number']?>;
+                        od: '.$event_instance['date_from'] . ' ' . $event_instance['time_from'] . '<br>do: ' . $event_instance['date_to'] . ' ' . $event_instance['time_to'] . '<br>' . $event_instance['country'] . ', ' . $event_instance['city'] . ', ' . $event_instance['street_number'] .'
                     </p>
                 </div>
-                <button ticket-arrow-button="ticket-<?php $cnt_t ?>" class="arrow-button" onclick="toggleTicketDetail('ticket-<?php $cnt_t ?>')">▼</button>
+                <button ticket-arrow-button="ticket-'.$cnt_t.'" class="arrow-button" onclick="toggleTicketDetail(\'ticket-'.$cnt_t.'\')">▼</button>
             </div>
-            <div class="ticket-types" id="ticket-<?php $cnt_t ?>">
-                <table>
-        <?php
+            <div class="ticket-types" id="ticket-'.$cnt_t.'">
+        <table>';
+
 
         // getEventTicketTypes return array of Entrence fees for choosen event and location
         // adjust it based on how the final database will looks like
-        $ticketTypes = getEventTicketTypes($eventID, $ticket['addressID']);
+        $result_id = "fee_name, max_tickets, sold_tickets, cost";
+        $entrance_fees = fetch_all_table_columns("Entrance_fee", $result_id, ["instance_id" => $event_instance['instance_id']] ,"instance_id = :instance_id", null);
 
         $cnt_tt = 1; // counter fot tickets types
-        $num_tt = count($ticketTypes);
+        $num_tt = count($entrance_fees);
 
-        foreach ($ticketTypes as $type)
+        foreach ($entrance_fees as $fee)
         {
             echo '<tr>';
-            echo '<td>' . $type['fee_name'] . '</td>';
-            echo '<td id="ticket-'.$cnt_t.'-price-'.$cnt_tt.'">' . $type['cost'] . '</td>';
-            echo '<td>' . $type['max_tickets'] - $type['sold_tickets'] . ' left</td>';
+            echo '<td>' . $fee['fee_name'] . '</td>';
+            echo '<td id="ticket-'.$cnt_t.'-price-'.$cnt_tt.'">' . $fee['cost'] . ',-</td>';
+            echo '<td>' . $fee['max_tickets'] - $fee['sold_tickets'] . ' left</td>';
             echo '<td class="row-10"><input type="number" min="0" value="0" id="ticket-'.$cnt_t.'-quantity-'.$cnt_tt.'" oninput="calcTicketsVal('.$cnt_t.','.$num_tt.')"></td>';
             echo '</tr>';
 
             $cnt_tt += 1;
         }
 
-        ?>
-                <tr class="tickets-reserved">
+        echo '<tr class="tickets-reserved">
                         <td><p>Total: </p></td>
-                        <td><p id="total-ticket-<?php $cnt_t ?>">$0</p></td>
+                        <td><p id="total-ticket-'.$cnt_t.'">0.00,-</p></td>
                         <td></td>
                         <td class="row-10"><button class="button-round-empty">Reserve</button></td>
                 </tr>
                 </table>
             </div>
-        </div>
+        </div>';
 
-        <?php
-
-        $cnt_t += 1;
+        $cnt_t++;
     }
-    */
 }
 
 

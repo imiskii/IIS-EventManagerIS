@@ -1,6 +1,6 @@
 <?php
-require 'config/common.php';
-require "src/front-end/components/html-components.php";
+require_once 'config/common.php';
+require_once "src/front-end/components/html-components.php";
 
 session_start();
 $db = connect_to_db();
