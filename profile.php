@@ -95,11 +95,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     </div>
     <div class="profile-events">
         <div class="card-container">
-        <?php
-            /* generateEventCards(getEventCardsByUser($userID), "owner"); */
-            $fill = array("a" => "bar", "b" => "foo"); // tmp code
-            //generateEventCards($fill, "owner"); FIXME
-        ?>
+        <?php generateEventCards("owner", getUserAttribute()); ?>
         </div>
     </div>
 </main>

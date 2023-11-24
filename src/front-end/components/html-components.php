@@ -187,21 +187,9 @@ function getCheckBoxSessionState($checkbox_name, $value) {
     }
 }
 
-function addFilter(&$filter_value, array &$id_array, array &$query_parts, $filter_name, $operator, $front_value_modifier = null, $back_value_modifier = null) {
-    static $cnt = 0;
-    $filter = is_array($filter_value) ? $filter_value : [$filter_value];
-    for($i = 0; $i < sizeof($filter); $i++, $cnt++) {
-        $id_array[$filter_name . $cnt] = $front_value_modifier . $filter[$i] . $back_value_modifier;
-        $filter[$i] = ':' . $filter_name . $cnt;
-    }
-    $values = implode(', ', $filter);
-
-    array_push($query_parts, "$filter_name $operator ($values)");
-}
-
-function generateEventCard(&$event) {
-    echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card">';
-    echo '<img src="src/front-end/1.png">';
+function generateEventCard(&$event, $card_type = null) {
+    echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card'.$card_type.'">';
+    echo '<img src="'.selectEventIcon($event['event_icon']).'">';
     echo '<div class="name-rating">';
     echo '    <h3>' . $event["event_name"] . '</h3>';
     echo '    <div class="rating">';
@@ -216,28 +204,6 @@ function generateEventCard(&$event) {
     echo '</a>';
 }
 
-function generateEventCardSet($id_array, $filter, $restrain_function = null, $args = null, $title = null) {
-    $return_id = 'event_id, event_name, rating, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
-    $table = "Event_instance NATURAL JOIN Event JOIN Address ON Event_instance.address_id = Address.address_id"; //TODO: verify
-    $group_by = "event_id, event_name, rating";
-    if ($restrain_function) {
-        $filter .= ($filter ? " and " : "");
-        $filter .= "$restrain_function(NOW() $args) between $restrain_function(date_from $args) and $restrain_function(date_to $args)";
-    }
-    $events = fetch_all_table_columns($table, $return_id, $id_array, $filter, $group_by);
-    if(!empty($events)) {
-        if ($title) {
-            echo '<h2>' . $title . '</h2>';
-        }
-        echo '<div class="card-container">';
-        foreach($events as &$event) {
-            generateEventCard($event);
-        }
-        echo '</div>';
-    }
-}
-
-
 /**
  * Function generates Event Cards
  *
@@ -246,62 +212,36 @@ function generateEventCardSet($id_array, $filter, $restrain_function = null, $ar
  * @return void
  *
  */
-function generateEventCards(string $card_type="")
+function generateEventCards(string $card_type=null, $account_id = null)
 {
-    // if ($card_type != "" || $card_type != "owner")
-    // {
-    //     $card_type = "";
-    // }
-
-    // if ($card_type != "")
-    // {
-    //     $card_type = "-" . $card_type;
-    // }
-    $query_parts = [];
-    $id_array = [];
-    $date_set = false;
-
-    // Check if the form has been submitted
-    if ($_SERVER["REQUEST_METHOD"] == "GET") {
-        // Check if the "categories" array is set in the POST data
-        if (isset($_GET["categories"])) {
-            addFilter($_GET["categories"], $id_array, $query_parts, "category_name", "in");
-        }
-        if (isset($_GET["locations"])) {
-            addFilter($_GET["locations"], $id_array, $query_parts, "city", "in");
-        }
-        if (isset($_GET["min_rating"])) {
-            addFilter($_GET["min_rating"], $id_array, $query_parts, "rating", ">=");
-        }
-        if (isset($_GET["max_rating"])) {
-            addFilter($_GET["max_rating"], $id_array, $query_parts, "rating", "<=");
-        }
-        if (isset($_GET["date_from"]) && $_GET["date_from"] != "") {
-            addFilter($_GET["date_from"], $id_array, $query_parts, "date_from", ">=");
-            $date_set = true;
-        }
-        if (isset($_GET["date_to"]) && $_GET["date_to"] != "") {
-            addFilter($_GET["date_to"], $id_array, $query_parts, "date_to", "<=");
-            $date_set = true;
-        }
-        if(isset($_GET["search"])) {
-            addFilter($_GET["search"], $id_array, $query_parts, "event_name", "LIKE", "%", "%");
-        }
+    if($card_type) {
+        $card_type = '-'.$card_type;
     }
+    $events = getEvents($account_id);
 
-    $id_string = implode(" and ", $query_parts);
-
-    if($date_set) {
-        generateEventCardSet($id_array, $id_string);
-    } else {
-        generateEventCardSet($id_array, $id_string, "DATE", null, "Today");
-        generateEventCardSet($id_array, $id_string, "YEARWEEK", null, "This Week");
-        generateEventCardSet($id_array, $id_string, "DATE_FORMAT", ", '%Y-%m'", "This Month");
-        generateEventCardSet($id_array, $id_string, "YEAR", null, "This Year");
-        generateEventCardSet($id_array, $id_string, null, null, "All");
+    foreach($events as &$event) {
+        generateEventCard($event, $card_type);
     }
 }
 
+function generateEventCardsbyDate() {
+    $events = getEvents();
+    $periods = sortEventsByPeriods($events);
+
+    for($i = 0; $i < 5; $i++) {
+        if(!isset($periods[$i])) {
+            continue;
+        }
+        echo "<h2>$periods[$i]</h2>";
+        echo '<div class="card-container">';
+        foreach($events as &$event) {
+            if(isset($event[$periods[$i]])) {
+                generateEventCard($event);
+            }
+        }
+        echo '</div>';
+    }
+}
 
 /**
  * Function generates list of locations
@@ -489,6 +429,13 @@ function generateEventTickets($eventID)
     }
 }
 
+function selectUserIcon(&$path) {
+    return isset($path) ? $path : "user-icons/default.webp";
+}
+
+function selectEventIcon(&$path) {
+    return isset($path) ? $path : "event-icons/default.jpg";
+}
 
 /**
  * Make information section for event
@@ -516,7 +463,7 @@ function makeEventInfo($eventID)
         <h1 class="image-index">1</h1>
     </div>
     <div class="icon-container">
-        <img src="'.(isset($event['event_icon']) ? $event['event_icon'] : 'event-icons/default.jpg').'">
+        <img src="'.selectEventIcon($event['event_icon']).'">
         <button class="button-round-filled" onclick="toggleGallery('.json_encode($event_images).')">Gallery</button>
     </div>
     <div class="description-container">
@@ -524,10 +471,6 @@ function makeEventInfo($eventID)
         <p>'.$event['event_description'].'</p>
     </div>';
 
-}
-
-function selectUserIcon(&$path) {
-    return isset($path) ? $path : "user-icons/default.webp";
 }
 
 /**
