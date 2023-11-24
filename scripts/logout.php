@@ -9,5 +9,5 @@ if (isset($_SESSION["USER"])) {
     unset($_SESSION["USER"]);
 }
 
-redirect('../index.php');
+redirectForce('../index.php');
 ?>

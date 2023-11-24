@@ -176,16 +176,16 @@ CREATE TABLE Comment (
 -- Account table
 INSERT INTO Account (email, first_name, last_name, nick, password, account_type, profile_icon, account_status)
 VALUES
-    ('jan.novak@email.cz', 'Jan', 'Novák', 'jannov', 'hashed_password', 'regular', NULL, 'active'),
-    ('eva.hodkova@email.cz', 'Eva', 'Hodková', 'evahod', 'hashed_password', 'regular', NULL, 'active'),
-    ('petr.kral@email.cz', 'Petr', 'Král', 'petrkra', 'hashed_password', 'regular', NULL, 'active'),
-    ('katerina.svobodova@email.cz', 'Kateřina', 'Svobodová', 'katisvo', 'hashed_password', 'regular', NULL, 'active'),
-    ('marek.jelinek@email.cz', 'Marek', 'Jelínek', 'marejel', 'hashed_password', 'regular', NULL, 'active'),
-    ('martina.hermanova@email.cz', 'Martina', 'Hermanová', 'marther', 'hashed_password', 'regular', NULL, 'active'),
-    ('ondrej.nemec@email.cz', 'Ondřej', 'Němec', 'ondrnem', 'hashed_password', 'regular', NULL, 'active'),
-    ('veronika.havlickova@email.cz', 'Veronika', 'Havlíčková', 'verhav', 'hashed_password', 'regular', NULL, 'active'),
-    ('adam.dolezal@email.cz', 'Adam', 'Doležal', 'adadol', 'hashed_password', 'regular', NULL, 'active'),
-    ('nikola.bartosova@email.cz', 'Nikola', 'Bartošová', 'nikbart', 'hashed_password', 'regular', NULL, 'active');
+    ('jan.novak@email.cz', 'Jan', 'Novák', 'jannov', 'hashed_password', 'Regular', NULL, 'active'),
+    ('eva.hodkova@email.cz', 'Eva', 'Hodková', 'evahod', 'hashed_password', 'Administrator', NULL, 'active'),
+    ('petr.kral@email.cz', 'Petr', 'Král', 'petrkra', 'hashed_password', 'Regular', NULL, 'active'),
+    ('katerina.svobodova@email.cz', 'Kateřina', 'Svobodová', 'katisvo', 'hashed_password', 'Regular', NULL, 'active'),
+    ('marek.jelinek@email.cz', 'Marek', 'Jelínek', 'marejel', 'hashed_password', 'Regular', NULL, 'active'),
+    ('martina.hermanova@email.cz', 'Martina', 'Hermanová', 'marther', 'hashed_password', 'Regular', NULL, 'active'),
+    ('ondrej.nemec@email.cz', 'Ondřej', 'Němec', 'ondrnem', 'hashed_password', 'Regular', NULL, 'active'),
+    ('veronika.havlickova@email.cz', 'Veronika', 'Havlíčková', 'verhav', 'hashed_password', 'Regular', NULL, 'active'),
+    ('adam.dolezal@email.cz', 'Adam', 'Doležal', 'adadol', 'hashed_password', 'Regular', NULL, 'active'),
+    ('nikola.bartosova@email.cz', 'Nikola', 'Bartošová', 'nikbart', 'hashed_password', 'Regular', NULL, 'active');
 
 -- Category table
 INSERT INTO Category (category_name, category_description, time_of_creation, category_status, super_category, account_id)

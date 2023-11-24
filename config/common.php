@@ -251,7 +251,7 @@ function fetch_valid_column_filters($table)
 function fetch_method_tables_for_account_type($account_type, $method)
 {
     switch ($account_type) {
-        case "administrator":
+        case "Administrator":
             switch ($method){
                 case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
@@ -264,7 +264,7 @@ function fetch_method_tables_for_account_type($account_type, $method)
                 default:
                     return [];
             }
-        case "moderator":
+        case "Moderator":
             switch ($method){
                 case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
@@ -277,7 +277,7 @@ function fetch_method_tables_for_account_type($account_type, $method)
                 default:
                     return [];
             }
-        case "user":
+        case "Regular":
             switch ($method){
                 case "GET":
                     return ["Account", "Category", "Event", "Address", "Event_Instance", "Entrance_fee", "Registration", "Photos", "Comment"];
@@ -425,7 +425,7 @@ function item_exists($db, $table, $id_string, $id_array)
 function fetch_valid_columns($account_type, $method, $table)
 {
     switch ($account_type) {
-        case "administrator":
+        case "Administrator":
             switch ($method) {
                 case "POST":
                     switch ($table){
@@ -808,7 +808,7 @@ function fetch_valid_columns($account_type, $method, $table)
                 default:
                     sendResponse(500, "Back-End Fail, fetch_valid function failed on method selection.\n");
             }
-        case "moderator":
+        case "Moderator":
             switch ($method) {
                 case "PUT":
                     switch ($table){
@@ -913,7 +913,7 @@ function fetch_valid_columns($account_type, $method, $table)
                 default:
                     sendResponse(500, "Back-End Fail, fetch_valid function failed on method selection.\n");
             }
-        case "user":
+        case "Regular":
             switch ($method) {
                 case "POST":
                     switch ($table){
@@ -949,11 +949,11 @@ function fetch_valid_columns($account_type, $method, $table)
                             ];
                         case "Address":
                             return $allowed_filters_for_Address = [
-                                'Country' => function ($value) {
+                                'country' => function ($value) {
                                     return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
                                 },
                                 'zip' => function ($value) {
-                                    return filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
+                                    return empty($value) || filter_var($value, FILTER_VALIDATE_INT) !== false && $value >= 0;
                                 },
                                 'city' => function ($value) {
                                     return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
@@ -965,10 +965,10 @@ function fetch_valid_columns($account_type, $method, $table)
                                     return preg_match('/^[a-zA-Z0-9\s\/\-\_]+$/', $value) && strlen($value) <= 128;
                                 },
                                 'state' => function ($value) {
-                                    return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
+                                    return empty($value) || preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
                                 },
-                                'description' => function ($value) {
-                                    return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
+                                'address_description' => function ($value) {
+                                    return empty($value) || is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                                 },
                             ];
                         case "Event_Instance":
@@ -1365,7 +1365,6 @@ function insert_into_table($table, array &$id_array) {
     $values = implode(', ', $values_array);
     $columns = implode(', ', $columns_array);
     $query = "INSERT INTO $table ($columns) VALUES ($values)";
-    echo $query;
     return get_pdo_statement($query, $id_array);
 }
 
@@ -1513,6 +1512,11 @@ function redirect(string $path) {
     exit;
 }
 
+function redirectForce(string $path) {
+    header("Location: $path");
+    exit;
+}
+
 function getUserAttribute($attribute = 'account_id') {
     return $_SESSION["USER"][$attribute];
 }
@@ -1563,6 +1567,30 @@ function addInFilter(array &$id_array, array &$query_parts, array $filter_array,
     $values = implode(', ', $filter_array);
     array_push($query_parts, "$filter_owner.$filter_name in ($values)");
 }
+
+
+
+function getAccounts() {
+    $id_array = [];
+    $query_parts = [];
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        if (isset($_GET["search-bar"])) {
+            $pattern  = '%' . $_GET["search-bar"] . '%';
+            $id_array['email'] = $pattern;
+            $id_array['nick'] = $pattern;
+            $id_array['first_name'] = $pattern;
+            $id_array['last_name'] = $pattern;
+            array_push($query_parts, '( nick LIKE :nick OR email LIKE :email OR first_name LIKE :first_name OR last_name LIKE :last_name )');
+        }
+        if (isset($_GET["account_status"]) && $_GET['account_status'] != 'all' ) {
+            $id_array['status'] = $_GET["account_status"];
+            array_push($query_parts, 'account_status = :status');
+        }
+    }
+
+    return fetch_all_table_columns('Account', '*', $id_array, implode(' and ', $query_parts));
+}
+
 
 function getEvents($account_id = null) {
     $id_array = [];
@@ -1703,6 +1731,18 @@ function updateSession($session_items) {
 
 function getSessionVal($value, $index = null, $default = null) {
     if(!isset($_SESSION[$value])) {
+        if (isset($_SESSION[$value])) {
+
+        }
+     } else if(is_array($value)) {
+        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
+    } else {
+        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
+    }
+}
+
+function echoSessionVal($value, $index = null, $default = null) {
+    if(!isset($_SESSION[$value])) {
         if ($default || $default === 0) {
             echo "value=\"$default\"";
         } else {
@@ -1737,6 +1777,18 @@ function getSubCategories($parent_category = null) {
     $id_string.=" and category_status = 'approved'";
 
     return fetch_distinct_table_columns("Category", "category_name", $id_array, $id_string);
+}
+
+function userIsAdmin() {
+    return userIsLoggedIn() && getUserAttribute('account_type') == 'Administrator';
+}
+
+function userIsModerator() {
+    return userIsAdmin() || (userIsLoggedIn() && getUserAttribute('account_type') == 'Moderator' );
+}
+
+function userIsRegular(){
+    return userIsLoggedIn() && getUserAttribute('account_type') == 'Regular';
 }
 
 ?>
