@@ -446,7 +446,7 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'password' => function ($value) {
                                     return preg_match('/^\w+$/', $value) && strlen($value) <= 128;
                                 },
-                                'photo' => function ($value){
+                                'profile_icon' => function ($value){
                                     return true;
                                 },
                             ];
@@ -455,7 +455,7 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'category_name' => function ($value) {
                                     return preg_match('/^[a-zA-Z0-9\s]+$/', $value) && strlen($value) <= 128;
                                 },
-                                'description' => function ($value) {
+                                'category_description' => function ($value) {
                                     return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                                 },
                                 'super_category' => function ($value) {
@@ -470,10 +470,10 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'event_name' => function ($value) {
                                     return preg_match('/^[a-zA-Z0-9\s\-\_]+$/', $value) && strlen($value) <= 128;
                                 },
-                                'description' => function ($value) {
+                                'event_description' => function ($value) {
                                     return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                                 },
-                                'icon' => function ($value){
+                                'event_icon' => function ($value){
                                     return true;
                                 },
                                 'category_name' => function ($value) {
@@ -482,7 +482,7 @@ function fetch_valid_columns($account_type, $method, $table)
                             ];
                         case "Address":
                             return $allowed_filters_for_Address = [
-                                'Country' => function ($value) {
+                                'country' => function ($value) {
                                     return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
                                 },
                                 'zip' => function ($value) {
@@ -500,11 +500,11 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'state' => function ($value) {
                                     return preg_match('/^[a-zA-Z\s]+$/', $value) && strlen($value) <= 128;
                                 },
-                                'description' => function ($value) {
+                                'address_description' => function ($value) {
                                     return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                                 },
                             ];
-                        case "Event_Instance":
+                        case "Event_instance":
                             return $allowed_filters_for_EventInstance = [
                                 'event_id' => function ($value) {
                                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
@@ -513,10 +513,16 @@ function fetch_valid_columns($account_type, $method, $table)
                                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                                 },
                                 'time_from' => function ($value) {
-                                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                                    return DateTime::createFromFormat('H:i:s', $value) !== false;
                                 },
                                 'time_to' => function ($value) {
-                                    return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
+                                    return DateTime::createFromFormat('H:i:s', $value) !== false;
+                                },
+                                'date_from' => function ($value) {
+                                    return DateTime::createFromFormat('Y-m-d', $value) !== false;
+                                },
+                                'date_to' => function ($value) {
+                                    return DateTime::createFromFormat('Y-m-d', $value) !== false;
                                 },
                             ];
                         case "Entrace_fee":
@@ -524,7 +530,7 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'instance_id' => function ($value) {
                                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                                 },
-                                'name' => function ($value) {
+                                'fee_name' => function ($value) {
                                     return is_string($value) && strlen($value) <= 128;
                                 },
                                 'shopping_method' => function ($value) {
@@ -552,7 +558,7 @@ function fetch_valid_columns($account_type, $method, $table)
                             ];
                         case "Photos":
                             return $allowed_filters_for_Photos = [
-                                'photo' => function ($value) {
+                                'photo_path' => function ($value) {
                                     return !empty($value) && is_string($value);
                                 },
                                 'event_id' => function ($value) {
@@ -584,7 +590,7 @@ function fetch_valid_columns($account_type, $method, $table)
                     switch ($table){
                         case "Account":
                             return $allowed_filters_for_Account = [
-                                'id' => function ($value) {
+                                'account_id' => function ($value) {
                                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                                 },
                                 'email' => function ($value) {
@@ -603,13 +609,13 @@ function fetch_valid_columns($account_type, $method, $table)
                                     return preg_match('/^\w+$/', $value) && strlen($value) <= 128;
                                 },
                                 'account_type' => function ($value) {
-                                    $validAccountTypes = ['user', 'moderator', 'administrator'];
+                                    $validAccountTypes = ['Regular', 'Moderator', 'Administrator'];
                                     return in_array($value, $validAccountTypes, true);
                                 },
-                                'photo' => function ($value){
+                                'profile_icon' => function ($value){
                                     return true;
                                 },
-                                'status' => function ($value) {
+                                'account_status' => function ($value) {
                                     $validStatuses = ['active', 'inactive', 'banned']; // TODO add statuses
                                     return in_array($value, $validStatuses, true);
                                 },
@@ -619,11 +625,11 @@ function fetch_valid_columns($account_type, $method, $table)
                                 'category_name' => function ($value) {
                                     return preg_match('/^[a-zA-Z0-9\s]+$/', $value) && strlen($value) <= 128;
                                 },
-                                'description' => function ($value) {
+                                'category_description' => function ($value) {
                                     return is_string($value) && strlen($value) <= 16777215; // MEDIUMTEXT max length
                                 },
-                                'status' => function ($value) {
-                                    $validStatuses = ['active', 'inactive', 'pending'];
+                                'category_status' => function ($value) {
+                                    $validStatuses = ['approved', 'rejected', 'pending'];
                                     return in_array($value, $validStatuses, true) && strlen($value) <= 64;
                                 },
                             ];
@@ -1517,12 +1523,12 @@ function redirectForce(string $path) {
     exit;
 }
 
-function getUserAttribute($attribute = 'account_id') {
-    return $_SESSION["USER"][$attribute];
+function getUserAttribute($attribute) {
+    return htmlspecialchars($_SESSION["USER"][$attribute]);
 }
 
-function echoUserAttribute($attribute = 'account_id') {
-    echo $_SESSION["USER"][$attribute];
+function echoUserAttribute($attribute) {
+    echo getUserAttribute($attribute);
 }
 
 function getProfileAttributes($account_id) {
@@ -1586,6 +1592,10 @@ function getAccounts() {
             $id_array['status'] = $_GET["account_status"];
             array_push($query_parts, 'account_status = :status');
         }
+        if (isset($_GET['account_type_filter'])) {
+            $id_array['type'] = $_GET['account_type_filter'];
+            array_push($query_parts, 'account_type = :type');
+        }
     }
 
     return fetch_all_table_columns('Account', '*', $id_array, implode(' and ', $query_parts));
@@ -1618,8 +1628,8 @@ function getEvents($account_id = null) {
             $id_array['date_to'] = $_GET['date_to'];
             array_push($query_parts, 'ei.date_to <= :date_to');
         }
-        if(isset($_GET["search"])) {
-            $id_array['event_name'] = '%'.$_GET['search'].'%';
+        if(isset($_GET["events_search_bar"])) {
+            $id_array['event_name'] = '%'.$_GET['events_search_bar'].'%';
             array_push($query_parts, 'e.event_name LIKE :event_name');
         }
     }
@@ -1716,42 +1726,36 @@ function inSession($value) {
     return isset($_SESSION[$value]);
 }
 
-function updateSession($session_items) {
-    if ($_SERVER["REQUEST_METHOD"] != "GET") {
-        return;
-    }
-    foreach($session_items as $item) {
-        if(isset($_GET[$item])) {
-            $_SESSION[$item] = $_GET[$item];
+function updateSession(&$method, $session_items) {
+    foreach($session_items as &$item) {
+        if(isset($method[$item])) {
+            $_SESSION[$item] = $method[$item];
         } else if (isset($_SESSION[$item])) {
             unset($_SESSION[$item]);
         }
     }
 }
 
-function getSessionVal($value, $index = null, $default = null) {
-    if(!isset($_SESSION[$value])) {
-        if (isset($_SESSION[$value])) {
 
-        }
-     } else if(is_array($value)) {
-        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
+function getSessionVal($value, $default, $index = null) {
+    if(!isset($_SESSION[$value])) {
+        return htmlspecialchars($default);
+    } else if(is_array($value)) {
+        return htmlspecialchars($_SESSION[$value][$index]);
     } else {
-        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
+        return htmlspecialchars($_SESSION[$value]);
     }
 }
 
-function echoSessionVal($value, $index = null, $default = null) {
-    if(!isset($_SESSION[$value])) {
-        if ($default || $default === 0) {
-            echo "value=\"$default\"";
-        } else {
-            return;
-        }
-    } else if(is_array($value)) {
-        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
+function echoSessionVal($value, $default, $index = null) {
+    echo getSessionVal($value, $default, $index);
+}
+
+function getSelectSessionState($session_attribute, $value) {
+    if (isset($_SESSION[$session_attribute]) && $_SESSION[$session_attribute] == $value) {
+        return "selected";
     } else {
-        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
+        return "";
     }
 }
 
@@ -1780,15 +1784,15 @@ function getSubCategories($parent_category = null) {
 }
 
 function userIsAdmin() {
-    return userIsLoggedIn() && getUserAttribute('account_type') == 'Administrator';
+    return userIsLoggedIn() && getUserAttribute('account_type') == 'administrator';
 }
 
 function userIsModerator() {
-    return userIsAdmin() || (userIsLoggedIn() && getUserAttribute('account_type') == 'Moderator' );
+    return userIsAdmin() || (userIsLoggedIn() && getUserAttribute('account_type') == 'moderator' );
 }
 
 function userIsRegular(){
-    return userIsLoggedIn() && getUserAttribute('account_type') == 'Regular';
+    return userIsLoggedIn() && getUserAttribute('account_type') == 'regular';
 }
 
 ?>

@@ -16,8 +16,7 @@ if(!userIsAdmin()) {
     redirectForce('index.php');
 }
 
-updateSession(["search-bar", "account_status"]);
-var_dump($_SESSION);
+updateSession($_GET, ["search-bar", "account_status", 'account_type_filter']);
 
 makeHead("Eventer | Account Management");
 makeHeader();
@@ -50,7 +49,7 @@ makeHeader();
                 <p>Email</p>
                 <input type="text" id="email">
             </div>
-            <?php makeRoleSelector() ?>
+            <?php makeRoleSelector(); ?>
             <span>
                 <div class="label-input">
                     <p>New password</p>
@@ -75,7 +74,7 @@ makeHeader();
                 <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <span>
                         <label for="search-bar">Search Accounts</label>
-                        <input type="text" id="search-bar" <?php echoSessionVal("search-bar", null, null) ?> name="search-bar" placeholder="Nick, Name, Email,..">
+                        <input type="text" id="search-bar" value="<?php echoSessionVal("search-bar", ""); ?>" name="search-bar" placeholder="Nick, Name, Email,..">
                     </span>
                     <span>
                         <label for="account_status">Account status</label>
@@ -86,8 +85,8 @@ makeHeader();
                         </select>
                     </span>
                     <span>
-                        <label for="status">Account type</label>
-                        <?php makeRoleSelector() ?>
+                        <label for="account_type_filter">Account type</label>
+                        <?php makeRoleSelector('_filter'); ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>
                 </form>

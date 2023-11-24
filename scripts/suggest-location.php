@@ -20,7 +20,7 @@ $address_columns = ['country','city','street','street_number', 'zip', 'state', '
 $id_array = [];
 populateArray($_GET, $id_array, $address_columns);
 $id_array['address_status'] = 'pending';
-$id_array['account_id'] = getUserAttribute();
+$id_array['account_id'] = getUserAttribute('account_id');
 if (insert_into_table('Address', $id_array)) {
     unsetSessionAttributes($session_address_columns);
 }

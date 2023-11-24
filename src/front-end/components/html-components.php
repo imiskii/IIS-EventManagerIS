@@ -45,7 +45,7 @@ function generateProfilMenu()
 
     <div class="profile-menu">
         <ul>
-            <li><i class='fa-solid fa-user'></i><a href="profile.php?account_id=<?php echo $_SESSION["USER"]["account_id"] ?>">Profile</a></li>
+            <li><i class='fa-solid fa-user'></i><a href="profile.php?account_id=<?php echoUserAttribute('account_id') ?>">Profile</a></li>
 
     <?php
     if (userIsModerator())
@@ -81,15 +81,15 @@ function makeHeader()
         <div class="top-bar">
             <a id="logo" href="index.php"><p>EVENTER</p></a>
             <div class="search-bar">
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="get">
-                    <input type="text" placeholder="Search events..." name="search" <?php echoSessionVal("search") ?> >
+                <form action="index.php" method="get">
+                    <input type="text" placeholder="Search events..." name="events_search_bar" value="<?php echoSessionVal("events_search_bar", ""); ?>" >
                     <button><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
             <!-- src is profile icon-->
             <div class="profile">
                 <?php
-                    if (isset($_SESSION["USER"]))
+                    if (userIsLoggedIn())
                     {
                         echo '<div class="profile-icon" onclick="menuToggle();">';
                         echo '<img src="'.selectUserIcon($_SESSION["USER"]["user_icon"]).'">';
@@ -100,7 +100,7 @@ function makeHeader()
                     {
                         echo "<div class='login-btns'>";
                         echo "<a href='login.php' class='button-sharp-filled'>log in</a>";
-                        echo "<a href='' class='button-sharp-filled'>sign up</a>";
+                        echo "<a href='#' class='button-sharp-filled'>sign up</a>";
                         echo "</div>";
                     }
                 ?>
@@ -453,16 +453,19 @@ function generateComments($eventID)
  *
  * @return void
  */
-function makeRoleSelector()
+function makeRoleSelector($id = "")
 {
-    //FIXME - userIsAdmin
-    if (userIsAdmin());
+    if (userIsAdmin())
     {
-        echo '<select name="account_type" id="role">
-            <option value="Regular">Regular</option>
-            <option value="Moderator">Moderator</option>
-            <option value="Administrator">Administrator</option>
-        </select>';
+        // FIXME: option for all not rendering
+        echo '<select name="account_type'.$id.'" id="account_type'.$id.'">';
+        if($id == '_filter') {
+            echo '<option value="all" '.getSessionVal("account_type$id", "") ? "" : 'selected'.' >all</option>';
+        }
+        foreach (['administrator', 'moderator', 'regular'] as $account_type) {
+            echo '<option value="'.$account_type.'" '.getSelectSessionState("account_type$id", $account_type).'>'.$account_type.'</option>';
+        }
+        echo '</select>';
     }
 }
 
@@ -489,7 +492,6 @@ function makeProfileInfo($profileID)
     </div>
     <div class="description-container">
         <div class="nick-container">
-            <!-- replace -->
             <h3><?php echo $profile['nick']; ?></h3>
             <p><?php echo $profile['account_type']; ?></p>
         </div>

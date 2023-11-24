@@ -12,6 +12,7 @@ require "src/front-end/components/html-components.php";
 session_start();
 $db = connect_to_db();
 
+
 makeHead("Eventer | Profile");
 makeHeader();
 
@@ -19,6 +20,7 @@ if (!idMatchesUser()) {
     // unauthorized access gets redirected to home page
     redirectForce('index.php');
 }
+
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 ?>
@@ -30,7 +32,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
             <h3>Edit Profile</h3>
             <span class="close-edit-btn" id="close-edit-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="edit-profile.php">
             <div class="label-input">
                 <p>Nick</p>
                 <input type="text" id="nick">
@@ -49,7 +51,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
                 <p>Email</p>
                 <input type="text" id="email">
             </div>
-            <?php makeRoleSelector() ?>
+            <?php makeRoleSelector(); ?>
             <button type="submit" class="button-round-filled-green">Submit Edit</button>
         </form>
     </div>
@@ -59,7 +61,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
             <h3>Change password</h3>
             <span class="close-edit-btn" id="close-password-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="change-password.php">
             <div class="label-input">
                 <p>Old password</p>
                 <input type="password">
@@ -79,14 +81,14 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     </div>
     <!-- Profile Info -->
     <div class="info-container">
-        <?php makeProfileInfo(getUserAttribute()) ?>
+        <?php makeProfileInfo(getUserAttribute('account_id')); ?>
     </div>
     <!-- Profile tickets -->
     <div class="part-lable">
         <h2>My Tickets</h2>
     </div>
     <div class="ticket">
-        <?php generateProfileTickets(getUserAttribute()) ?>
+        <?php generateProfileTickets(getUserAttribute('account_id')); ?>
     </div>
     <!-- Profile events -->
     <div class="part-lable">
@@ -95,7 +97,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     </div>
     <div class="profile-events">
         <div class="card-container">
-        <?php generateEventCards("owner", getUserAttribute()); ?>
+        <?php generateEventCards("owner", getUserAttribute('account_id')); ?>
         </div>
     </div>
 </main>

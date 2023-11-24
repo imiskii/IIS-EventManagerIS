@@ -18,7 +18,7 @@ if(!checkRequired($_GET, $category_columns)) {
 $id_array = [];
 populateArray($_GET, $id_array, $category_columns);
 $id_array['category_status'] = 'pending';
-$id_array['account_id'] = getUserAttribute();
+$id_array['account_id'] = getUserAttribute('account_id');
 if (insert_into_table('Category', $id_array)) {
     unsetSessionAttributes($session_category_columns);
 }

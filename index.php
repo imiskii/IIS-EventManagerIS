@@ -13,7 +13,7 @@ session_start();
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 $db = connect_to_db();
 
-updateSession(["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "search"] );
+updateSession($_GET, ["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "events_search_bar"] );
 
 makeHead("Eventer");
 makeHeader();
@@ -29,9 +29,7 @@ makeHeader();
                     <div class="filter-opt">
                         <ul class="category-tree">
                             <script src="src/front-end/js/updateChildCheckboxes.js"></script>
-                            <?php
-                            generateCategoryTree();
-                            ?>
+                            <?php generateCategoryTree(); ?>
                         </ul>
                     </div>
                 </li>
@@ -39,9 +37,7 @@ makeHeader();
                     <a href="#">Locations</a>
                     <div class="filter-opt">
                         <ul>
-                            <?php
-                            generateLocations();
-                            ?>
+                            <?php generateLocations(); ?>
                         </ul>
                     </div>
                 </li>
@@ -52,13 +48,13 @@ makeHeader();
                             <li>
                                 <div class="rating-input">
                                     <label for="min-r">Min rating</label>
-                                    <input type="number" id="min-r" pattern="[0-5]" <?php echoSessionVal("min_rating", null, 0) ?> oninput="checkRatingFilterInput()" name="min_rating">
+                                    <input type="number" id="min-r" pattern="[0-5]" value="<?php echoSessionVal("min_rating", 0); ?>" oninput="checkRatingFilterInput()" name="min_rating">
                                 </div>
                             </li>
                             <li>
                                 <div class="rating-input">
                                     <label for="max-r">Max rating</label>
-                                    <input type="number" id="max-r" pattern="[0-5]" <?php echoSessionVal("max_rating", null, 5) ?> oninput="checkRatingFilterInput()" name="max_rating">
+                                    <input type="number" id="max-r" pattern="[0-5]" value="<?php echoSessionVal("max_rating", 5); ?>" oninput="checkRatingFilterInput()" name="max_rating">
                                 </div>
                             </li>
                         </ul>
@@ -67,13 +63,13 @@ makeHeader();
                 <li>
                     <div class="filter-date">
                         <label for="date-from-input">Date from:</label>
-                        <input type="date" id="date-from-input" <?php echoSessionVal("date_from") ?>  name="date_from">
+                        <input type="date" id="date-from-input" value="<?php echoSessionVal("date_from", ""); ?>"  name="date_from">
                     </div>
                 </li>
                 <li>
                     <div class="filter-date">
                         <label for="date-to-input">Date to:</label>
-                        <input type="date" id="date-to-input" <?php echoSessionVal("date_to"); ?> name="date_to">
+                        <input type="date" id="date-to-input" value="<?php echoSessionVal("date_to", ""); ?>" name="date_to">
                     </div>
                 </li>
                 <li>
