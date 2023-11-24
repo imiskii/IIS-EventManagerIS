@@ -7,10 +7,20 @@
  */
 
 
-require "components/html-components.php";
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
+
+session_start();
+$db = connect_to_db();
+
+if(!userIsLoggedIn()) {
+    redirectHome();
+}
 
 makeHead("Eventer | Create Event");
 makeHeader();
+
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
 ?>
 
@@ -21,14 +31,14 @@ makeHeader();
             <h3>Propose new Category</h3>
             <span class="close-edit-btn" id="close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="scripts/propose-category.php" method="get">
             <div class="label-input">
                 <p>Name of new Category</p>
-                <input type="text" id="category-name" placeholder="Category name">
+                <input type="text" id="category_name" name="category_name" <?php getSessionVal('suggest-category_category_name') ?> placeholder="Category name">
             </div>
             <div class="label-input">
                 <p>Additional note</p>
-                <textarea name="" id="" cols="30" rows="10" placeholder="Why you propose this category..."></textarea>
+                <textarea name="category_description" id="category_description" cols="30" rows="10" <?php getSessionVal('suggest-category_category_name') ?> placeholder="Why you propose this category..."></textarea>
             </div>
             <button type="submit" class="button-round-filled-green">Submit Category</button>
         </form>
@@ -39,40 +49,41 @@ makeHeader();
             <h3>Propose new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="scripts/suggest-location.php" method='get'>
             <span>
                 <div class="label-input">
                     <p>Country</p>
-                    <input type="text" id="country" placeholder="Country">
+                    <input type="text" id="country" name='country' placeholder="Country" <?php getSessionVal('suggest-location_country') ?> >
                 </div>
                 <div class="label-input">
                     <p>City/Town</p>
-                    <input type="text" id="city" placeholder="City name/Town name">
+                    <input type="text" id="city" name='city'placeholder="City name/Town name" <?php getSessionVal('suggest-location_city') ?> >
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>Street name</p>
-                    <input type="text" id="country" placeholder="Street name">
+                    <input type="text" id="street" name="street" placeholder="Street name" <?php getSessionVal('suggest-location_street') ?> >
                 </div>
                 <div class="label-input">
                     <p>Street number</p>
-                    <input type="number" id="city" placeholder="Street number" onclick="checkNegativeInput()">
+                    <input type="number" id="street_number" name="street_number" <?php getSessionVal('suggest-location_street_number') ?> placeholder="Street number" onclick="checkNegativeInput()">
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>State/Province/Region</p>
-                    <input type="text" id="country" placeholder="State/Province/Region">
+                    <input type="text" id="state" name="state" placeholder="State/Province/Region" <?php getSessionVal('suggest-location_state') ?>>
                 </div>
                 <div class="label-input">
                     <p>ZIP code</p>
-                    <input type="text" id="city" placeholder="ZIP code" oninput="checkNegativeInput(this)">
+                    <input type="text" id="zip" name='zip' placeholder="ZIP code" <?php getSessionVal('suggest-location_zip') ?> oninput="checkNegativeInput(this)">
                 </div>
             </span>
             <div class="label-input">
                 <p>Additional description</p>
-                <textarea name="" id="" cols="30" rows="10" placeholder="Why you propose this category..."></textarea>
+                <!-- FIXME value not retrieved -->
+                <textarea name="address_description" id="address_description" <?php getSessionVal('suggest-location_address_description') ?> cols="30" rows="10" placeholder="Why do you propose this location..."></textarea>
             </div>
             <button type="submit" class="button-round-filled-green">Submit Location</button>
         </form>
@@ -143,7 +154,7 @@ makeHeader();
                             <span>
                                 <label for="location-select">Select location</label>
                                 <select name="location-select" id="location-select">
-                                    <?php generateLocationSelecetOptions() ?>
+                                    <?php generateLocationSelectOptions() ?>
                                 </select>
                             </span>
                         </div>
@@ -187,4 +198,3 @@ makeFooter();
 ?>
 
 </html>
-

@@ -144,49 +144,6 @@ function makeFooter()
     <?php
 }
 
-function dateCZ(string $datetime) {
-    return "DATE_FORMAT($datetime, '%d.%m.%Y')";
-}
-
-function dateENG(string $datetime) {
-    return "DATE_FORMAT($datetime, '%Y-%m-%d')";
-}
-
-function updateSession($session_items) {
-    if ($_SERVER["REQUEST_METHOD"] != "GET") {
-        return;
-    }
-    foreach($session_items as $item) {
-        if(isset($_GET[$item])) {
-            $_SESSION[$item] = $_GET[$item];
-        } else if (isset($_SESSION[$item])) {
-            unset($_SESSION[$item]);
-        }
-    }
-}
-
-function getSessionVal($value, $index = null, $default = null) {
-    if(!isset($_SESSION[$value])) {
-        if ($default || $default === 0) {
-            echo "value=\"$default\"";
-        } else {
-            return;
-        }
-    } else if(is_array($value)) {
-        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
-    } else {
-        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
-    }
-}
-
-function getCheckBoxSessionState($checkbox_name, $value) {
-    if(isset($_SESSION[$checkbox_name]) && in_array($value, $_SESSION[$checkbox_name])) {
-        return " checked ";
-    } else {
-        return "";
-    }
-}
-
 function generateEventCard(&$event, $card_type = null) {
     echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card'.$card_type.'">';
     echo '<img src="'.selectEventIcon($event['event_icon']).'">';
@@ -250,7 +207,7 @@ function generateEventCardsbyDate() {
  */
 function generateLocations()
 {
-    $locations = fetch_distinct_table_columns("Address", "city", null, null);
+    $locations = getCities();
     if(!$locations) {
         return;
     }
@@ -337,27 +294,16 @@ function generateCategorySelecetOptions($parent_category = null, $prev_categorie
 }
 
 
-function generateLocationSelecetOptions()
+function generateLocationSelectOptions()
 {
-    // TEST CODE
-    ?>
 
-    <option value="loc1">Location 1</option>
-    <option value="loc2">Location 2</option>
-    <option value="loc3">Location 3</option>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     $locations = getLocations();
     $counter = 0;
     foreach ($locations as $location)
     {
-        echo '<option value="loc'.$counter.'">'.$location.'</option>';
+        echo '<option value="loc'.$counter.'">'.formatAddress($location).'</option>';
         $counter += 1;
     }
-    */
 }
 
 
@@ -1155,7 +1101,7 @@ function generateEditEventVariants($eventID)
                 <span>
                     <label for="location-select">Select location</label>
                     <select name="location-select" id="location-select">
-                        <?php generateLocationSelecetOptions() ?>
+                        <?php generateLocationSelectOptions() ?>
                     </select>
                 </span>
             </div>
