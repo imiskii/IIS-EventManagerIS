@@ -3,8 +3,13 @@
 //TODO: move script
 require 'config/common.php';
 
+session_start();
+$db = connect_to_db();
+
 $path = $_SERVER['PATH_INFO'] ?? '';
 $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
+
+
 
 
 // TESTING START
@@ -15,7 +20,7 @@ $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
 // $json_data = '{"id":"6","email":"new_new@email.com"}';
 
 // $method = 'POST'; // Logout
-$json_data = file_get_contents('php://input');
+//$json_data = file_get_contents('php://input');
 
 // $method = 'DELETE'; // Delete
 // $json_data = '{"id":"7"}';
@@ -37,8 +42,9 @@ if ($pathParts[0] != "") // only valid path is "/database_table" so after explod
 }
 $table = $pathParts[1] ?? ''; // with path "/db_table" - we want to use index 1 after explode
 
-$account_type = $_SESSION['account_type'] ?? "not_logged_in";
-$accessible_db_tables = fetch_method_tables_for_account_type($account_type, $method); if (!in_array($table, $accessible_db_tables, true))
+$account_type = $_SESSION['USER']['account_type'] ?? "not_logged_in";
+$accessible_db_tables = fetch_method_tables_for_account_type($account_type, $method);
+if (!in_array($table, $accessible_db_tables, true))
 {
     sendResponse(400, 'Bad Request: request is invalid or unauthorized');
     exit;
@@ -53,7 +59,9 @@ if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
 }
 
 // 4. Decode received data from JSON
-// $json_data = file_get_contents('php://input');
+$json_data = json_encode($_POST);
+var_dump($json_data);
+//$json_data = file_get_contents('php://input');
 $data = json_decode($json_data, true);
 if (!$data && $method != 'GET' && $table != 'Logout') {// json_decode can return null if an error occured + if GET data has to be null
     sendResponse(400, "Error in decoding JSON.\n");

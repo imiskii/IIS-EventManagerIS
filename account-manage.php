@@ -6,8 +6,18 @@
  * @date 13.10.2023
  */
 
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
 
-require "components/html-components.php";
+session_start();
+$db = connect_to_db();
+
+if(!userIsAdmin()) {
+    redirectForce('index.php');
+}
+
+updateSession(["search-bar", "account_status"]);
+var_dump($_SESSION);
 
 makeHead("Eventer | Account Management");
 makeHeader();
@@ -62,17 +72,17 @@ makeHeader();
         </div>
         <div class="row-block">
             <div class="manage-filters">
-                <form action="">
+                <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <span>
                         <label for="search-bar">Search Accounts</label>
-                        <input type="text" id="search-bar" placeholder="Nick, Name, Email,..">
+                        <input type="text" id="search-bar" <?php echoSessionVal("search-bar", null, null) ?> name="search-bar" placeholder="Nick, Name, Email,..">
                     </span>
                     <span>
-                        <label for="status">Account status</label>
-                        <select name="" id="acc-status">
+                        <label for="account_status">Account status</label>
+                        <select name="account_status" id="account_status">
                             <option value="all">All</option>
-                            <option value="enable">Enable</option>
-                            <option value="disable">Disable</option>
+                            <option value="active">active</option>
+                            <option value="disabled">disabled</option>
                         </select>
                     </span>
                     <span>
@@ -114,4 +124,3 @@ makeFooter();
 ?>
 
 </html>
-

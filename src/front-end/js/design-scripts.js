@@ -323,9 +323,7 @@ function addEventVariant() {
             <span>
                 <label for="location-select">Select location</label>
                 <select name="location-select" id="location-select">
-                    <option value="loc1">Location 1</option>
-                    <option value="loc2">Location 2</option>
-                    <option value="loc3">Location 3</option>
+                    <?php generateLocationSelectOptions() ?>
                 </select>
             </span>
         </div>

@@ -48,18 +48,16 @@ function generateProfilMenu()
             <li><i class='fa-solid fa-user'></i><a href="profile.php?account_id=<?php echo $_SESSION["USER"]["account_id"] ?>">Profile</a></li>
 
     <?php
-    /*
-    if (user is logged in as moderator)
+    if (userIsModerator())
     {
-        echo '<li><i class="fa-solid fa-sun"></i><a href="#">Manage Events</a></li>';
-        echo '<li><i class="fa-solid fa-paperclip"></i><a href="#">Manage Categories</a></li>';
-        echo '<li><i class="fa-solid fa-location-dot"></i><a href="#">Manage Locations</a></li>';
+        echo '<li><i class="fa-solid fa-sun"></i><a href="event-manage.php">Manage Events</a></li>';
+        echo '<li><i class="fa-solid fa-paperclip"></i><a href="category-manage.php">Manage Categories</a></li>';
+        echo '<li><i class="fa-solid fa-location-dot"></i><a href="location-manage.php">Manage Locations</a></li>';
     }
-    if (user is logged in as administrator)
+    if (userIsAdmin())
     {
-        echo '<li><i class="fa-solid fa-users-gear"></i><a href="#">Manage Accounts</a></li>';
+        echo '<li><i class="fa-solid fa-users-gear"></i><a href="account-manage.php">Manage Accounts</a></li>';
     }
-    */
     ?>
 
             <li><i class="fa-solid fa-right-from-bracket"></i><a href="scripts/logout.php">Log out</a></li>
@@ -84,7 +82,7 @@ function makeHeader()
             <a id="logo" href="index.php"><p>EVENTER</p></a>
             <div class="search-bar">
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="get">
-                    <input type="text" placeholder="Search events..." name="search" <?php getSessionVal("search") ?> >
+                    <input type="text" placeholder="Search events..." name="search" <?php echoSessionVal("search") ?> >
                     <button><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
@@ -457,33 +455,15 @@ function generateComments($eventID)
  */
 function makeRoleSelector()
 {
-    // TEST CODE
-    ?>
-
-    <select name="" id="role">
-        <option value="user">Normal user</option>
-        <option value="moderator">Moderator</option>
-        <option value="administrator">Administrator</option>
-    </select>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    // user is logged in AND (user is administrator)
-    if ()
+    //FIXME - userIsAdmin
+    if (userIsAdmin());
     {
-        ?>
-
-        <select name="" id="role">
-            <option value="Normall user"></option>
-            <option value="Moderator"></option>
-            <option value="Administrator"></option>
-        </select>
-
-        <?php
+        echo '<select name="account_type" id="role">
+            <option value="Regular">Regular</option>
+            <option value="Moderator">Moderator</option>
+            <option value="Administrator">Administrator</option>
+        </select>';
     }
-    */
 }
 
 
@@ -777,47 +757,25 @@ function generateLocationRows()
  */
 function generateAccountRows()
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>JD</td>
-        <td>Joe</td>
-        <td>Doe</td>
-        <td>joe.doe@mail.com</td>
-        <td class="cell-center cell-small">User</td>
-        <td class="cell-center cell-small">Enable</td>
-        <td><input type="checkbox"></td>
-        <td class="cell-center cell-small">
-            <button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('JD', 'Joe', 'Doe', 'joe.doe@mail.com', 'user')">Edit</button>
-        </td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    // db query
     $accounts = getAccounts();
 
-    while($row = $accounts->fetch_assoc())
+    foreach($accounts as $account)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['nick'].'</td>';
-        echo '<td>'.$row['first_name'].'</td>';
-        echo '<td>'.$row['last_name'].'</td>';
-        echo '<td>'.$row['email'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['role'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['status'].'</td>';
+        echo '<td class="cell-center cell-small">'.$account['account_id'].'</td>';
+        echo '<td>'.$account['nick'].'</td>';
+        echo '<td>'.$account['first_name'].'</td>';
+        echo '<td>'.$account['last_name'].'</td>';
+        echo '<td>'.$account['email'].'</td>';
+        echo '<td class="cell-center cell-small">'.$account['account_type'].'</td>';
+        echo '<td class="cell-center cell-small">'.$account['account_status'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('.$row['nick'].', '.$row['first_name'].', '.$row['last_name'].', '.$row['email'].', '.$row['role'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('.$account['nick'].', '
+        .$account['first_name'].', ' .$account['last_name'].', '.$account['email'].', '.$account['account_type'].')">Edit</button></td>';
         echo '</tr>';
     }
-    */
 }
 
 
