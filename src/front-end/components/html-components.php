@@ -172,7 +172,7 @@ function generateEventCards(string $card_type=null, $account_id = null)
     if($card_type) {
         $card_type = '-'.$card_type;
     }
-    $events = getEvents($account_id);
+    $events = getEvents('all', $account_id);
 
     foreach($events as &$event) {
         generateEventCard($event, $card_type);
@@ -180,7 +180,7 @@ function generateEventCards(string $card_type=null, $account_id = null)
 }
 
 function generateEventCardsbyDate() {
-    $events = getEvents();
+    $events = getEvents('approved');
     $periods = sortEventsByPeriods($events);
 
     for($i = 0; $i < 5; $i++) {
@@ -786,52 +786,26 @@ function generateAccountRows()
  */
 function generateEventRows()
 {
-    // TEST CODE
-    ?>
+    $events = getEvents('all');
 
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>MS hokej</td>
-        <td>SZĽH</td>
-        <td class="cell-center cell-small">15.04.2024</td>
-        <td class="cell-center cell-small">12.05.2024</td>
-        <td class="cell-large">Bratislava, Košice</td>
-        <td class="cell-center cell-small">4/5<i class="fa-regular fa-star"></i></td>
-        <td class="cell-center cell-small">Enable</td>
-        <td class="cell-center cell-small"><input type="checkbox"></td>
-        <td class="cell-center cell-small">
-            <!-- link to event edit page -->
-            <a href="#" class="button-round-filled">Edit</a>
-        </td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    // db query
-    $events = getEvents();
-
-    while($row = $events->fetch_assoc())
+    foreach($events as $event)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['event_name'].'</td>';
-        echo '<td>'.$row['author'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['date_from'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['date_to'].'</td>';
-        // multiple locations !!! replace by some string of locations separated with comma
-        echo '<td class="cell-large">'.$row['location'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['rating'].'/5<i class="fa-regular fa-star"></i></td>';
-        echo '<td class="cell-center cell-small">'.$row['status'].'</td>';
+        echo '<td class="cell-center cell-small">'.$event['event_id'].'</td>';
+        echo '<td>'.$event['event_name'].'</td>';
+        echo '<td>'.$event['nick'].'</td>';
+        echo '<td class="cell-center cell-small">'.$event['earliest_date'].'</td>';
+        echo '<td class="cell-center cell-small">'.$event['latest_date'].'</td>';
+        echo '<td class="cell-large">'.$event['cities'].'</td>';
+        echo '<td class="cell-center cell-small">'.$event['rating'].'/5<i class="fa-regular fa-star"></i></td>';
+        echo '<td class="cell-center cell-small">'.$event['event_status'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        // link to event edit page
-        echo '<td class="cell-center cell-small"><a href="#" class="button-round-filled">Edit</a></td>';
+        // link to event edit page // FIXME: link to event page for now
+        echo '<td class="cell-center cell-small"><a href="event-detail.php?event_id='.$event['event_id'].'" class="button-round-filled">Edit</a></td>';
         echo '</tr>';
     }
-    */
 }
 
 

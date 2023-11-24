@@ -16,9 +16,8 @@ function menuToggle()
  */
 function checkRatingFilterInput()
 {
-    console.log("function called");
-    const minInput = document.getElementById('min-r');
-    const maxInput = document.getElementById('max-r');
+    const minInput = document.getElementById('min_rating');
+    const maxInput = document.getElementById('max_rating');
 
     min = parseInt(minInput.value);
     max = parseInt(maxInput.value);
@@ -418,4 +417,13 @@ function toggleChildren(checkbox) {
     for (var i = 0; i < childCheckboxes.length; i++) {
         childCheckboxes[i].checked = checkbox.checked;
     }
+}
+
+function updateChildCheckboxes(parentCheckbox) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.getAttribute('parent') === parentCheckbox.value) {
+            checkbox.checked = parentCheckbox.checked;
+        }
+    });
 }

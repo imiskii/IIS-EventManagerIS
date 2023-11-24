@@ -21,14 +21,13 @@ makeHeader();
 ?>
 
 <main>
-    <form method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form method="get" action="<?php echoCurrentPage(); ?>">
         <div class="filter-bar">
             <ul>
                 <li>
                     <a href="#">Categories</a>
                     <div class="filter-opt">
                         <ul class="category-tree">
-                            <script src="src/front-end/js/updateChildCheckboxes.js"></script>
                             <?php generateCategoryTree(); ?>
                         </ul>
                     </div>
@@ -47,14 +46,14 @@ makeHeader();
                         <ul>
                             <li>
                                 <div class="rating-input">
-                                    <label for="min-r">Min rating</label>
-                                    <input type="number" id="min-r" pattern="[0-5]" value="<?php echoSessionVal("min_rating", 0); ?>" oninput="checkRatingFilterInput()" name="min_rating">
+                                    <label for="min_rating">Min rating</label>
+                                    <input type="number" name="min_rating" id="min_rating" pattern="[0-5]" value="<?php echoSessionVal("min_rating", 0); ?>" oninput="checkRatingFilterInput()">
                                 </div>
                             </li>
                             <li>
                                 <div class="rating-input">
-                                    <label for="max-r">Max rating</label>
-                                    <input type="number" id="max-r" pattern="[0-5]" value="<?php echoSessionVal("max_rating", 5); ?>" oninput="checkRatingFilterInput()" name="max_rating">
+                                    <label for="max_rating">Max rating</label>
+                                    <input type="number" name="max_rating" id="max_rating" pattern="[0-5]" value="<?php echoSessionVal("max_rating", 5); ?>" oninput="checkRatingFilterInput()">
                                 </div>
                             </li>
                         </ul>

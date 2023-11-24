@@ -1601,8 +1601,7 @@ function getAccounts() {
     return fetch_all_table_columns('Account', '*', $id_array, implode(' and ', $query_parts));
 }
 
-
-function getEvents($account_id = null) {
+function getEvents($events_allowed, $account_id = null) {
     $id_array = [];
     $query_parts = [];
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -1628,10 +1627,31 @@ function getEvents($account_id = null) {
             $id_array['date_to'] = $_GET['date_to'];
             array_push($query_parts, 'ei.date_to <= :date_to');
         }
-        if(isset($_GET["events_search_bar"])) {
+        if (isset($_GET['search_bar']) && !empty($_GET['search_bar'])) { // search bar on manage events page
+            $search_value = $_GET['search_bar'];
+            $searchbar_query = [];
+            // if there is number in the search bar it can be event ID.
+            if(is_numeric($search_value)) {
+                $id_array['event_id'] = $search_value;
+                array_push($searchbar_query, 'e.event_id = :event_id');
+            }
+            $id_array['event_name'] = '%'.$search_value.'%';
+            array_push($searchbar_query, 'e.event_name LIKE :event_name');
+            array_push($query_parts, '('.implode(' OR ', $searchbar_query).')');
+        } else if(isset($_GET["events_search_bar"]) && !empty($_GET['events_search_bar'])) { // global serch bar
             $id_array['event_name'] = '%'.$_GET['events_search_bar'].'%';
             array_push($query_parts, 'e.event_name LIKE :event_name');
         }
+        // event status can only be selected on manage events page, hence the argument prevents non active events to be displayed on the main page
+        if ($events_allowed == 'all' && isset($_GET['event_status']) && $_GET['event_status'] != 'all') { // all in GET is just a placeholder for all statuses
+            $id_array['event_status'] = $_GET['event_status'];
+            array_push($query_parts, 'e.event_status = :event_status');
+        }
+    }
+
+    if ($events_allowed != 'all') {
+        $id_array['event_status'] = $events_allowed;
+        array_push($query_parts, 'e.event_status = :event_status');
     }
 
     if(!is_null($account_id)) {
@@ -1639,14 +1659,11 @@ function getEvents($account_id = null) {
         array_push($query_parts, 'e.account_id = :account_id');
     }
 
-    array_push($query_parts, 'e.event_status = "approved"');
-
-    $return_id = 'e.event_id, e.event_name, e.rating, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
-    $table = "Event_instance ei JOIN Event e ON ei.event_id = e.event_id JOIN Address a ON ei.address_id = a.address_id";
-    $group_by = "e.event_id, e.event_name, e.rating";
+    $return_id = 'e.event_id, e.event_name, e.rating, e.event_status, acc.nick, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
+    $table = "Event_instance ei JOIN Event e ON ei.event_id = e.event_id JOIN Address a ON ei.address_id = a.address_id JOIN Account acc on e.account_id = acc.account_id";
+    $group_by = "e.event_id, e.event_name, e.rating, e.event_status, acc.nick";
     return fetch_all_table_columns($table, $return_id, $id_array, implode(' and ', $query_parts), $group_by);
 }
-
 
 function dateBetween($date, $date_from, $date_to, $date_format) {
     return date($date_format, strtotime($date)) >= date($date_format, strtotime($date_from))
@@ -1759,6 +1776,18 @@ function getSelectSessionState($session_attribute, $value) {
     }
 }
 
+function echoSelectSessionState($session_attribute, $value) {
+    echo getSelectSessionState($session_attribute, $value);
+}
+
+function echoSelectDefaultState($session_attribute, $default) {
+    if(!isset($_SESSION[$session_attribute]) || $_SESSION[$session_attribute] == $default) {
+        echo 'selected';
+    } else {
+        echo '';
+    }
+}
+
 function getCheckBoxSessionState($checkbox_name, $value) {
     if(isset($_SESSION[$checkbox_name]) && in_array($value, $_SESSION[$checkbox_name])) {
         return " checked ";
@@ -1793,6 +1822,10 @@ function userIsModerator() {
 
 function userIsRegular(){
     return userIsLoggedIn() && getUserAttribute('account_type') == 'regular';
+}
+
+function echoCurrentPage() {
+    echo htmlspecialchars($_SERVER["PHP_SELF"]);
 }
 
 ?>
