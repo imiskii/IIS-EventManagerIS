@@ -200,7 +200,13 @@ VALUES
     ('Sportovní akce', 'Kategorie pro sportovní akce', NOW(), 'approved', NULL, 7),
     ('Zábavní parky', 'Kategorie pro návštěvu zábavních parků', NOW(), 'approved', NULL, 8),
     ('Cestování', 'Kategorie pro cestování a dobrodružství', NOW(), 'approved', NULL, 9),
-    ('Společenské události', 'Kategorie pro společenské události a večírky', NOW(), 'approved', NULL, 10);
+    ('Společenské události', 'Kategorie pro společenské události a večírky', NOW(), 'approved', NULL, 10),
+    -- pending
+    ('Gastronomie', 'Kategorie pro gastronomické události a ochutnávky', NOW(), 'pending', NULL, 3),
+    ('Literární akce', 'Kategorie pro literární setkání a knižní večery', NOW(), 'pending', NULL, 6),
+    ('Umělecká díla', 'Kategorie pro prezentaci a vystavování uměleckých děl', NOW(), 'pending', 'Výstavy', 9),
+    ('Adrenalinové sporty', 'Kategorie pro extrémní sportovní události a zážitky', NOW(), 'pending', 'Sportovní akce', 4),
+    ('Filmový festival', 'Kategorie pro filmové festivaly a premiéry', NOW(), 'pending', 'Kino', 7);
 
 -- Event table
 INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)

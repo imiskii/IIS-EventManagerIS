@@ -42,12 +42,7 @@ makeHeader();
                     </span>
                     <span>
                         <label for="event_status">Event status</label>
-                        <select name="event_status" id="event_status">
-                            <option value="all" <?php echoSelectDefaultState('event_status', 'all') ?>>all</option>
-                            <option value="approved" <?php echoSelectSessionState('event_status', 'approved') ?> >approved</option>
-                            <option value="pending" <?php echoSelectSessionState('event_status', 'pending') ?> >pending</option>
-                            <option value="rejected"  <?php echoSelectSessionState('event_status', 'rejected') ?> >rejected</option>
-                        </select>
+                        <?php generateStatusSelectOptions('event_status') ?>
                     </span>
                     <div class="filter-bar">
                         <ul>

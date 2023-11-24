@@ -1780,12 +1780,16 @@ function echoSelectSessionState($session_attribute, $value) {
     echo getSelectSessionState($session_attribute, $value);
 }
 
-function echoSelectDefaultState($session_attribute, $default) {
+function getSelectSessionDefaultState($session_attribute, $default) {
     if(!isset($_SESSION[$session_attribute]) || $_SESSION[$session_attribute] == $default) {
-        echo 'selected';
+        return 'selected';
     } else {
-        echo '';
+        return '';
     }
+}
+
+function echoSelectSessionDefaultState($session_attribute, $default) {
+    echo getSelectSessionDefaultState($session_attribute, $default);
 }
 
 function getCheckBoxSessionState($checkbox_name, $value) {
@@ -1802,6 +1806,31 @@ function unsetSessionAttributes(array &$attributes) {
             unset($_SESSION[$attribute]);
         }
     }
+}
+
+function getPendingCategories() {
+    $return_id = "c.category_name, c.category_description, a.nick, c.super_category, c.category_status";
+    $tables = "Category c JOIN Account a ON c.account_id = a.account_id ";
+    return fetch_distinct_table_columns($tables, $return_id, null, "category_status = 'pending'");
+}
+
+function getCategories() {
+    $id_array = [];
+    $query_parts = [];
+    if(($_SERVER["REQUEST_METHOD"] == "GET")) {
+        if(isset($_GET['search-bar']) && !empty($_GET['search-bar'])) {
+            $id_array['category_name'] = '%'.$_GET['search-bar'].'%';
+            array_push($query_parts, 'c.category_name LIKE :category_name');
+        }
+        if(isset($_GET['category_status']) && $_GET['category_status'] != 'all') {
+            $id_array['category_status'] = $_GET['category_status'];
+            array_push($query_parts, 'c.category_status = :category_status');
+        }
+    }
+
+    $return_id = "c.category_name, c.category_description, a.nick, c.super_category, c.category_status";
+    $tables = "Category c JOIN Account a ON c.account_id = a.account_id ";
+    return fetch_distinct_table_columns($tables, $return_id, $id_array, implode(' AND ', $query_parts));
 }
 
 function getSubCategories($parent_category = null) {

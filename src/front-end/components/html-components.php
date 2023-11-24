@@ -569,91 +569,56 @@ function generateProfileTickets($account_id)
  */
 function generateCategoryProposalRows()
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>Sport</td>
-        <td>Joe Doe</td>
-        <td>Description...</td>
-        <td>
-            <select name="" id="">
-                <?php generateCategorySelectOptions() ?>
-            </select>
-        </td>
-        <td class="cell-center cell-small">
-            <input type="checkbox">
-        </td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
-    $categoryProposals = getCategoryProposals();
+    $category_proposals = getPendingCategories();
 
-    while($row = $categoryProposals->fetch_assoc())
+    foreach($category_proposals as $proposal)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['category_name'].'</td>';
-        echo '<td>'.$row['category_author'].'</td>';
-        echo '<td>'.$row['category_description'].'</td>';
+        echo '<td>'.$proposal['category_name'].'</td>';
+        echo '<td>'.$proposal['nick'].'</td>';
+        echo '<td>'.$proposal['category_description'].'</td>';
         echo '<td>
-                <select name="" id="">
-                    <?php generateCategorySelecetOptions() ?>
-                </select>
+                <select name="categories" id="categories">';
+        generateCategorySelectOptions();
+        echo '</select>
             </td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
         echo '</tr>';
     }
-    */
-
 }
 
+
+function generateStatusSelectOptions($select_name) {
+    echo '<select name="'.$select_name.'" id="'.$select_name.'">';
+    echo '<option value="all" '.getSelectSessionDefaultState($select_name, 'all').' >all</option>';
+    foreach(['approved', 'pending', 'rejected'] as $status) {
+        echo '<option value="'.$status.'" '.getSelectSessionState($select_name, $status) .' >'.$status.'</option>';
+    }
+    echo '</select>';
+}
 
 /**
  * Generate table rows with categories
  */
 function generateCategoryRows()
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>Sport</td>
-        <td>Root</td>
-        <td class="cell-center cell-small">Enable</td>
-        <td class="cell-center cell-small"><input type="checkbox"></td>
-        <td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('Category 1', 3)">Edit</button></td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    // db query
     $categories = getCategories();
 
-    while($row = $categories->fetch_assoc())
+    foreach($categories as $category)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['category_name'].'</td>';
-        echo '<td>'.$row['parent_category_name'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['status'].'</td>';
+        echo '<td>'.$category['category_name'].'</td>';
+        echo '<td>'.$category['super_category'].'</td>';
+        echo '<td class="cell-center cell-small">'.$category['category_status'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('.$row['category_name'].', '.$row['parent_category_id'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('.$category['category_name'].', '.$category['super_category'].')">Edit</button></td>';
         echo '</tr>';
     }
-    */
 }
 
 

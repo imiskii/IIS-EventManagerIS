@@ -7,7 +7,17 @@
  */
 
 
-require "components/html-components.php";
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
+
+session_start();
+if(!userIsModerator()) {
+    redirectForce('index.php');
+}
+
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSession($_GET, ['search-bar', 'category_status']);
+$db = connect_to_db();
 
 makeHead("Eventer | Category Management");
 makeHeader();
@@ -30,7 +40,7 @@ makeHeader();
                 <p>Parrent Category to new created category</p>
                 <select name="" id="category-parent">
                     <option value="root">Root</option>
-                    <?php generateCategorySelecetOptions() ?>
+                    <?php generateCategorySelectOptions() ?>
                 </select>
             </div>
             <button type="submit" class="button-round-filled-green">Submit Category</button>
@@ -49,7 +59,6 @@ makeHeader();
             </div>
             <table>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Author</th>
                     <th>Description</th>
@@ -65,18 +74,14 @@ makeHeader();
         </div>
         <div class="row-block">
             <div class="manage-filters">
-                <form action="">
+                <form action="<?php echoCurrentPage() ?>" method="get">
                     <span>
                         <label for="search-bar">Search Category</label>
-                        <input type="text" id="search-bar" placeholder="Category..">
+                        <input type="text" name="search-bar" id="search-bar" value="<?php echoSessionVal('search-bar', '') ?>" placeholder="Category..">
                     </span>
                     <span>
-                        <label for="status">Category status</label>
-                        <select name="" id="status">
-                            <option value="all">All</option>
-                            <option value="enable">Enable</option>
-                            <option value="disable">Disable</option>
-                        </select>
+                        <label for="category_status">Category status</label>
+                        <?php generateStatusSelectOptions('category_status') ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>
                 </form>
@@ -90,9 +95,8 @@ makeHeader();
             </div>
             <table>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
-                    <th>Parrent category</th>
+                    <th>Parent category</th>
                     <th>Status</th>
                     <th><i class="fa-solid fa-check"></i></th>
                     <th>Action</th>
@@ -110,4 +114,3 @@ makeFooter();
 ?>
 
 </html>
-
