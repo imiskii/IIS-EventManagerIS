@@ -84,7 +84,7 @@ makeHeader();
         </div>
     </form>
     <?php
-    generateEventCards();
+    generateEventCardsByDate();
     ?>
 </main>
 

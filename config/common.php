@@ -1547,4 +1547,88 @@ function formatTime(array &$time, $date_column, $time_column) {
     return $time[$date_column].' '.$time[$time_column];
 }
 
+function addInFilter(array &$id_array, array &$query_parts, array $filter_array, $filter_name, $filter_owner) {
+    for($i = 0; $i < sizeof($filter_array); $i++) {
+        $id_array[$filter_name.$i] = $filter_array[$i] ;
+        $filter_array[$i] = ':'.$filter_name.$i;
+    }
+    $values = implode(', ', $filter_array);
+    array_push($query_parts, "$filter_owner.$filter_name in ($values)");
+}
+
+function getEvents($account_id = null) {
+    $id_array = [];
+    $query_parts = [];
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        if (isset($_GET["categories"])) {
+            addInFilter($id_array, $query_parts, $_GET["categories"], "category_name", "e");
+        }
+        if (isset($_GET["locations"])) {
+            addInFilter($id_array, $query_parts, $_GET["locations"], "city", "a");
+        }
+        if (isset($_GET["min_rating"])) {
+            $id_array['min_rating'] = $_GET["min_rating"];
+            array_push($query_parts, 'e.rating >= :min_rating');
+        }
+        if (isset($_GET["max_rating"])) {
+            $id_array['max_rating'] = $_GET["max_rating"];
+            array_push($query_parts, 'e.rating <= :max_rating');
+        }
+        if (isset($_GET["date_from"]) && $_GET["date_from"] != "") {
+            $id_array['date_from'] = $_GET['date_from'];
+            array_push($query_parts, 'ei.date_from >= :date_from');
+        }
+        if (isset($_GET["date_to"]) && $_GET["date_to"] != "") {
+            $id_array['date_to'] = $_GET['date_to'];
+            array_push($query_parts, 'ei.date_to <= :date_to');
+        }
+        if(isset($_GET["search"])) {
+            $id_array['event_name'] = '%'.$_GET['search'].'%';
+            array_push($query_parts, 'e.event_name LIKE :event_name');
+        }
+    }
+
+    if(!is_null($account_id)) {
+        $id_array['account_id'] = $account_id;
+        array_push($query_parts, 'e.account_id = :account_id');
+    }
+
+    $return_id = 'e.event_id, e.event_name, e.rating, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
+    $table = "Event_instance ei JOIN Event e ON ei.event_id = e.event_id JOIN Address a ON ei.address_id = a.address_id";
+    $group_by = "e.event_id, e.event_name, e.rating";
+    return fetch_all_table_columns($table, $return_id, $id_array, implode(' and ', $query_parts), $group_by);
+}
+
+
+function dateBetween($date, $date_from, $date_to, $date_format) {
+    return date($date_format, strtotime($date)) >= date($date_format, strtotime($date_from))
+        && date($date_format, strtotime($date)) <= date($date_format, strtotime($date_to));
+}
+
+function sortEventsByPeriods(array &$events) {
+    $date = date('Y-m-d');
+    $periods = array();
+    foreach($events as &$event) {
+        $date_from = $event['earliest_date'];
+        $date_to = $event['latest_date'];
+        if (dateBetween($date, $date_from, $date_to, 'Y-m-d')) {
+            $event['Today'] = true;
+            $periods[0] = 'Today';
+        } else if (dateBetween($date, $date_from, $date_to, 'Y-W')) {
+            $event['This Week'] = true;
+            $periods[1] = 'This Week';
+        } else if (dateBetween($date, $date_from, $date_to, 'Y-m')) {
+            $event['This Month'] = true;
+            $periods[2] = 'This Month';
+        } else if (dateBetween($date, $date_from, $date_to, 'Y')) {
+            $event['This Year'] = true;
+            $periods[3] = 'This Year';
+        } else {
+            $event['All Events'] = true;
+            $periods[4] = 'All Events';
+        }
+    }
+    return $periods;
+}
+
 ?>
