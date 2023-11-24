@@ -257,30 +257,14 @@ function generateCategoryTree($parent_category = null)
 }
 
 
-function generateCategorySelecetOptions($parent_category = null, $prev_categories = '')
+function generateCategorySelectOptions($parent_category = null, $prev_categories = '')
 {
-    // TEST CODE
-    ?>
-
-    <option value="1">Category 1</option>
-    <option value="2">Category 2</option>
-    <option value="3">Category 3</option>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    $categories = getParentCategories($parent_category);
+    $categories = getSubCategories($parent_category);
     foreach ($categories as $category)
     {
-        if ($category['parent_category'] == $parent_category)
-        {
-            $prev_categories = $prev_categories . '->' . $category['name'];
-            echo '<option value="'.$category['id'].'">'.$prev_categories.'</option>';
-            generateCategorySelecetOptions($category['name'], $prev_categories);
-        }
+        echo '<option value="'.$category['category_name'].'">'.$prev_categories.$category['category_name'].'</option>';
+        generateCategorySelectOptions($category['category_name'], $prev_categories . $category['category_name']. '->');
     }
-    */
 }
 
 
@@ -288,11 +272,9 @@ function generateLocationSelectOptions()
 {
 
     $locations = getLocations();
-    $counter = 0;
     foreach ($locations as $location)
     {
-        echo '<option value="loc'.$counter.'">'.formatAddress($location).'</option>';
-        $counter += 1;
+        echo '<option value="'.$location['address_id'].'">'.formatAddress($location).'</option>';
     }
 }
 
@@ -615,7 +597,7 @@ function generateCategoryProposalRows()
         <td>Description...</td>
         <td>
             <select name="" id="">
-                <?php generateCategorySelecetOptions() ?>
+                <?php generateCategorySelectOptions() ?>
             </select>
         </td>
         <td class="cell-center cell-small">
@@ -1014,7 +996,7 @@ function makeEditEventForm($eventID)
         <span>
             <label for="category-select">Select category for your event</label>
             <select name="category-select" id="category-select">
-                <?php generateCategorySelecetOptions() ?>
+                <?php generateCategorySelectOptions() ?>
             </select>
         </span>
     </div>
