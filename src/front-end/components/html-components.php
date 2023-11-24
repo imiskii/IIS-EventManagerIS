@@ -62,7 +62,7 @@ function generateProfilMenu()
     */
     ?>
 
-            <li><i class="fa-solid fa-right-from-bracket"></i><a href="logout.php">Log out</a></li>
+            <li><i class="fa-solid fa-right-from-bracket"></i><a href="scripts/logout.php">Log out</a></li>
         </ul>
     </div>
 

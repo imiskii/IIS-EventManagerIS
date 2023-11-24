@@ -1482,8 +1482,7 @@ function session_handler($table, $data, $account_type)
             foreach($account as $attribute => $value) {
                 $_SESSION["USER"][$attribute] = $value;
             }
-            // FIXME relative path
-            header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : "index.php"));
+            return;
         }
         else{
             sendResponse(401, "Log in failed: No email-password configuration found or valid.\n");
@@ -1509,12 +1508,9 @@ function sendResponse($statusCode, $message)
     echo json_encode(['status' => $statusCode, 'message' => $message]);
 }
 
-function redirect($path = "index.php") {
+function redirect(string $path) {
     header('Location: ' . (isset($_SESSION['return_to']) ? $_SESSION['return_to'] : $path));
-}
-
-function redirectHome() {
-    header('Location: index.php');
+    exit;
 }
 
 function getUserAttribute($attribute = 'account_id') {

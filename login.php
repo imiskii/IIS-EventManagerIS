@@ -20,7 +20,7 @@ makeHead("Eventer | Sign in");
     <div class="center-block">
         <div class="form-container">
             <h2>Log in</h2>
-            <form action="validate_login.php" method="post">
+            <form action="scripts/login.php" method="post">
                 <ul>
                     <li>
                         <div class="input-row">

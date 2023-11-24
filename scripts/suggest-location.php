@@ -12,7 +12,7 @@ storeInSession($_GET, $address_columns, 'suggest-location_');
 
 if(!checkRequired($_GET, ['country','city','street','street_number'])) {
     //TODO: display error message
-    redirect();
+    redirect('../index.php');
 }
 
 $id_array = [];
@@ -23,6 +23,6 @@ if (insert_into_table('Address', $id_array)) {
     unsetSessionAttributes($session_address_columns);
 }
 
-redirect();
+redirect('../index.php');
 
 ?>

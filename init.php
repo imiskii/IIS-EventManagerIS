@@ -1,4 +1,6 @@
 <?php
+
+//TODO: move script
 require 'config/common.php';
 
 $path = $_SERVER['PATH_INFO'] ?? '';
@@ -37,7 +39,7 @@ $table = $pathParts[1] ?? ''; // with path "/db_table" - we want to use index 1 
 
 $account_type = $_SESSION['account_type'] ?? "not_logged_in";
 $accessible_db_tables = fetch_method_tables_for_account_type($account_type, $method); if (!in_array($table, $accessible_db_tables, true))
-{ 
+{
     sendResponse(400, 'Bad Request: request is invalid or unauthorized');
     exit;
 }
@@ -52,7 +54,7 @@ if ($method != 'GET' && !empty($filters)) //if method is not GET has to be empty
 
 // 4. Decode received data from JSON
 // $json_data = file_get_contents('php://input');
-$data = json_decode($json_data, true); 
+$data = json_decode($json_data, true);
 if (!$data && $method != 'GET' && $table != 'Logout') {// json_decode can return null if an error occured + if GET data has to be null
     sendResponse(400, "Error in decoding JSON.\n");
     exit;

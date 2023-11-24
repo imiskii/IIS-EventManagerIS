@@ -14,7 +14,7 @@ storeInSession($_POST, $event_columns, 'suggest-event_');
 
 if(!checkRequired($_POST, ['event_name','event_descirption','category-select','location-select'])) {
     //TODO: display error message
-    //redirect();
+    redirect('../index.php');
 }
 
 // $id_array = [];
