@@ -190,17 +190,17 @@ VALUES
 -- Category table
 INSERT INTO Category (category_name, category_description, time_of_creation, category_status, super_category, account_id)
 VALUES
-    ('Hudební Události', 'Kategorie pro hudební události jako festivaly a koncerty', NOW(), 'Active', NULL, 1),
-    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'aktivní', 'Hudební Události', 1),
-    ('Divadlo', 'Kategorie pro divadelní představení', NOW(), 'aktivní', NULL, 2),
-    ('Výstavy', 'Kategorie pro výstavy a galerie', NOW(), 'aktivní', NULL, 3),
-    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'aktivní', 'Hudební Události', 4),
-    ('Workshopy', 'Kategorie pro vzdělávací workshopy', NOW(), 'aktivní', NULL, 5),
-    ('Kino', 'Kategorie pro kino a filmové projekce', NOW(), 'aktivní', NULL, 6),
-    ('Sportovní akce', 'Kategorie pro sportovní akce', NOW(), 'aktivní', NULL, 7),
-    ('Zábavní parky', 'Kategorie pro návštěvu zábavních parků', NOW(), 'aktivní', NULL, 8),
-    ('Cestování', 'Kategorie pro cestování a dobrodružství', NOW(), 'aktivní', NULL, 9),
-    ('Společenské události', 'Kategorie pro společenské události a večírky', NOW(), 'aktivní', NULL, 10);
+    ('Hudební Události', 'Kategorie pro hudební události jako festivaly a koncerty', NOW(), 'approved', NULL, 1),
+    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'approved', 'Hudební Události', 1),
+    ('Divadlo', 'Kategorie pro divadelní představení', NOW(), 'approved', NULL, 2),
+    ('Výstavy', 'Kategorie pro výstavy a galerie', NOW(), 'approved', NULL, 3),
+    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'approved', 'Hudební Události', 4),
+    ('Workshopy', 'Kategorie pro vzdělávací workshopy', NOW(), 'approved', NULL, 5),
+    ('Kino', 'Kategorie pro kino a filmové projekce', NOW(), 'approved', NULL, 6),
+    ('Sportovní akce', 'Kategorie pro sportovní akce', NOW(), 'approved', NULL, 7),
+    ('Zábavní parky', 'Kategorie pro návštěvu zábavních parků', NOW(), 'approved', NULL, 8),
+    ('Cestování', 'Kategorie pro cestování a dobrodružství', NOW(), 'approved', NULL, 9),
+    ('Společenské události', 'Kategorie pro společenské události a večírky', NOW(), 'approved', NULL, 10);
 
 -- Event table
 INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)

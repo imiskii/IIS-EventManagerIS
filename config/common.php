@@ -1667,7 +1667,7 @@ function getLocations() {
 
 function checkRequiredInGet(array $required) {
     foreach($required as $required_value) {
-        if(!valueInGet($required_value)) {
+        if(!valueInGet($required_value) || empty($_GET[$required_value])) {
             return false;
         }
     }
@@ -1737,6 +1737,14 @@ function unsetSessionAttributes(array &$attributes) {
             unset($_SESSION[$attribute]);
         }
     }
+}
+
+function getSubCategories($parent_category = null) {
+    $id_array = ($parent_category) ? ["super_category" => $parent_category] : null;
+    $id_string = "super_category " . ($parent_category ? "= :super_category" : "IS NULL");
+    $id_string.=" and category_status = 'approved'";
+
+    return fetch_distinct_table_columns("Category", "category_name", $id_array, $id_string);
 }
 
 ?>

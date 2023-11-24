@@ -21,6 +21,7 @@ makeHead("Eventer | Create Event");
 makeHeader();
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+var_dump($_SESSION); // DEBUG
 
 ?>
 
@@ -31,7 +32,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
             <h3>Propose new Category</h3>
             <span class="close-edit-btn" id="close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/propose-category.php" method="get">
+        <form name="suggest-category" action="scripts/suggest-category.php" method="get">
             <div class="label-input">
                 <p>Name of new Category</p>
                 <input type="text" id="category_name" name="category_name" <?php getSessionVal('suggest-category_category_name') ?> placeholder="Category name">
@@ -49,7 +50,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
             <h3>Propose new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/suggest-location.php" method='get'>
+        <form name="suggest-location" action="scripts/suggest-location.php" method='get'>
             <span>
                 <div class="label-input">
                     <p>Country</p>

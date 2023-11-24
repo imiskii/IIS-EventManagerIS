@@ -221,16 +221,6 @@ function generateLocations()
     }
 }
 
-function getSubcategories($parent_category = null)
-{
-    global $db;
-
-    $id_array = ($parent_category) ? ["super_category" => $parent_category] : null;
-    $id_string = "super_category " . ($parent_category ? "= :super_category" : "IS NULL");
-
-    return fetch_distinct_table_columns("Category", "category_name", $id_array, $id_string);
-}
-
 /**
  * Function generates tree of categories
  *
