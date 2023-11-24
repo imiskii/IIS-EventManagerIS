@@ -21,7 +21,6 @@ makeHead("Eventer | Create Event");
 makeHeader();
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
-var_dump($_SESSION); // DEBUG
 
 ?>
 
@@ -91,34 +90,34 @@ var_dump($_SESSION); // DEBUG
     </div>
     <!-- MAIN -->
     <div class="event-create-main-container">
-        <form action="">
+        <form action="scripts/suggest-event.php" method="post" enctype="multipart/form-data">
             <div class="form-block">
                 <span>
-                    <label for="e-name">What is name for your event ?</label>
-                    <input type="text" id="e-name" placeholder="Event name">
+                    <label for="event_name">What is name for your event ?</label>
+                    <input type="text" name="event_name" id="event_name" placeholder="Event name">
                 </span>
             </div>
             <div class="form-block">
                 <span>
-                    <label for="e-description">Write description of yor event</label>
-                    <textarea name="" id="e-description" cols="30" rows="10" placeholder="Description..."></textarea>
+                    <label for="event_description">Write description of yor event</label>
+                    <textarea name="" id="event_description" cols="30" rows="10" placeholder="Description..."></textarea>
                 </span>
             </div>
             <div class="form-block">
                 <span>
-                    <label for="e-icon">Choose front image for your event</label>
-                    <input type="file" name="e-icon">
+                    <label for="event_icon">Choose front image for your event</label>
+                    <input type="file" name="event_icon">
                 </span>
                 <span>
-                    <label for="e-images">Choose gallery images for your event</label>
-                    <input type="file" name="e-images[]" multiple>
+                    <label for="event_images">Choose gallery images for your event</label>
+                    <input type="file" name="event_images[]" multiple>
                 </span>
             </div>
             <div class="form-block">
                 <span>
                     <label for="category-select">Select category for your event</label>
                     <select name="category-select" id="category-select">
-                        <?php generateCategorySelecetOptions() ?>
+                        <?php generateCategorySelectOptions() ?>
                     </select>
                 </span>
             </div>
@@ -165,7 +164,7 @@ var_dump($_SESSION); // DEBUG
                         <table id="variant-types-1">
                             <tr>
                                 <td>Ticket type</td>
-                                <td class="row-15">Ticket cost in $</td>
+                                <td class="row-15">Ticket cost in czk</td>
                                 <td class="row-15">Number of tickets</td>
                                 <td class="row-10"><button type="button" class="button-round-filled" onclick="addTicketType(1)"><i class="fa-solid fa-plus"></i></button></td>
                             </tr>

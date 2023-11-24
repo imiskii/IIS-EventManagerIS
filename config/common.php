@@ -1649,12 +1649,8 @@ function userIsLoggedIn() {
     return isset($_SESSION['USER']);
 }
 
-function valueInGet($index) {
-    return isset($_GET[$index]);
-}
-
 function idMatchesUser() {
-    return valueInGet('account_id') && userIsLoggedIn() && $_SESSION['USER']['account_id'] == $_GET['account_id'];
+    return key_exists('account_id', $_GET) && userIsLoggedIn() && $_SESSION['USER']['account_id'] == $_GET['account_id'];
 }
 
 function getCities() {
@@ -1662,32 +1658,32 @@ function getCities() {
 }
 
 function getLocations() {
-    return fetch_distinct_table_columns("Address", "country, city, street, street_number", ['address_status' => 'approved'], 'address_status = :address_status');
+    return fetch_distinct_table_columns("Address", "country, city, street, street_number, address_id", ['address_status' => 'approved'], 'address_status = :address_status');
 }
 
-function checkRequiredInGet(array $required) {
+function checkRequired(&$method, array $required) {
     foreach($required as $required_value) {
-        if(!valueInGet($required_value) || empty($_GET[$required_value])) {
+        if(!key_exists($required_value, $method) || empty($method[$required_value])) {
             return false;
         }
     }
     return true;
 }
 
-function populateArrayFromGet(array &$id_array, array &$values) {
+function populateArray(&$method, array &$id_array, array &$values) {
     foreach($values as $value) {
-        if(valueInGet($value)) {
-            $id_array[$value] = $_GET[$value];
+        if(key_exists($value, $method)) {
+            $id_array[$value] = $method[$value];
         } else {
             $id_array[$value] = 'NULL';
         }
     }
 }
 
-function storeInSessionFromGet(array &$indexes, $prefix) {
+function storeInSession(&$method, array &$indexes, $prefix) {
     foreach($indexes as $index) {
-        if(valueInGet($index)) {
-            $_SESSION[$prefix.$index] = $_GET[$index];
+        if(key_exists($index, $method)) {
+            $_SESSION[$prefix.$index] = $method[$index];
         }
     }
 }

@@ -8,15 +8,15 @@ $category_columns = ['category_name', 'category_description'];
 $session_category_columns = array_map(function($value) {
     return 'suggest-category_'.$value;
 }, $category_columns);
-storeInSessionFromGet($category_columns, 'suggest-category_');
+storeInSession($_GET, $category_columns, 'suggest-category_');
 
-if(!checkRequiredInGet($category_columns)) {
+if(!checkRequired($_GET, $category_columns)) {
     //TODO: display error message
     redirect();
 }
 
 $id_array = [];
-populateArrayFromGet($id_array, $category_columns);
+populateArray($_GET, $id_array, $category_columns);
 $id_array['category_status'] = 'pending';
 $id_array['account_id'] = getUserAttribute();
 if (insert_into_table('Category', $id_array)) {
