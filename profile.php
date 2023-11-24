@@ -15,11 +15,12 @@ $db = connect_to_db();
 makeHead("Eventer | Profile");
 makeHeader();
 
-if (!isset($_GET["account_id"]) || !isset($_SESSION["USER"]) || $_SESSION["USER"]['account_id'] != $_GET["account_id"]) {
+if (!idMatchesUser()) {
     // unauthorized access gets redirected to home page
     // TODO: Add access to admins
     redirectHome();
 }
+
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 ?>
 
@@ -91,7 +92,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     <!-- Profile events -->
     <div class="part-lable">
         <h2>My Events</h2>
-        <a href="#" class="button-round-filled">Create New Event</a>
+        <a href="event-create.php" class="button-round-filled">Create New Event</a>
     </div>
     <div class="profile-events">
         <div class="card-container">

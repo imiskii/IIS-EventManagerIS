@@ -1357,6 +1357,18 @@ function get_pdo_statement($query, $id_array) {
     return $stmt;
 }
 
+function insert_into_table($table, array &$id_array) {
+    $columns_array = array_keys($id_array);
+    $values_array = array_map(function ($key) {
+        return ':' . $key;
+    }, $columns_array);
+    $values = implode(', ', $values_array);
+    $columns = implode(', ', $columns_array);
+    $query = "INSERT INTO $table ($columns) VALUES ($values)";
+    echo $query;
+    return get_pdo_statement($query, $id_array);
+}
+
 function fetch_table_column($table, $return_id, $id_array, $id_string)
 {
     $query = "SELECT $return_id FROM $table WHERE $id_string";
@@ -1593,6 +1605,8 @@ function getEvents($account_id = null) {
         array_push($query_parts, 'e.account_id = :account_id');
     }
 
+    array_push($query_parts, 'e.event_status = "approved"');
+
     $return_id = 'e.event_id, e.event_name, e.rating, GROUP_CONCAT(DISTINCT city) AS cities, MIN(date_from) AS earliest_date, MAX(date_to) AS latest_date';
     $table = "Event_instance ei JOIN Event e ON ei.event_id = e.event_id JOIN Address a ON ei.address_id = a.address_id";
     $group_by = "e.event_id, e.event_name, e.rating";
@@ -1629,6 +1643,100 @@ function sortEventsByPeriods(array &$events) {
         }
     }
     return $periods;
+}
+
+function userIsLoggedIn() {
+    return isset($_SESSION['USER']);
+}
+
+function valueInGet($index) {
+    return isset($_GET[$index]);
+}
+
+function idMatchesUser() {
+    return valueInGet('account_id') && userIsLoggedIn() && $_SESSION['USER']['account_id'] == $_GET['account_id'];
+}
+
+function getCities() {
+    return fetch_distinct_table_columns("Address", "city", ['address_status' => 'approved'], 'address_status = :address_status');
+}
+
+function getLocations() {
+    return fetch_distinct_table_columns("Address", "country, city, street, street_number", ['address_status' => 'approved'], 'address_status = :address_status');
+}
+
+function checkRequiredInGet(array $required) {
+    foreach($required as $required_value) {
+        if(!valueInGet($required_value)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function populateArrayFromGet(array &$id_array, array &$values) {
+    foreach($values as $value) {
+        if(valueInGet($value)) {
+            $id_array[$value] = $_GET[$value];
+        } else {
+            $id_array[$value] = 'NULL';
+        }
+    }
+}
+
+function storeInSessionFromGet(array &$indexes, $prefix) {
+    foreach($indexes as $index) {
+        if(valueInGet($index)) {
+            $_SESSION[$prefix.$index] = $_GET[$index];
+        }
+    }
+}
+
+function inSession($value) {
+    return isset($_SESSION[$value]);
+}
+
+function updateSession($session_items) {
+    if ($_SERVER["REQUEST_METHOD"] != "GET") {
+        return;
+    }
+    foreach($session_items as $item) {
+        if(isset($_GET[$item])) {
+            $_SESSION[$item] = $_GET[$item];
+        } else if (isset($_SESSION[$item])) {
+            unset($_SESSION[$item]);
+        }
+    }
+}
+
+function getSessionVal($value, $index = null, $default = null) {
+    if(!isset($_SESSION[$value])) {
+        if ($default || $default === 0) {
+            echo "value=\"$default\"";
+        } else {
+            return;
+        }
+    } else if(is_array($value)) {
+        echo ' value="' . htmlspecialchars($_SESSION[$value][$index]) . '"';
+    } else {
+        echo ' value="' . htmlspecialchars($_SESSION[$value]) . '"';
+    }
+}
+
+function getCheckBoxSessionState($checkbox_name, $value) {
+    if(isset($_SESSION[$checkbox_name]) && in_array($value, $_SESSION[$checkbox_name])) {
+        return " checked ";
+    } else {
+        return "";
+    }
+}
+
+function unsetSessionAttributes(array &$attributes) {
+    foreach($attributes as $attribute) {
+        if(inSession($attribute)) {
+            unset($_SESSION[$attribute]);
+        }
+    }
 }
 
 ?>

@@ -74,7 +74,7 @@ CREATE TABLE Address (
     street_number VARCHAR(128), -- VARCHAR so it is possible to type 1982/54 etc.
     state VARCHAR(128),
     address_description MEDIUMTEXT,
-    date_of_creation DATETIME,
+    date_of_creation DATETIME, -- FIXME: Do we need this?
     address_status VARCHAR(64),
     account_id INT,
 
@@ -205,30 +205,30 @@ VALUES
 -- Event table
 INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)
 VALUES
-    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, 4.5, NOW(), NOW(), 'aktivní', 'Koncerty', 1),
-    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, 4.2, NOW(), NOW(), 'aktivní', 'Divadlo', 2),
-    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, 3.0, NOW(), NOW(), 'aktivní', 'Výstavy', 3),
-    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, 2.8, NOW(), NOW(), 'aktivní', 'Festivaly', 4),
-    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, 1.3, NOW(), NOW(), 'aktivní', 'Workshopy', 5),
-    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, 4.6, NOW(), NOW(), 'aktivní', 'Kino', 6),
-    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, 2.7, NOW(), NOW(), 'aktivní', 'Sportovní akce', 7),
-    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, 4.4, NOW(), NOW(), 'aktivní', 'Zábavní parky', 8),
-    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, 4.1, NOW(), NOW(), 'aktivní', 'Cestování', 9),
-    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, 5.0, NOW(), NOW(), 'aktivní', 'Společenské události', 10);
+    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, 4.5, NOW(), NOW(), 'approved', 'Koncerty', 1),
+    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, 4.2, NOW(), NOW(), 'approved', 'Divadlo', 2),
+    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, 3.0, NOW(), NOW(), 'approved', 'Výstavy', 3),
+    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, 2.8, NOW(), NOW(), 'approved', 'Festivaly', 4),
+    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, 1.3, NOW(), NOW(), 'approved', 'Workshopy', 5),
+    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, 4.6, NOW(), NOW(), 'approved', 'Kino', 6),
+    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, 2.7, NOW(), NOW(), 'approved', 'Sportovní akce', 7),
+    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, 4.4, NOW(), NOW(), 'approved', 'Zábavní parky', 8),
+    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, 4.1, NOW(), NOW(), 'approved', 'Cestování', 9),
+    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, 5.0, NOW(), NOW(), 'approved', 'Společenské události', 10);
 
 -- Addresses
 INSERT INTO Address (country, zip, city, street, street_number, state, address_description, date_of_creation, address_status, account_id)
 VALUES
-    ('Česká republika', 12000, 'Praha', 'Ovocný trh', '25', 'Hlavní město Praha', 'Moderní koncertní sál v centru města.', NOW(), 'aktivní', 1),
-    ('Česká republika', 70030, 'Ostrava', 'Náměstí republiky', '12', 'Moravskoslezský kraj', 'Nádherné divadelní představení v historickém divadle.', NOW(), 'aktivní', 2),
-    ('Česká republika', 60200, 'Brno', 'Údolní', '15', 'Jihomoravský kraj', 'Galerie s moderními uměleckými díly v samém centru Brna.', NOW(), 'aktivní', 3),
-    ('Česká republika', 13000, 'Praha', 'Výstaviště', '1', 'Hlavní město Praha', 'Velký festivalový areál s bohatým programem.', NOW(), 'aktivní', 4),
-    ('Česká republika', 12000, 'Praha', 'Václavské náměstí', '48', 'Hlavní město Praha', 'Výukový workshop pro začátečníky v oblasti fotografie.', NOW(), 'aktivní', 5),
-    ('Česká republika', 13000, 'Praha', 'Národní', '22', 'Hlavní město Praha', 'Moderní kino s nejnovějším technologickým vybavením.', NOW(), 'aktivní', 6),
-    ('Česká republika', 60200, 'Brno', 'Úvoz', '1', 'Jihomoravský kraj', 'Lezecké centrum se stěnami pro všechny obtížnosti.', NOW(), 'aktivní', 7),
-    ('Česká republika', 70030, 'Ostrava', 'Svinovská', '11', 'Moravskoslezský kraj', 'Největší zábavní park v okolí s atrakcemi pro všechny věkové kategorie.', NOW(), 'aktivní', 8),
-    ('Česká republika', 60200, 'Brno', 'Mendlovo náměstí', '1', 'Jihomoravský kraj', 'Poutavá cestovatelská přednáška v moderním kongresovém centru.', NOW(), 'aktivní', 9),
-    ('Česká republika', 37001, 'České Budějovice', 'Náměstí Přemysla Otakara II.', '1', 'Jihočeský kraj', 'Otevřený koncert na náměstí s atmosférou open-air akce.', NOW(), 'aktivní', 10);
+    ('Česká republika', 12000, 'Praha', 'Ovocný trh', '25', 'Hlavní město Praha', 'Moderní koncertní sál v centru města.', NOW(), 'approved', 1),
+    ('Česká republika', 70030, 'Ostrava', 'Náměstí republiky', '12', 'Moravskoslezský kraj', 'Nádherné divadelní představení v historickém divadle.', NOW(), 'approved', 2),
+    ('Česká republika', 60200, 'Brno', 'Údolní', '15', 'Jihomoravský kraj', 'Galerie s moderními uměleckými díly v samém centru Brna.', NOW(), 'approved', 3),
+    ('Česká republika', 13000, 'Praha', 'Výstaviště', '1', 'Hlavní město Praha', 'Velký festivalový areál s bohatým programem.', NOW(), 'approved', 4),
+    ('Česká republika', 12000, 'Praha', 'Václavské náměstí', '48', 'Hlavní město Praha', 'Výukový workshop pro začátečníky v oblasti fotografie.', NOW(), 'approved', 5),
+    ('Česká republika', 13000, 'Praha', 'Národní', '22', 'Hlavní město Praha', 'Moderní kino s nejnovějším technologickým vybavením.', NOW(), 'approved', 6),
+    ('Česká republika', 60200, 'Brno', 'Úvoz', '1', 'Jihomoravský kraj', 'Lezecké centrum se stěnami pro všechny obtížnosti.', NOW(), 'approved', 7),
+    ('Česká republika', 70030, 'Ostrava', 'Svinovská', '11', 'Moravskoslezský kraj', 'Největší zábavní park v okolí s atrakcemi pro všechny věkové kategorie.', NOW(), 'approved', 8),
+    ('Česká republika', 60200, 'Brno', 'Mendlovo náměstí', '1', 'Jihomoravský kraj', 'Poutavá cestovatelská přednáška v moderním kongresovém centru.', NOW(), 'approved', 9),
+    ('Česká republika', 37001, 'České Budějovice', 'Náměstí Přemysla Otakara II.', '1', 'Jihočeský kraj', 'Otevřený koncert na náměstí s atmosférou open-air akce.', NOW(), 'approved', 10);
 
 
 -- Event_instance table
