@@ -18,7 +18,7 @@ makeHeader();
 if (!idMatchesUser()) {
     // unauthorized access gets redirected to home page
     // TODO: Add access to admins
-    redirectHome();
+    redirect('../index.php');
 }
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];

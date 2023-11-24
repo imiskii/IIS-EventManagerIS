@@ -14,7 +14,7 @@ session_start();
 $db = connect_to_db();
 
 if(!userIsLoggedIn()) {
-    redirectHome();
+    redirect('../index.php');
 }
 
 makeHead("Eventer | Create Event");

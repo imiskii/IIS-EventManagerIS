@@ -12,7 +12,7 @@ storeInSession($_GET, $category_columns, 'suggest-category_');
 
 if(!checkRequired($_GET, $category_columns)) {
     //TODO: display error message
-    redirect();
+    redirect('../index.php');
 }
 
 $id_array = [];
@@ -23,6 +23,6 @@ if (insert_into_table('Category', $id_array)) {
     unsetSessionAttributes($session_category_columns);
 }
 
-redirect();
+redirect('../index.php');
 
 ?>
