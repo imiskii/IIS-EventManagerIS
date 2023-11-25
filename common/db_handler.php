@@ -1955,4 +1955,8 @@ function getTickets($event_id, $confirmed) {
     return fetch_all_table_columns($tables, $return_id, $id_array, $id_string);
 }
 
+function generateSessionToken() {
+    $_SESSION['token'] = bin2hex(random_bytes(32));
+}
+
 ?>

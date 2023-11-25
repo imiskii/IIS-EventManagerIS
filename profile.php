@@ -15,6 +15,7 @@ if (!idMatchesUser()) {
     redirectForce('index.php');
 }
 
+generateSessionToken();
 $db = connect_to_db();
 
 

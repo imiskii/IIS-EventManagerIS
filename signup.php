@@ -15,7 +15,7 @@ if (userIsLoggedIn()) {
     redirectForce('index.php');
 }
 
-$_SESSION['token'] = bin2hex(random_bytes(32));
+generateSessionToken();
 $db = connect_to_db();
 
 updateSession($_POST, ['email', 'first_name', 'last_name', 'nick']);
