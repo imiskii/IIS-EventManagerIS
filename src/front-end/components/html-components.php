@@ -146,7 +146,7 @@ function makeFooter()
 function makeAlertPopup()
 {
     ?>
-    
+
     <div id="alert" class="alert hide">
     <span class="alert-content">
         <i class="fa-solid fa-circle-info"></i>
@@ -274,24 +274,25 @@ function generateCategoryTree($parent_category = null)
 }
 
 
-function generateCategorySelectOptions($parent_category = null, $prev_categories = '')
+function generateCategorySelectOptions($parent_category = null, $prev_categories = '', $default = null)
 {
     $categories = getSubCategories($parent_category);
     foreach ($categories as $category)
     {
-        echo '<option value="'.$category['category_name'].'">'.$prev_categories.$category['category_name'].'</option>';
-        generateCategorySelectOptions($category['category_name'], $prev_categories . $category['category_name']. '->');
+        $name = $category['category_name'];
+        echo '<option value="'.$name.'"'.($name == $default ? " selected" : '').'>'.$prev_categories.$name.'</option>';
+        generateCategorySelectOptions($name, $prev_categories . $name .' -> ', $default);
     }
 }
 
 
-function generateLocationSelectOptions()
+function generateLocationSelectOptions($default = null)
 {
 
     $locations = getApprovedLocations();
     foreach ($locations as $location)
     {
-        echo '<option value="'.$location['address_id'].'">'.formatAddress($location).'</option>';
+        echo '<option value="'.$location['address_id'].'"'.($location['address_id'] == $default ? ' selected' : '').'>'.formatAddress($location).'</option>';
     }
 }
 
@@ -364,11 +365,11 @@ function generateEventTickets($eventID)
 }
 
 function selectUserIcon(&$path) {
-    return isset($path) ? $path : "user-icons/default.webp";
+    return $path ?? "user-icons/default.webp";
 }
 
 function selectEventIcon(&$path) {
-    return isset($path) ? $path : "event-icons/default.jpg";
+    return $path ?? "event-icons/default.jpg";
 }
 
 /**
@@ -744,8 +745,7 @@ function generateEventRows()
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        // link to event edit page // FIXME: link to event page for now
-        echo '<td class="cell-center cell-small"><a href="event-detail.php?event_id='.$event['event_id'].'" class="button-round-filled">Edit</a></td>';
+        echo '<td class="cell-center cell-small"><a href="event-edit.php?event_id='.$event['event_id'].'" class="button-round-filled">Edit</a></td>';
         echo '</tr>';
     }
 }
@@ -843,65 +843,27 @@ function generateTicketRows()
 
 function makeEditEventForm($eventID)
 {
-    // TEST CODE
-    ?>
-
-    <div class="form-block">
-        <span>
-            <label for="e-name">What is name for your event ?</label>
-            <input type="text" id="e-name" placeholder="Event name">
-        </span>
-    </div>
-    <div class="form-block">
-        <span>
-            <label for="e-description">Write description of yor event</label>
-            <textarea name="" id="e-description" cols="30" rows="10" placeholder="Description..."></textarea>
-        </span>
-    </div>
-    <div class="form-block">
-        <span>
-            <label for="e-icon">Choose front image for your event</label>
-            <input type="file" name="e-icon">
-        </span>
-        <span>
-            <label for="e-images">Choose gallery images for your event</label>
-            <input type="file" name="e-images[]" multiple>
-        </span>
-    </div>
-    <div class="form-block">
-        <span>
-            <label for="category-select">Select category for your event</label>
-            <select name="category-select" id="category-select">
-                <?php generateCategorySelectOptions() ?>
-            </select>
-        </span>
-    </div>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
-    $eventInfo = getEventInfo($eventID);
+    $event = getEventInfo($eventID);
     $eventPhotos = getEventPhotos($eventID);
 
     ?>
     <div class="form-block">
         <span>
             <label for="e-name">What is name for your event ?</label>
-            <input type="text" id="e-name" value="<?php $eventInfo['event_name'] ?>" placeholder="Event name">
+            <input type="text" id="e-name" value="<?php echo $event['event_name'] ?>" placeholder="Event name">
         </span>
     </div>
     <div class="form-block">
         <span>
             <label for="e-description">Write description of yor event</label>
-            <textarea name="" id="e-description" cols="30" rows="10" placeholder="Description..."><?php $eventInfo['description'] ?></textarea>
+            <textarea name="" id="e-description" cols="30" rows="10" placeholder="Description..."><?php echo $event['event_description'] ?></textarea>
         </span>
     </div>
     <div class="form-block">
         <span>
             <label for="e-icon">Choose front image for your event</label>
-            <input type="file" value="<?php $eventInfo['icon_src'] ?>" name="e-icon">
+            <input type="file" value="<?php echo selectEventIcon($event['event_icon']) ?>" name="e-icon">
         </span>
         <span>
             <label for="e-images">Choose gallery images for your event</label>
@@ -911,148 +873,89 @@ function makeEditEventForm($eventID)
     <div class="form-block">
         <span>
             <label for="category-select">Select category for your event</label>
-            <select name="category-select" id="category-select" value="<?php $eventInfo['category'] ?>">
-                <?php generateCategorySelecetOptions() ?>
+            <select name="category-select" id="category-select" >
+                <?php generateCategorySelectOptions(null, null, $event['category_name']) ?>
             </select>
         </span>
     </div>
     <?php
-    */
 }
 
 
 function generateEditEventVariants($eventID)
 {
-    // TEST CODE
-    ?>
-
-    <div class="ticket" id="event-variant-1">
-        <div class="form-block ticket-create">
-            <button type="button" class="button-round-filled" onclick="removeEventVariant(1)"><i class="fa-solid fa-trash"></i></button>
-            <div class="ticket-form-inputs">
-                <div class="filter-date">
-                    <label for="e-date-from">Date from:</label>
-                    <input type="date" id="e-date-from">
-                </div>
-                <div class="filter-date">
-                    <label for="e-date-to">Date to:</label>
-                    <input type="date" id="e-date-to">
-                </div>
-                <div class="filter-date">
-                    <label for="e-time-from">Time from:</label>
-                    <input type="time" id="e-time-from">
-                </div>
-                <div class="filter-date">
-                    <label for="e-time-to">Time to:</label>
-                    <input type="time" id="e-time-to">
-                </div>
-                <span>
-                    <label for="location-select">Select location</label>
-                    <select name="location-select" id="location-select">
-                        <?php generateLocationSelectOptions() ?>
-                    </select>
-                </span>
-            </div>
-            <button type="button" ticket-arrow-button="ticket-1" class="arrow-button" onclick="toggleTicketDetail('ticket-1')">▼</button>
-        </div>
-        <div class="ticket-types" id="ticket-1">
-            <table id="variant-types-1">
-                <tr>
-                    <td>Ticket type</td>
-                    <td class="row-15">Ticket cost in $</td>
-                    <td class="row-15">Number of tickets</td>
-                    <td class="row-10"><button type="button" class="button-round-filled" onclick="addTicketType(1)"><i class="fa-solid fa-plus"></i></button></td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="text" name="" id="ticket-type" placeholder="Ticket type name">
-                    </td>
-                    <td class="row-15">
-                        <input type="number" name="" id="ticket-cost" placeholder="Cost" oninput="checkNegativeInput(this)">
-                    </td>
-                    <td class="row-15">
-                        <input type="number" name="" id="ticket-cnt" placeholder="Num." oninput="checkNegativeInput(this)">
-                    </td>
-                    <td class="row-10"><button type="button" class="button-round-filled" onclick="removeTicketType(this)"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
-    $eventVariants = getEventInstances($eventID);
+    $event_instances = getEventInstances($eventID);
     $cnt = 1;
 
-    while ($row = $eventVariants->fetch_assoc())
+    foreach($event_instances as $instance)
     {
         ?>
-        <div class="ticket" id="event-variant-<?php $cnt ?>">
+        <div class="ticket" id="event-variant-<?php echo $cnt ?>">
             <div class="form-block ticket-create">
-                <button type="button" class="button-round-filled" onclick="removeEventVariant(<?php $cnt ?>)"><i class="fa-solid fa-trash"></i></button>
+                <button type="button" class="button-round-filled" onclick="removeEventVariant(<?php echo $cnt ?>)"><i class="fa-solid fa-trash"></i></button>
                 <div class="ticket-form-inputs">
                     <div class="filter-date">
                         <label for="e-date-from">Date from:</label>
-                        <input type="date" id="e-date-from" value="<?php $row['date_from'] ?>">
+                        <input type="date" id="e-date-from<?php echo $cnt ?>" name="e-date-from<?php echo $cnt ?>" value="<?php echo $instance['date_from'] ?>">
                     </div>
                     <div class="filter-date">
                         <label for="e-date-to">Date to:</label>
-                        <input type="date" id="e-date-to" value="<?php $row['date_to'] ?>">
+                        <input type="date" id="e-date-to<?php echo $cnt ?>" name="e-date-to<?php echo $cnt ?>" value="<?php echo $instance['date_to'] ?>">
                     </div>
                     <div class="filter-date">
                         <label for="e-time-from">Time from:</label>
-                        <input type="time" id="e-time-from" value="<?php $row['time_from'] ?>">
+                        <input type="time" id="e-time-from<?php echo $cnt ?>" name="e-time-from<?php echo $cnt ?>" value="<?php echo $instance['time_from'] ?>">
                     </div>
                     <div class="filter-date">
                         <label for="e-time-to">Time to:</label>
-                        <input type="time" id="e-time-to" value="<?php $row['time_to'] ?>">
+                        <input type="time" id="e-time-to<?php echo $cnt ?>" name="e-time-to<?php echo $cnt ?>" value="<?php echo $instance['time_to'] ?>">
                     </div>
                     <span>
                         <label for="location-select">Select location</label>
-                        <select name="location-select" id="location-select" value="<?php $row['location_id'] ?>">
-                            <?php generateLocationSelecetOptions() ?>
+                        <select name="location-select<?php echo $cnt ?>" id="location-select<?php echo $cnt ?>">
+                            <?php generateLocationSelectOptions($instance['address_id']) ?>
                         </select>
                     </span>
                 </div>
-                <button type="button" ticket-arrow-button="ticket-1" class="arrow-button" onclick="toggleTicketDetail('ticket-<?php $cnt ?>')">▼</button>
+                <button type="button" ticket-arrow-button="ticket-1" class="arrow-button" onclick="toggleTicketDetail('ticket-<?php echo $cnt ?>')">▼</button>
             </div>
-            <div class="ticket-types" id="ticket-<?php $cnt ?>">
-                <table id="variant-types-<?php $cnt ?>">
+            <div class="ticket-types" id="ticket-<?php echo $cnt ?>">
+                <table id="variant-types-<?php echo $cnt ?>">
                     <tr>
                         <td>Ticket type</td>
-                        <td class="row-15">Ticket cost in $</td>
+                        <td class="row-15">Ticket cost in czk</td>
                         <td class="row-15">Number of tickets</td>
-                        <td class="row-10"><button type="button" class="button-round-filled" onclick="addTicketType(<?php $cnt ?>)"><i class="fa-solid fa-plus"></i></button></td>
+                        <td class="row-10"><button type="button" class="button-round-filled" onclick="addTicketType(<?php echo $cnt ?>)"><i class="fa-solid fa-plus"></i></button></td>
                     </tr>
                     <?php
                     // db query
-                    $eventTicketTypes = getEventInstanceFees($eventID, $eventVariants['location']);
+                    $entrance_fees = getInstanceEntranceFees($instance['instance_id']);
 
-                    while ($type = $eventTicketTypes->fetch_assoc())
+                    $fee_cnt = 1;
+                    foreach ($entrance_fees as $fee)
                     {
                         ?>
                         <tr>
                             <td>
-                                <input type="text" name="" id="ticket-type" value="<?php $type['fee_name'] ?>" placeholder="Ticket type name">
+                                <input type="text" name="ticket-type<?php echo $fee_cnt?>" id="ticket-type<?php echo $fee_cnt?>" value="<?php echo $fee['fee_name'] ?>" placeholder="Ticket type name">
                             </td>
                             <td class="row-15">
-                                <input type="number" name="" id="ticket-cost" value="<?php $type['cost'] ?>" placeholder="Cost" oninput="checkNegativeInput(this)">
+                                <input type="number" name="ticket-cost<?php echo $fee_cnt?>" id="ticket-cost<?php echo $fee_cnt?>" value="<?php echo $fee['cost'] ?>" placeholder="Cost" oninput="checkNegativeInput(this)">
                             </td>
                             <td class="row-15">
-                                <input type="number" name="" id="ticket-cnt" value="<?php $type['max_tickets'] ?>" placeholder="Num." oninput="checkNegativeInput(this)">
+                                <input type="number" name="ticket-cnt<?php echo $fee_cnt?>" id="ticket-cnt<?php echo $fee_cnt?>" value="<?php echo $fee['max_tickets'] ?>" placeholder="Num." oninput="checkNegativeInput(this)">
                             </td>
                             <td class="row-10"><button type="button" class="button-round-filled" onclick="removeTicketType(this)"><i class="fa-solid fa-trash"></i></button></td>
                         </tr>
                         <?php
+                        $fee_cnt++;
                     }
                     ?>
                 </table>
             </div>
         </div>
         <?php
+        $cnt++;
     }
-    */
 }

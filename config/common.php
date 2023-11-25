@@ -1900,4 +1900,22 @@ function echoCurrentPage() {
     echo htmlspecialchars($_SERVER["PHP_SELF"]);
 }
 
+function getEventInfo($event_id) {
+    // TODO: validate ID
+    return fetch_table_entry('Event', '*', ['event_id' => $event_id], 'event_id = :event_id');
+}
+
+function getEventPhotos($event_id) {
+    // TODO: validate ID
+    return fetch_all_table_columns('Photos p JOIN Event e ON p.event_id = e.event_id', 'p.photo_path', ['event_id' => $event_id], 'p.event_id = :event_id');
+}
+
+function getEventInstances($event_id) {
+    return fetch_all_table_columns('Event_instance', '*', ['event_id' => $event_id], 'event_id = :event_id');
+}
+
+function getInstanceEntranceFees($instance_id) {
+    return fetch_all_table_columns('Entrance_fee', '*', ['instance_id' => $instance_id], 'instance_id = :instance_id');
+}
+
 ?>

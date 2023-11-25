@@ -35,7 +35,6 @@ makeHeader();
         <div class="row-block">
             <div class="manage-filters">
                 <form method="get" action="<?php echoCurrentPage(); ?>">
-                <script src=""></script>
                     <span>
                         <label for="search_bar">Search Event</label>
                         <input type="text" id="search_bar" name='search_bar' value="<?php echoSessionVal('search_bar', "") ?>" placeholder="ID, Event name..">
@@ -102,8 +101,7 @@ makeHeader();
         <form action="">
             <div class="manage-tool-bar">
                 <button class="button-round-filled">Change status</button>
-                <!-- link to event create page -->
-                <a href="#" class="button-round-filled">Add Event</a>
+                <a href="event-create.php" class="button-round-filled">Add Event</a>
                 <button class="button-round-filled">Delete</button>
             </div>
             <table>

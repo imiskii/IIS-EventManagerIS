@@ -7,7 +7,22 @@
  */
 
 
-require "components/html-components.php";
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
+
+
+session_start();
+
+if (!userIsModerator()) {
+    redirectForce('index.php');
+}
+
+if(is_null($event_id = $_GET['event_id'] ?? null)) {
+    redirect('index.php'); // TODO: Error message
+}
+
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+$db = connect_to_db();
 
 makeHead("Eventer | Edit Event");
 makeHeader();
@@ -80,10 +95,10 @@ makeHeader();
     <!-- MAIN -->
     <div class="event-create-main-container">
         <form action="">
-            <?php makeEditEventForm($eventID) ?>
+            <?php makeEditEventForm($event_id) ?>
             <!-- Ticket section -->
             <div class="part-lable">
-                <h2>Create Tickets</h2>
+                <h2>Edit event instances</h2>
             </div>
             <div class="form-block">
                 <button type="button" class="button-round-filled" onclick="addEventVariant()">Add ticket variant</button>
@@ -91,10 +106,10 @@ makeHeader();
                 <button type="button" class="button-round-filled" onclick="toggleAddLocationPopUp()">Propose new location</button>
             </div>
             <div class="tickets-container" id="tickets-variants">
-                <?php generateEditEventVariants($eventID) ?>
+                <?php generateEditEventVariants($event_id) ?>
             </div>
             <div class="form-block">
-                <button type="submit" class="button-round-filled-green">Create this event</button>
+                <button type="submit" class="button-round-filled-green">Edit this event</button>
             </div>
         </form>
     </div>
@@ -107,4 +122,3 @@ makeFooter();
 ?>
 
 </html>
-
