@@ -100,7 +100,7 @@ function makeHeader()
                     {
                         echo "<div class='login-btns'>";
                         echo "<a href='login.php' class='button-sharp-filled'>log in</a>";
-                        echo "<a href='#' class='button-sharp-filled'>sign up</a>";
+                        echo "<a href='signup.php' class='button-sharp-filled'>sign up</a>";
                         echo "</div>";
                     }
                 ?>
@@ -290,7 +290,6 @@ function generateEventTickets($eventID)
     $tables_joined = "Event e NATURAL JOIN Event_instance ei JOIN Address a ON ei.address_id = a.address_id";
     $result_id = "instance_id, event_name, date_from, date_to, time_from, time_to, country, city, street, street_number";
     $event_instances = fetch_all_table_columns($tables_joined, $result_id, ["event_id" => $eventID] ,"event_id = :event_id", null);
-    //var_dump($event_instances);
     $cnt_t = 1;  // counter for tickets
     foreach ($event_instances as $event_instance)
     {

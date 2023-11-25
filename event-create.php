@@ -49,7 +49,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
             <h3>Propose new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form name="suggest-location" action="init.php/Address" method='post'>
+        <form name="suggest-location" action="scripts/request-handler.php/Address" method='post'>
             <span>
                 <div class="label-input">
                     <p>Country</p>

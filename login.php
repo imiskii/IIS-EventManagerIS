@@ -41,9 +41,9 @@ makeHead("Eventer | Sign in");
                     <li>
                         <div class="buttons">
                             <button class="button-round-filled" type="submit">Log in</button>
-                            <a href="#" class="button-round-empty">Create new account</a>
+                            <a href="signup.php" class="button-round-empty">Create new account</a>
                             <!-- FIXME $_SESSION['return_to'] -->
-                            <a href="#" class="button-round-empty"><i class="fa-solid fa-arrow-left"></i>Go back Home</a>
+                            <a href="index.php" class="button-round-empty"><i class="fa-solid fa-arrow-left"></i>Go back Home</a>
                         </div>
                     </li>
                 </ul>

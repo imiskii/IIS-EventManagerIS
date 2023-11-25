@@ -1470,6 +1470,14 @@ function extract_id(&$data, $table)
     return $id;
 }
 
+function verifyMethod($method_name) {
+    return $_SERVER['REQUEST_METHOD'] == $method_name;
+}
+
+function verifyToken(&$method) {
+    return isset($method['token']) && isset($_SESSION['token']) && $method['token'] == $_SESSION['token'];
+}
+
 function session_handler($table, $data, $account_type)
 {
     if ($table == "Login" && $account_type == "not_logged_in") {

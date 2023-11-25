@@ -4,8 +4,6 @@ require_once "../config/common.php";
 session_start();
 $db = connect_to_db();
 
-var_dump($_POST);
-
 $event_columns = ['event_name','event_icon','event_description','event_images', 'category-select', 'location-select'];
 $session_event_columns = array_map(function($value) {
     return 'suggest-event_'.$value;

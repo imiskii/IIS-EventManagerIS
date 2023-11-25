@@ -1,34 +1,13 @@
 <?php
 
 //TODO: move script
-require 'config/common.php';
+require '../config/common.php';
 
 session_start();
 $db = connect_to_db();
 
 $path = $_SERVER['PATH_INFO'] ?? '';
 $method = $_SERVER['REQUEST_METHOD']; // GET/POST/PUT/DELETE
-
-
-
-
-// TESTING START
-// $method = 'POST'; // Login
-// $json_data = '{"email":"jan.novak@email.cz","password":"hashed_password"}';
-
-// $method = 'PUT'; // Modify
-// $json_data = '{"id":"6","email":"new_new@email.com"}';
-
-// $method = 'POST'; // Logout
-//$json_data = file_get_contents('php://input');
-
-// $method = 'DELETE'; // Delete
-// $json_data = '{"id":"7"}';
-
-// $method = 'POST'; // Add
-// $json_data = '{"event_name":"TEST_event","description":"Just testing"}';
-// TESTING END
-
 
 // 1. Parse the URL
 $parsedUrl = parse_url($path);
