@@ -7,8 +7,7 @@
  */
 
 
-require_once "config/common.php";
-require "src/front-end/components/html-components.php";
+require_once "common/html-components.php";
 
 session_start();
 $db = connect_to_db();

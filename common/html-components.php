@@ -6,6 +6,7 @@
  * @date 05.08.2023
  */
 
+require_once "db_handler.php";
 
 /**
  * Generator for page head
@@ -24,9 +25,9 @@ function makeHead(string $title)
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo $title ?></title>
-        <link rel="stylesheet" href="src/front-end/styles/style.css">
+        <link rel="stylesheet" href="styles/style.css">
         <script src="https://kit.fontawesome.com/2ff75daa4b.js" crossorigin="anonymous"></script>
-        <script src="src/front-end/js/design-scripts.js"></script>
+        <script src="js/design-scripts.js"></script>
     </head>
     <body>
 

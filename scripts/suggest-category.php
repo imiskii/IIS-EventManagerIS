@@ -1,6 +1,6 @@
 <?php
 // FIXME = queries accepting even when they shouldn't
-require_once "../config/common.php";
+require_once "../common/db_handler.php";
 session_start();
 $db = connect_to_db();
 

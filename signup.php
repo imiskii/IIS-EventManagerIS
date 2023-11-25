@@ -6,10 +6,15 @@
  * @date 06.10.2023
  */
 
-require_once 'config/common.php';
-require_once "src/front-end/components/html-components.php";
+require_once "common/html-components.php";
 
 session_start();
+
+if (userIsLoggedIn()) {
+    // unauthorized access gets redirected to home page
+    redirectForce('index.php');
+}
+
 $_SESSION['token'] = bin2hex(random_bytes(32));
 $db = connect_to_db();
 

@@ -6,20 +6,21 @@
  * @date 06.10.2023
  */
 
-require_once "config/common.php";
-require "src/front-end/components/html-components.php";
+require_once "common/html-components.php";
 
 session_start();
+
+if (!idMatchesUser()) {
+    // unauthorized access gets redirected to home page
+    redirectForce('index.php');
+}
+
 $db = connect_to_db();
 
 
 makeHead("Eventer | Profile");
 makeHeader();
 
-if (!idMatchesUser()) {
-    // unauthorized access gets redirected to home page
-    redirectForce('index.php');
-}
 
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];

@@ -1,7 +1,6 @@
 <?php
 
-//TODO: move script
-require '../config/common.php';
+require_once "../common/db_handler.php";
 
 session_start();
 $db = connect_to_db();

@@ -6,14 +6,12 @@
  * @date 06.10.2023
  */
 
-require_once "config/common.php";
-require "src/front-end/components/html-components.php";
-
+require_once "common/html-components.php";
 
 session_start();
 
 if(is_null($event_id = $_GET['event_id'] ?? null)) {
-    redirect('index.php'); // TODO: Error message
+    redirectForce('index.php'); // TODO: Error message
 }
 
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];

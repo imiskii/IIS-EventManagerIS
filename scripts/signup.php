@@ -1,6 +1,6 @@
 <?php
 
-require '../config/common.php';
+require_once "../common/db_handler.php";
 
 session_start();
 

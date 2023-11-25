@@ -1,7 +1,7 @@
 <?php
 
 
-require_once "../config/common.php";
+require_once "../common/db_handler.php";
 
 session_start();
 

@@ -6,8 +6,7 @@
  * @date 05.10.2023
  */
 
-require_once 'config/common.php';
-require_once "src/front-end/components/html-components.php";
+require_once "common/html-components.php";
 
 session_start();
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
