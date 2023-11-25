@@ -7,7 +7,17 @@
  */
 
 
-require "components/html-components.php";
+require_once "config/common.php";
+require "src/front-end/components/html-components.php";
+
+session_start();
+if(!userIsModerator()) {
+    redirectForce('index.php');
+}
+
+$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSession($_GET, ['search-bar', 'address_status']);
+$db = connect_to_db();
 
 makeHead("Eventer | Location Management");
 makeHeader();
@@ -87,18 +97,14 @@ makeHeader();
         </div>
         <div class="row-block">
             <div class="manage-filters">
-                <form action="">
+                <form action="<?php echoCurrentPage() ?>">
                     <span>
                         <label for="search-bar">Search Location</label>
-                        <input type="text" id="search-bar" placeholder="Location, City, Street, ZIP code...">
+                        <input type="text" name="search-bar" id="search-bar" value="<?php echoSessionVal('search-bar', '') ?>" placeholder="Location, City, Street, ZIP code...">
                     </span>
                     <span>
-                        <label for="status">Location status</label>
-                        <select name="" id="status">
-                            <option value="all">All</option>
-                            <option value="enable">Enable</option>
-                            <option value="disable">Disable</option>
-                        </select>
+                        <label for="address_status">Location status</label>
+                        <?php generateStatusSelectOptions('address_status') ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>
                 </form>
@@ -136,4 +142,3 @@ makeFooter();
 ?>
 
 </html>
-

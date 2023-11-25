@@ -234,7 +234,12 @@ VALUES
     ('Česká republika', 60200, 'Brno', 'Úvoz', '1', 'Jihomoravský kraj', 'Lezecké centrum se stěnami pro všechny obtížnosti.', NOW(), 'approved', 7),
     ('Česká republika', 70030, 'Ostrava', 'Svinovská', '11', 'Moravskoslezský kraj', 'Největší zábavní park v okolí s atrakcemi pro všechny věkové kategorie.', NOW(), 'approved', 8),
     ('Česká republika', 60200, 'Brno', 'Mendlovo náměstí', '1', 'Jihomoravský kraj', 'Poutavá cestovatelská přednáška v moderním kongresovém centru.', NOW(), 'approved', 9),
-    ('Česká republika', 37001, 'České Budějovice', 'Náměstí Přemysla Otakara II.', '1', 'Jihočeský kraj', 'Otevřený koncert na náměstí s atmosférou open-air akce.', NOW(), 'approved', 10);
+    ('Česká republika', 37001, 'České Budějovice', 'Náměstí Přemysla Otakara II.', '1', 'Jihočeský kraj', 'Otevřený koncert na náměstí s atmosférou open-air akce.', NOW(), 'approved', 10),
+    ('Česká republika', 60200, 'Brno', 'Křenová', '10', 'Jihomoravský kraj', 'Připravovaný kulturní prostor v centru Brna.', NOW(), 'pending', 9),
+    ('Česká republika', 11000, 'Praha', 'Národní', '18', 'Hlavní město Praha', 'Nová moderní galerie s nejnovějšími uměleckými trendy.', NOW(), 'pending', 6),
+    ('Česká republika', 60200, 'Brno', 'Kounicova', '56', 'Jihomoravský kraj', 'Plánované sportovní centrum s multifunkčními hřišti.', NOW(), 'pending', 7),
+    ('Česká republika', 13000, 'Praha', 'Na Příkopě', '22', 'Hlavní město Praha', 'Budoucí místo konání prestižního filmového festivalu.', NOW(), 'pending', 8),
+    ('Česká republika', 70030, 'Ostrava', 'Zámecká', '8', 'Moravskoslezský kraj', 'Plánovaná kulturní scéna s pravidelnými divadelními představeními.', NOW(), 'pending', 8);
 
 
 -- Event_instance table

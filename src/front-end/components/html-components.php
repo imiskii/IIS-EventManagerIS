@@ -269,7 +269,7 @@ function generateCategorySelectOptions($parent_category = null, $prev_categories
 function generateLocationSelectOptions()
 {
 
-    $locations = getLocations();
+    $locations = getApprovedLocations();
     foreach ($locations as $location)
     {
         echo '<option value="'.$location['address_id'].'">'.formatAddress($location).'</option>';
@@ -627,46 +627,24 @@ function generateCategoryRows()
  */
 function generateLocationProposalRows()
 {
-    // TEST CODE
-    ?>
+    $location_proposals = getlocationProposals();
 
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>Joe Doe</td>
-        <td>United Kingdom</td>
-        <td>Dulcote</td>
-        <td>Orwell</td>
-        <td class="cell-center cell-small">88</td>
-        <td>Wells</td>
-        <td class="cell-center cell-small">12305</td>
-        <td><input type="checkbox"></td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
-    // db query
-    $locationProposals = getlocationProposals();
-
-    while($row = $categoryProposals->fetch_assoc())
+    foreach($location_proposals as $proposal)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['location_author'].'</td>';
-        echo '<td>'.$row['country'].'</td>';
-        echo '<td>'.$row['city'].'</td>';
-        echo '<td>'.$row['street_name'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['street_number'].'</td>';
-        echo '<td>'.$row['region'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['zip_code'].'</td>';
+        echo '<td class="cell-center cell-small">'.$proposal['address_id'].'</td>';
+        echo '<td>'.$proposal['nick'].'</td>';
+        echo '<td>'.$proposal['country'].'</td>';
+        echo '<td>'.$proposal['city'].'</td>';
+        echo '<td>'.$proposal['street'].'</td>';
+        echo '<td class="cell-center cell-small">'.$proposal['street_number'].'</td>';
+        echo '<td>'.$proposal['state'].'</td>';
+        echo '<td class="cell-center cell-small">'.$proposal['zip'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
         echo '</tr>';
     }
-    */
-
 }
 
 
@@ -675,47 +653,27 @@ function generateLocationProposalRows()
  */
 function generateLocationRows()
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>United Kingdom</td>
-        <td>Dulcote</td>
-        <td>Orwell</td>
-        <td class="cell-center cell-small">88</td>
-        <td>Wells</td>
-        <td class="cell-center cell-small">12305</td>
-        <td class="cell-center cell-small">enable</td>
-        <td><input type="checkbox"></td>
-        <td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('UK', 'Dulcote', 'Orwell', 88, 'Wells', 12305)">Edit</button></td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
     $locations = getLocations();
 
-    while($row = $locations->fetch_assoc())
+    foreach($locations as $location)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['country'].'</td>';
-        echo '<td>'.$row['city'].'</td>';
-        echo '<td>'.$row['street_name'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['street_number'].'</td>';
-        echo '<td>'.$row['region'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['zip_code'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['status'].'</td>';
+        echo '<td class="cell-center cell-small">'.$location['address_id'].'</td>';
+        echo '<td>'.$location['country'].'</td>';
+        echo '<td>'.$location['city'].'</td>';
+        echo '<td>'.$location['street'].'</td>';
+        echo '<td class="cell-center cell-small">'.$location['street_number'].'</td>';
+        echo '<td>'.$location['state'].'</td>';
+        echo '<td class="cell-center cell-small">'.$location['zip'].'</td>';
+        echo '<td class="cell-center cell-small">'.$location['address_status'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('.$row['country'].', '.$row['city'].', '.$row['street_name'].', '.$row['street_number'].', '.$row['region'].', '.$row['zip_code'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('.$location['country'].', '
+        .$location['city'].', '.$location['street'].', '.$location['street_number'].', '.$location['state'].', '.$location['zip'].')">Edit</button></td>';
         echo '</tr>';
     }
-    */
 }
 
 

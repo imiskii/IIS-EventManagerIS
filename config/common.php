@@ -1705,11 +1705,46 @@ function idMatchesUser() {
 }
 
 function getCities() {
-    return fetch_distinct_table_columns("Address", "city", ['address_status' => 'approved'], 'address_status = :address_status');
+    return fetch_distinct_table_columns("Address", "city", null, 'address_status = "approved"');
+}
+
+function getApprovedLocations() {
+    return fetch_distinct_table_columns("Address", "country, city, street, street_number, address_id", null, "address_status = 'approved'");
+}
+
+function getLocationProposals() {
+    $tables = 'Address a JOIN Account acc ON a.account_id = acc.account_id';
+    $return_id = 'a.address_id, a.country, a.city, a.street, a.street_number, a.state, a.zip, acc.nick';
+    return fetch_distinct_table_columns($tables, $return_id, null, "a.address_status = 'pending'");
 }
 
 function getLocations() {
-    return fetch_distinct_table_columns("Address", "country, city, street, street_number, address_id", ['address_status' => 'approved'], 'address_status = :address_status');
+    $id_array = [];
+    $query_parts = [];
+    if(($_SERVER["REQUEST_METHOD"] == "GET")) {
+        if(isset($_GET['search-bar']) && !empty($_GET['search-bar'])) {
+            $search_value = $_GET['search-bar'];
+            $search_bar_query_parts = [];
+            if (is_numeric($search_value)) { // number can be used to search in numeric columns
+                foreach(['zip', 'street_number', 'address_id'] as $column) {
+                    $id_array[$column] = $search_value;
+                }
+                array_push($search_bar_query_parts, '(zip = :zip OR street_number = :street_number OR address_id = :address_id)');
+            }
+            $search_value = '%'.$search_value.'%';
+            foreach(['country', 'city', 'street', 'state'] as $column) {
+                $id_array[$column] = $search_value;
+            }
+            array_push($search_bar_query_parts, '(country LIKE :country OR city LIKE :city OR street LIKE :street OR state LIKE :state)');
+            array_push($query_parts, '('.implode(' OR ', $search_bar_query_parts).')');
+        }
+        if(isset($_GET['address_status']) && $_GET['address_status'] != 'all') {
+            $id_array['address_status'] = $_GET['address_status'];
+            array_push($query_parts, 'address_status = :address_status');
+        }
+    }
+
+    return fetch_distinct_table_columns('Address', '*', $id_array, implode(' AND ', $query_parts));
 }
 
 function checkRequired(&$method, array $required) {
