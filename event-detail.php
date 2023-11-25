@@ -11,6 +11,11 @@ require "src/front-end/components/html-components.php";
 
 
 session_start();
+
+if(is_null($event_id = $_GET['event_id'] ?? null)) {
+    redirect('index.php'); // TODO: Error message
+}
+
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
 $db = connect_to_db();
@@ -18,30 +23,25 @@ $db = connect_to_db();
 makeHead("Eventer | Event Detail");
 makeHeader();
 
-//FIXME: Handle missing or wrong event ID
 
 ?>
 
 <main class="event-detail-main-container">
     <div class="info-container">
         <!-- Replace null with eventID !!! -->
-        <?php makeEventInfo($_GET["event_id"]) ?>
+        <?php makeEventInfo($event_id) ?>
     </div>
     <div class="part-lable">
         <h2>Tickets</h2>
         <?php
-        /*
-        if(user is event owner || moderator || administrator)
-        {
-            // link to ticket-manage page
-            echo '<a href="#" class="button-round-filled">Manage tickets</a>';
+        if(userIsAdmin() || userIsOwner($event_id)) {
+            echo '<a href="ticket-manage.php?event_id='.$event_id.'" class="button-round-filled">Manage tickets</a>';
         }
-        */
         ?>
     </div>
     <div class="tickets-container">
         <script src="src/front-end/js/calcTicketsVal.js"></script>
-        <?php generateEventTickets($_GET["event_id"]) ?>
+        <?php generateEventTickets($event_id) ?>
     </div>
     <div class="part-lable">
         <h2>Comments</h2>
@@ -74,7 +74,7 @@ makeHeader();
                     <button type="submit" class="button-round-filled-green">Submit Edit</button>
                 </form>
             </div>
-            <?php generateComments($_GET["event_id"]) ?>
+            <?php generateComments($event_id) ?>
         </div>
     </div>
 </main>

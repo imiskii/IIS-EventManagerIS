@@ -477,7 +477,7 @@ function makeRoleSelector($id = "")
     if (userIsAdmin())
     {
         // FIXME: option for all not rendering
-        echo '<select name="account_type'.$id.'" id="account_type'.$id.'">';
+        echo '<select name="account_type'.$id.'" id="role'.$id.'">';
         if($id == '_filter') {
             echo '<option value="all" '.getSessionVal("account_type$id", "") ? "" : 'selected'.' >all</option>';
         }
@@ -636,7 +636,7 @@ function generateCategoryRows()
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('.$category['category_name'].', '.$category['super_category'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('."'".$category['category_name']."'".', '."'".$category['super_category']."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }
@@ -690,8 +690,8 @@ function generateLocationRows()
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('.$location['country'].', '
-        .$location['city'].', '.$location['street'].', '.$location['street_number'].', '.$location['state'].', '.$location['zip'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('."'".$location['country']."'".', '
+        ."'".$location['city']."'".', '."'".$location['street']."'".', '."'".$location['street_number']."'".', '."'".$location['state']."'".', '."'".$location['zip']."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }
@@ -717,8 +717,8 @@ function generateAccountRows()
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('.$account['nick'].', '
-        .$account['first_name'].', ' .$account['last_name'].', '.$account['email'].', '.$account['account_type'].')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('."'".$account['nick']."'".', '
+        ."'".$account['first_name']."'".', ' ."'".$account['last_name']."'".', '."'".$account['email']."'".', '."'".$account['account_type']."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }
@@ -752,92 +752,52 @@ function generateEventRows()
 
 
 
-function generateTicketOrdersRows()
+function generateTicketOrdersRows($event_id)
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>JD</td>
-        <td>Joe</td>
-        <td>Doe</td>
-        <td>joe.doe@mail.com</td>
-        <td>Prague</td>
-        <td>VIP</td>
-        <td class="cell-center cell-small">2</td>
-        <td><input type="checkbox"></td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
-    $tickets = getTicketOrders();
+    $tickets = getTickets($event_id, false);
 
-    while($row = $tickets->fetch_assoc())
+    foreach($tickets as $ticket)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['buyer_nick'].'</td>';
-        echo '<td>'.$row['buyer_first_name'].'</td>';
-        echo '<td>'.$row['buyer_last_name'].'</td>';
-        echo '<td>'.$row['buyer_email'].'</td>';
-        echo '<td>'.$row['location'].'</td>';
-        echo '<td>'.$row['ticket_type'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['ticket_count'].'</td>';
+        echo '<td class="cell-center cell-small">'.$ticket['reg_id'].'</td>';
+        echo '<td>'.$ticket['nick'].'</td>';
+        echo '<td>'.$ticket['first_name'].'</td>';
+        echo '<td>'.$ticket['last_name'].'</td>';
+        echo '<td>'.$ticket['email'].'</td>';
+        echo '<td>'.formatAddress($ticket).'</td>';
+        echo '<td>'.$ticket['fee_name'].'</td>';
+        echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
         echo '</tr>';
     }
-    */
 }
 
 
 
-function generateTicketRows()
+function generateTicketRows($event_id)
 {
-    // TEST CODE
-    ?>
-
-    <tr>
-        <td class="cell-center cell-small">1</td>
-        <td>JD</td>
-        <td>Joe</td>
-        <td>Doe</td>
-        <td>joe.doe@mail.com</td>
-        <td>Prague</td>
-        <td>Family</td>
-        <td class="cell-center cell-small">2</td>
-        <td><input type="checkbox"></td>
-    </tr>
-
-    <?php
-    // END OF TEST CODE
-
-    /*
     // db query
-    $tickets = getTickets();
+    $tickets = getTickets($event_id, true);
 
-    while($row = $tickets->fetch_assoc())
+    foreach($tickets as $ticket)
     {
         echo '<tr>';
-        echo '<td class="cell-center cell-small">'.$row['id'].'</td>';
-        echo '<td>'.$row['buyer_nick'].'</td>';
-        echo '<td>'.$row['buyer_first_name'].'</td>';
-        echo '<td>'.$row['buyer_last_name'].'</td>';
-        echo '<td>'.$row['buyer_email'].'</td>';
-        echo '<td>'.$row['location'].'</td>';
-        echo '<td>'.$row['ticket_type'].'</td>';
-        echo '<td class="cell-center cell-small">'.$row['ticket_count'].'</td>';
+        echo '<td class="cell-center cell-small">'.$ticket['reg_id'].'</td>';
+        echo '<td>'.$ticket['nick'].'</td>';
+        echo '<td>'.$ticket['first_name'].'</td>';
+        echo '<td>'.$ticket['last_name'].'</td>';
+        echo '<td>'.$ticket['email'].'</td>';
+        echo '<td>'.formatAddress($ticket).'</td>';
+        echo '<td>'.$ticket['fee_name'].'</td>';
+        echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">
                 <input type="checkbox">
             </td>';
         echo '</tr>';
     }
-    */
 }
 
 

@@ -1918,4 +1918,41 @@ function getInstanceEntranceFees($instance_id) {
     return fetch_all_table_columns('Entrance_fee', '*', ['instance_id' => $instance_id], 'instance_id = :instance_id');
 }
 
+function userIsOwner($event_id) {
+    if (!userIsLoggedIn()) {
+        return false;
+    }
+    $event_owner = fetch_table_column('Event', 'account_id', ['event_id' => $event_id], 'event_id = :event_id');
+    return $event_owner == getUserAttribute('account_id');
+}
+
+function getTickets($event_id, $confirmed) {
+    $id_array['event_id'] = $event_id;
+    $query_parts[0] = 'e.event_id = :event_id AND r.time_of_confirmation IS ' . ($confirmed ? 'NOT NULL' : 'NULL');
+
+    if ($confirmed && verifyMethod('GET') && isset($_GET['ticket_search_bar']) && $search = $_GET['ticket_search_bar']) { //assignment also checks if value is not empty string
+        $search_query_parts = [];
+        if (filter_var($search, FILTER_VALIDATE_INT)) {
+            foreach(['reg_id', 'street_number', 'ticket_count'] as $number_column ) {
+                $id_array[$number_column] = $search;
+            }
+            array_push($search_query_parts, '( r.reg_id = :reg_id OR a.street_number = :street_number OR r.ticket_count = :ticket_count )');
+        }
+        $search = '%'.$search.'%';
+        foreach(['nick', 'first_name', 'last_name', 'email', 'country', 'city', 'street', 'fee_name'] as $column) {
+            $id_array[$column] = $search;
+        }
+        array_push($search_query_parts, '( acc.nick LIKE :nick OR acc.first_name LIKE :first_name OR acc.last_name LIKE :last_name OR acc.email LIKE :email
+        OR a.country LIKE :country OR a.city LIKE :city OR a.street LIKE :street OR ef.fee_name LIKE :fee_name )');
+        array_push($query_parts, '( '.implode(' OR ', $search_query_parts).' )');
+    }
+
+    $tables = 'Event e JOIN Event_instance ei ON e.event_id = ei.event_id JOIN Entrance_fee ef ON ei.instance_id = ef.instance_id
+    JOIN Registration r ON r.instance_id = ef.instance_id AND r.fee_name = ef.fee_name JOIN Account acc ON r.account_id = acc.account_id
+    JOIN Address a ON ei.address_id = a.address_id';
+    $return_id = 'r.reg_id, acc.nick, acc.first_name, acc.last_name, acc.email, a.country, a.city, a.street, a.street_number, ef.fee_name, r.ticket_count';
+    $id_string = implode(' AND ', $query_parts);
+    return fetch_all_table_columns($tables, $return_id, $id_array, $id_string);
+}
+
 ?>

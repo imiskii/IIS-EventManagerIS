@@ -122,6 +122,7 @@ function toggleTicketDetail(ticketID)
  */
 function toggleEditCommentPopUp(commentID, commentText)
 {
+    console.log('function called.');
     const popup = document.querySelector('.comment-edit-popup');
     const closeBtn = document.querySelector('.close-edit-btn');
     const commentIdInput = document.getElementById('cid');
