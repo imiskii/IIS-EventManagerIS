@@ -87,7 +87,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
     <div class="part-lable">
         <h2>My Tickets</h2>
     </div>
-    <div class="ticket">
+    <div class="tickets-container">
         <?php generateProfileTickets(getUserAttribute('account_id')); ?>
     </div>
     <!-- Profile events -->

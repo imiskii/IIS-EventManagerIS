@@ -427,3 +427,57 @@ function updateChildCheckboxes(parentCheckbox) {
         }
     });
 }
+
+
+/**
+ * Show Alert popup message
+ * @param {string} type it could be either "warning" | "info" | "success", this make style of the alert popup
+ * @param {string} msg message in popup
+ */
+function showAlert(type, msg)
+{
+    var alertBox = document.getElementById('alert');
+    var closeBtn = document.getElementById('alert-close-btn');
+    var alertMsg = document.getElementById('alert-msg');
+
+    // Adjust elements
+    if(type === "info")
+    {
+        alertBox.style.backgroundColor = "#BCFBFF";
+        alertBox.style.borderLeft = "8px solid #93F8FF";
+        closeBtn.style.background = "#5DF5FF";
+        alertMsg.textContent = "Info: " + msg;
+    }
+    else if(type === "warning")
+    {
+        alertBox.style.backgroundColor = "#ffdb9b";
+        alertBox.style.borderLeft = "8px solid #ffa502";
+        closeBtn.style.background = "#ffd080";
+        alertMsg.textContent = "Warning: " + msg;
+    }
+    else if(type === "success")
+    {
+        alertBox.style.backgroundColor = "#BFFFBB";
+        alertBox.style.borderLeft = "8px solid #9CFF95";
+        closeBtn.style.background = "#67FF5D";
+        alertMsg.textContent = "Success: " + msg;
+    }
+
+    // Show alert
+    alertBox.classList.remove('hide');
+
+    // Set timeout on 3 seconds and close the Alert
+    setTimeout(function()
+    {
+        closeAlert();
+    }, 3000);
+}
+
+/**
+ * Close Alert popup message
+ */
+function closeAlert()
+{
+    var alertBox = document.getElementById('alert');
+    alertBox.classList.add('hide');
+}

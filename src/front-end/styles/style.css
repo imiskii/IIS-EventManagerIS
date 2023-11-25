@@ -208,3 +208,38 @@ footer{
 .footer-bottom p{
     text-transform: capitalize;
 }
+
+/* ALERT */
+
+.alert{
+    background-color: #ffdb9b;
+    border-left: 8px solid #ffa502;
+    min-width: 420px;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    right: 20px;
+    top: 80px;
+    border-radius: 4px;
+}
+.alert.hide{
+    display: none;
+}
+.alert .alert-content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    padding-left: 20px;
+}
+.alert .alert-content .msg{
+    padding: 0 20px;
+    font-size: 18px;
+}
+.alert .alert-close-btn{
+    background: #ffd080;
+    padding: 20px 18px;
+    cursor: pointer;
+}

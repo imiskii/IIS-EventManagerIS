@@ -155,6 +155,7 @@
 }
 
 .profile-ticket span{
+    width: 100%;
     display: flex;
     flex-direction: column;
 }

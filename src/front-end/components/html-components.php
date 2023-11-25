@@ -142,6 +142,25 @@ function makeFooter()
     <?php
 }
 
+
+function makeAlertPopup()
+{
+    ?>
+    
+    <div id="alert" class="alert hide">
+    <span class="alert-content">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="alert-msg" class="msg">Warning: TODO</span>
+    </span>
+    <span id="alert-close-btn" class="alert-close-btn" onclick="closeAlert()">
+        <i class="fa-solid fa-xmark"></i>
+    </span>
+    </div>
+
+    <?php
+}
+
+
 function generateEventCard(&$event, $card_type = null) {
     echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card'.$card_type.'">';
     echo '<img src="'.selectEventIcon($event['event_icon']).'">';
@@ -531,6 +550,7 @@ function generateProfileTickets($account_id)
 
 
         // getEventLink() get link to event-detail page of particular event
+        echo '<div class="ticket">';
         echo '<a href="'.getEventLink($ticket['event_id']).'" class="ticket-ticket profile-ticket">';
         echo '<span>
         <h3>'.$ticket['event_name'].'</h3>
@@ -558,7 +578,7 @@ function generateProfileTickets($account_id)
             echo '<p>'.$registration['tickets_total'].' '.$registration['fee_name'].'</p>';
         }
         echo '</span>
-        </a>';
+        </a> </div>';
     }
 }
 
