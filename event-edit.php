@@ -88,7 +88,8 @@ makeHeader();
     </div>
     <!-- MAIN -->
     <div class="event-create-main-container">
-        <form action="">
+        <form action="scripts/edit-event.php" method='post'>
+        <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
             <?php makeEditEventForm($event_id) ?>
             <!-- Ticket section -->
             <div class="part-lable">

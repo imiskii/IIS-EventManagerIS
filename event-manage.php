@@ -15,7 +15,7 @@ if(!userIsModerator()) {
 
 updateSessionReturnPage();
 $db = connect_to_db();
-
+generateSessionToken();
 updateSession($_GET, ["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "events_search_bar", "search_bar", 'event_id', 'event_status', 'nick'] );
 
 makeHead("Eventer | Event Management");
@@ -96,11 +96,12 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="">
+        <form action="scripts/edit-events.php" method="post">
+        <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
             <div class="manage-tool-bar">
-                <button class="button-round-filled">Change status</button>
+                <button name='change_status' value='change_status' class="button-round-filled">Change status</button>
                 <a href="event-create.php" class="button-round-filled">Add Event</a>
-                <button class="button-round-filled">Delete</button>
+                <button name='delete' value='delete' class="button-round-filled">Delete</button>
             </div>
             <table>
                 <tr>

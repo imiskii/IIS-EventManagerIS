@@ -745,7 +745,7 @@ function generateEventRows()
         echo '<td class="cell-center cell-small">'.$event['rating'].'/5<i class="fa-regular fa-star"></i></td>';
         echo '<td class="cell-center cell-small">'.$event['event_status'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input type="checkbox" value="'.$event['event_id'].'" name="event_id[]'.$event['event_id'].'">
             </td>';
         echo '<td class="cell-center cell-small"><a href="event-edit.php?event_id='.$event['event_id'].'" class="button-round-filled">Edit</a></td>';
         echo '</tr>';
@@ -815,29 +815,29 @@ function makeEditEventForm($eventID)
     <div class="form-block">
         <span>
             <label for="e-name">What is name for your event ?</label>
-            <input type="text" id="e-name" value="<?php echo $event['event_name'] ?>" placeholder="Event name">
+            <input type="text" id="e-name" name="event_name" value="<?php echo $event['event_name'] ?>" placeholder="Event name">
         </span>
     </div>
     <div class="form-block">
         <span>
             <label for="e-description">Write description of yor event</label>
-            <textarea name="" id="e-description" cols="30" rows="10" placeholder="Description..."><?php echo $event['event_description'] ?></textarea>
+            <textarea name="" id="e-description" name="event_description" cols="30" rows="10" placeholder="Description..."><?php echo $event['event_description'] ?></textarea>
         </span>
     </div>
     <div class="form-block">
         <span>
             <label for="e-icon">Choose front image for your event</label>
-            <input type="file" value="<?php echo getEventIcon($event) ?>" name="e-icon">
+            <input type="file" name="event_icon" value="<?php echo getEventIcon($event) ?>" name="e-icon">
         </span>
         <span>
             <label for="e-images">Choose gallery images for your event</label>
-            <input type="file" name="e-images[]" value="<?php $eventPhotos ?>" multiple>
+            <input type="file" name="event_images[]" value="<?php $eventPhotos ?>" multiple>
         </span>
     </div>
     <div class="form-block">
         <span>
             <label for="category-select">Select category for your event</label>
-            <select name="category-select" id="category-select" >
+            <select name="category_name" id="category-select" >
                 <?php generateCategorySelectOptions(null, null, $event['category_name']) ?>
             </select>
         </span>

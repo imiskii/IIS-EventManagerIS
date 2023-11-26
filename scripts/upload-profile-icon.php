@@ -30,11 +30,13 @@ if(mb_strlen($icon_location) > 256) { // extremely rare occasion if someone trie
     redirect('../index.php');
 }
 
+$umask = umask(); // store current umask
 umask(000);
 if (!move_uploaded_file($tmp_filename, '../'.$icon_location)) {
     setPopupMessage('error', "unable to store the profile icon.");
     redirect('../index.php');
 }
+umask($umask); // load umask back
 
 setUserAttribute('profile_icon', $icon_location);
 $id_array['profile_icon'] = $icon_location;

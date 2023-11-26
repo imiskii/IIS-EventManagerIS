@@ -1390,9 +1390,21 @@ function find_table_column($return_column, $table, $id_array) {
     return $result ? $result[$return_column] : null;
 }
 
-function fetch_table_column($table, $return_id, $id_array, $id_string)
+function delete_from_table($table, &$delete_values, $attribute) {
+    $query_parts = [];
+    $id_array = [];
+    for ($i = 0; $i < sizeof($delete_values); $i++) {
+        array_push($query_parts, "$attribute = :$attribute"."$i");
+        $id_array[$attribute.$i] = $delete_values[$i];
+    }
+    $query = "DELETE FROM $table WHERE ".implode(' OR ', $query_parts);
+    $stmt = get_pdo_statement($query, $id_array);
+    return $stmt->execute();
+}
+
+function fetch_table_column($table, $return_id, $id_array = null, $id_string = null)
 {
-    $query = "SELECT $return_id FROM $table WHERE $id_string";
+    $query = "SELECT $return_id FROM $table".($id_string ? " WHERE $id_string" : '');
     $stmt = get_pdo_statement($query, $id_array);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1645,6 +1657,10 @@ function getAccounts() {
     return fetch_all_table_columns('Account', '*', $id_array, implode(' and ', $query_parts));
 }
 
+function getEventCount() {
+    return fetch_table_column('Event', 'COUNT(*)');
+}
+
 function getEvents($events_allowed, $account_id = null) {
     $id_array = [];
     $query_parts = [];
@@ -1707,6 +1723,16 @@ function getEvents($events_allowed, $account_id = null) {
     $table = "Event_instance ei JOIN Event e ON ei.event_id = e.event_id JOIN Address a ON ei.address_id = a.address_id JOIN Account acc on e.account_id = acc.account_id";
     $group_by = "e.event_id, e.event_name, e.rating, e.event_status, acc.nick";
     return fetch_all_table_columns($table, $return_id, $id_array, implode(' and ', $query_parts), $group_by);
+}
+
+function getEventIdsByStatus(array &$event_ids, string $status) : array {
+    $id_string = 'event_status = :event_status AND event_id IN ('.implode(', ',$event_ids).')';
+    $table_rows = fetch_all_table_columns('Event', 'event_id', ['event_status' => $status], $id_string);
+    $result_array = [];
+    foreach($table_rows as $row) {
+        array_push($result_array, $row['event_id']);
+    }
+    return $result_array;
 }
 
 function dateBetween($date, $date_from, $date_to, $date_format) {
