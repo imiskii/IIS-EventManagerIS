@@ -94,10 +94,11 @@ makeHeader();
         <div class="part-lable">
             <h2>Category proposals</h2>
         </div>
-        <form action="">
+        <form action="scripts/manage-category-proposals.php" method="post">
             <div class="manage-tool-bar">
-                <button class="button-round-filled">Accept proposal</button>
-                <button class="button-round-filled">Reject proposal</button>
+                <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
+                <button name='accept' value='accept' class="button-round-filled">Accept proposal</button>
+                <button name='reject' value='reject' class="button-round-filled">Reject proposal</button>
             </div>
             <table>
                 <tr>

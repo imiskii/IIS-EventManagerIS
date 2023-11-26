@@ -1374,6 +1374,7 @@ function insert_into_table($table, array &$id_array) {
 
 function update_table_column($table, $update_query, $id_string, $id_array) {
     $query = "UPDATE $table $update_query WHERE $id_string";
+    echo $query;
     $stmt = get_pdo_statement($query, $id_array);
     return  $stmt->execute();
 }

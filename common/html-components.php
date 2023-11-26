@@ -290,6 +290,9 @@ function generateCategoryTree($parent_category = null)
 function generateCategorySelectOptions($parent_category = null, $prev_categories = '', $default = null)
 {
     $categories = getSubCategories($parent_category);
+    if(!$parent_category) { // FIXME make sure this does not pass category filter
+        echo '<option value="" '.($default ? '' : 'selected').'>-</option>';
+    }
     foreach ($categories as $category)
     {
         $name = $category['category_name'];
@@ -594,6 +597,7 @@ function generateCategoryProposalRows()
     // db query
     $category_proposals = getPendingCategories();
 
+    // FIXME: Make changing super category on accept accessible.
     foreach($category_proposals as $proposal)
     {
         echo '<tr>';
@@ -601,12 +605,12 @@ function generateCategoryProposalRows()
         echo '<td>'.$proposal['nick'].'</td>';
         echo '<td>'.$proposal['category_description'].'</td>';
         echo '<td>
-                <select name="categories" id="categories">';
-        generateCategorySelectOptions();
+                <select name="'.$proposal['category_name'].'_super_category" id="categories">';
+        generateCategorySelectOptions(null, '', $proposal['super_category'] ?? null);
         echo '</select>
             </td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="category_name[]" value="'.$proposal['category_name'].'" type="checkbox">
             </td>';
         echo '</tr>';
     }
@@ -616,7 +620,7 @@ function generateCategoryProposalRows()
 function generateStatusSelectOptions($select_name) {
     echo '<select name="'.$select_name.'" id="'.$select_name.'">';
     echo '<option value="all" '.getSelectSessionDefaultState($select_name, 'all').' >all</option>';
-    foreach(['approved', 'pending', 'rejected'] as $status) {
+    foreach(['approved', 'pending'] as $status) {
         echo '<option value="'.$status.'" '.getSelectSessionState($select_name, $status) .' >'.$status.'</option>';
     }
     echo '</select>';
