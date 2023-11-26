@@ -32,7 +32,7 @@ function fetch_valid_column_filters($table)
     switch ($table){
        case "Account":
             return $allowed_filters_for_Account = [
-                'id' => function ($value) {
+                'account_id' => function ($value) {
                     return filter_var($value, FILTER_VALIDATE_INT) !== false && $value > 0;
                 },
                 'email' => function ($value) {
@@ -48,12 +48,11 @@ function fetch_valid_column_filters($table)
                     return preg_match('/^\w+$/', $value) && strlen($value) <= 128;
                 },
                 'account_type' => function ($value) {
-                    // Assuming account types are predefined, you might check against a list of valid types.
-                    $validAccountTypes = ['user', 'moderator', 'administrator'];
+                    $validAccountTypes = ['regular', 'moderator', 'administrator'];
                     return in_array($value, $validAccountTypes, true);
                 },
-                'status' => function ($value) {
-                    $validStatuses = ['active', 'inactive', 'banned']; // TODO add statuses
+                'account_status' => function ($value) {
+                    $validStatuses = ['active', 'inactive', 'banned'];
                     return in_array($value, $validStatuses, true);
                 },
             ];
@@ -67,9 +66,8 @@ function fetch_valid_column_filters($table)
                     // Ensure the input is a valid datetime string
                     return DateTime::createFromFormat('Y-m-d H:i:s', $value) !== false;
                 },
-                'status' => function ($value) {
-                    // If statuses are predefined, validate against a list of valid statuses.
-                    $validStatuses = ['active', 'inactive', 'pending'];
+                'category_status' => function ($value) {
+                    $validStatuses = ['approved', 'rejected', 'pending'];
                     return in_array($value, $validStatuses, true) && strlen($value) <= 64;
                 },
                 'super_category' => function ($value) {
@@ -1359,7 +1357,6 @@ function get_pdo_statement($query, $id_array) {
             $stmt->bindValue(":$key", $value);
         }
     }
-    $stmt->execute();
     return $stmt;
 }
 
@@ -1371,18 +1368,33 @@ function insert_into_table($table, array &$id_array) {
     $values = implode(', ', $values_array);
     $columns = implode(', ', $columns_array);
     $query = "INSERT INTO $table ($columns) VALUES ($values)";
-    return get_pdo_statement($query, $id_array);
+    $stmt = get_pdo_statement($query, $id_array);
+    return $stmt->execute();
 }
 
 function update_table_column($table, $update_query, $id_string, $id_array) {
     $query = "UPDATE $table $update_query WHERE $id_string";
-    return get_pdo_statement($query, $id_array);
+    $stmt = get_pdo_statement($query, $id_array);
+    return  $stmt->execute();
+}
+
+function find_table_column($return_column, $table, $id_array) {
+    $query_parts = [];
+    foreach($id_array as $attribute => $value) {
+        array_push($query_parts, "$attribute = :$attribute");
+    }
+    $query = "SELECT $return_column FROM $table WHERE ".implode(' AND ', $query_parts);
+    $stmt = get_pdo_statement($query, $id_array);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result[$return_column] : null;
 }
 
 function fetch_table_column($table, $return_id, $id_array, $id_string)
 {
     $query = "SELECT $return_id FROM $table WHERE $id_string";
     $stmt = get_pdo_statement($query, $id_array);
+    $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result ? $result[$return_id] : null;
 }
@@ -1390,6 +1402,7 @@ function fetch_table_column($table, $return_id, $id_array, $id_string)
 function fetch_table_entry($table, $return_id, $id_array, $id_string) {
     $query = "SELECT $return_id FROM $table WHERE $id_string";
     $stmt = get_pdo_statement($query, $id_array);
+    $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result;
 }
@@ -1397,7 +1410,7 @@ function fetch_table_entry($table, $return_id, $id_array, $id_string) {
 function fetch_table_columns($query, $id_array)
 {
     $stmt = get_pdo_statement($query, $id_array);
-
+    $stmt->execute();
     // Extract the values of the specified column into an array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -2002,6 +2015,14 @@ function getPopupMessage() {
     $message['message'] = $_SESSION['POPUP']['message'];
     unset($_SESSION['POPUP']);
     return $message;
+}
+
+function loadInputData(&$method, &$input_data, &$columns) {
+    foreach($columns as $column) {
+        if(isset($method[$column]) && !empty($method[$column])) {
+            $input_data[$column] = $method[$column];
+        }
+    }
 }
 
 ?>

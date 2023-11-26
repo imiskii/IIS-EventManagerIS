@@ -1,26 +1,39 @@
 <?php
-// FIXME = queries accepting even when they shouldn't
 require_once "../common/db_handler.php";
+require_once '../common/input_validator.php';
+
 session_start();
-$db = connect_to_db();
 
-$category_columns = ['category_name', 'category_description'];
-$session_category_columns = array_map(function($value) {
-    return 'suggest-category_'.$value;
-}, $category_columns);
-storeInSession($_GET, $category_columns, 'suggest-category_');
-
-if(!checkRequired($_GET, $category_columns)) {
-    //TODO: display error message
+if(!userIsLoggedIn() || !verifyToken($_POST)) {
+    setPopupMessage('error', 'unauthorized access!');
     redirect('../index.php');
 }
 
-$id_array = [];
-populateArray($_GET, $id_array, $category_columns);
-$id_array['category_status'] = 'pending';
-$id_array['account_id'] = getUserAttribute('account_id');
-if (insert_into_table('Category', $id_array)) {
-    unsetSessionAttributes($session_category_columns);
+$db = connect_to_db();
+
+$valid_columns = ['category_name', 'category_description'];
+$input_data = [];
+loadInputData($_POST, $input_data, $valid_columns);
+
+$error_msg_array = [];
+if (!validateData($input_data, $error_msg_array)) {
+    setPopupMessage('error', implode(' ', $error_msg_array));
+    redirect('../index.php');
+}
+
+// FIXME: only compare against Category name
+if ($status = find_table_column('category_status', 'Category', $input_data)) {
+    setPopupMessage('error', "Given category already exists with status \'$status\'.");
+    redirect('../index.php');
+}
+
+$input_data['category_status'] = 'pending';
+$input_data['account_id'] = getUserAttribute('account_id');
+
+if (insert_into_table('Category', $input_data)) {
+    setPopupMessage('success', 'category submitted successfully!');
+} else {
+    setPopupMessage('error', 'could not insert values into database.');
 }
 
 redirect('../index.php');

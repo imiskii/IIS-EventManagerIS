@@ -74,7 +74,7 @@ CREATE TABLE Address (
     zip INT,
     city VARCHAR(128),
     street VARCHAR(128),
-    street_number VARCHAR(128), -- VARCHAR so it is possible to type 1982/54 etc.
+    street_number INT,
     state VARCHAR(128),
     address_description MEDIUMTEXT,
     date_of_creation DATETIME, -- FIXME: Do we need this?

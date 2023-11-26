@@ -1,28 +1,39 @@
 <?php
 
 require_once "../common/db_handler.php";
+require_once '../common/input_validator.php';
+
 session_start();
+
+if(!userIsLoggedIn() || !verifyToken($_POST)) {
+    setPopupMessage('error', 'unauthorized access!');
+    redirect('../index.php');
+}
+
 $db = connect_to_db();
 
-$address_columns = ['country','city','street','street_number', 'zip', 'state', 'address_description'];
-// $session_address_columns = array_map(function($value) {
-//     return 'suggest-location_'.$value;
-// }, $address_columns);
-// storeInSession($_GET, $address_columns, 'suggest-location_');
+$valid_columns = ['country','city','street','street_number', 'zip', 'state', 'address_description'];
+$input_data = [];
+loadInputData($_POST, $input_data, $valid_columns);
 
-//if(!checkRequired($_GET, ['country','city','street','street_number'])) {
-    //TODO: display error message
-    //redirect('../index.php');
-//}
+$error_msg_array = [];
+if (!validateData($input_data, $error_msg_array)) {
+    setPopupMessage('error', implode(' ', $error_msg_array));
+    redirect('../index.php');
+}
 
- json_encode($_POST);
+if ($status = find_table_column('address_status', 'Address', $input_data)) {
+    setPopupMessage('error', "Given address already exists with status \'".$status."\'.");
+    redirect('../index.php');
+}
 
-$id_array = [];
-populateArray($_GET, $id_array, $address_columns);
-$id_array['address_status'] = 'pending';
-$id_array['account_id'] = getUserAttribute('account_id');
-if (insert_into_table('Address', $id_array)) {
-    unsetSessionAttributes($session_address_columns);
+$input_data['address_status'] = 'pending';
+$input_data['account_id'] = getUserAttribute('account_id');
+
+if (insert_into_table('Address', $input_data)) {
+    setPopupMessage('success', 'location submitted successfully!');
+} else {
+    setPopupMessage('error', 'could not insert values into database.');
 }
 
 redirect('../index.php');

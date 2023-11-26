@@ -16,6 +16,7 @@ if(!userIsLoggedIn()) {
     redirectForce('index.php');
 }
 
+generateSessionToken();
 updateSessionReturnPage();
 
 makeHead("Eventer | Create Event");
@@ -30,7 +31,8 @@ makeHeader();
             <h3>Propose new Category</h3>
             <span class="close-edit-btn" id="close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form name="suggest-category" action="scripts/suggest-category.php" method="get">
+        <form name="suggest-category" action="scripts/suggest-category.php" method="post">
+            <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
                 <p>Name of new Category</p>
                 <input type="text" id="category_name" name="category_name" value="<?php echoSessionVal('suggest-category_category_name', ""); ?>" placeholder="Category name">
@@ -48,7 +50,8 @@ makeHeader();
             <h3>Propose new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form name="suggest-location" action="scripts/request-handler.php/Address" method='post'>
+        <form name="suggest-location" action="scripts/suggest-location.php" method='post'>
+            <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <span>
                 <div class="label-input">
                     <p>Country</p>
@@ -56,17 +59,17 @@ makeHeader();
                 </div>
                 <div class="label-input">
                     <p>City/Town</p>
-                    <input type="text" id="city" required name='city'placeholder="City name/Town name" value="<?php echoSessionVal('suggest-location_city', ''); ?> >
+                    <input type="text" id="city" required name='city'placeholder="City name/Town name" value="<?php echoSessionVal('suggest-location_city', ''); ?>" >
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>Street name</p>
-                    <input type="text" id="street" name="street" required placeholder="Street name" value="<?php echoSessionVal('suggest-location_street', ''); ?> >
+                    <input type="text" id="street" name="street" required placeholder="Street name" value="<?php echoSessionVal('suggest-location_street', ''); ?>" >
                 </div>
                 <div class="label-input">
                     <p>Street number</p>
-                    <input type="number" id="street_number" required  name="street_number" value="<?php echoSessionVal('suggest-location_street_number', ''); ?> placeholder="Street number" onclick="checkNegativeInput()">
+                    <input type="number" id="street_number" required  name="street_number" value="<?php echoSessionVal('suggest-location_street_number', ''); ?>" placeholder="Street number" onclick="checkNegativeInput()">
                 </div>
             </span>
             <span>
