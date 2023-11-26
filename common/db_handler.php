@@ -1451,6 +1451,17 @@ function fetch_distinct_table_columns($table, $return_id, $id_array, $id_string)
     return fetch_table_columns($query, $id_array);
 }
 
+function find_table_row($table, $id_array) {
+    $query_parts = [];
+    foreach($id_array as $attribute => $value) {
+        array_push($query_parts, "$attribute = :$attribute");
+    }
+    $query = "SELECT * FROM $table WHERE ".implode(' AND ', $query_parts);
+    $stmt = get_pdo_statement($query, $id_array);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 function check_user_ownership($db, $table, $id_array, $id_string)
 {
     switch ($table) {

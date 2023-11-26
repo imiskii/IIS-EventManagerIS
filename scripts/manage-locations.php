@@ -16,7 +16,7 @@ $valid_columns = ['delete', 'change_status', 'address_id'];
 loadInputData($_POST, $input_data, $valid_columns);
 
 if(!key_exists('address_id', $input_data)) {
-    setPopupMessage('warning', 'no categories were selected');
+    setPopupMessage('warning', 'no locations were selected');
     redirect('../index/php');
 }
 

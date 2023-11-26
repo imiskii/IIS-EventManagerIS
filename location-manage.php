@@ -31,49 +31,47 @@ makeHeader();
             <h3>Create new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="scripts/create-location.php" method="post">
+        <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <span>
                 <div class="label-input">
                     <p>Country</p>
-                    <input type="text" id="country" placeholder="Country">
+                    <input type="text" name="country" id="country" placeholder="Country">
                 </div>
                 <div class="label-input">
                     <p>City/Town</p>
-                    <input type="text" id="city" placeholder="City name/Town name">
+                    <input type="text" id="city" name="city" placeholder="City name/Town name">
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>Street name</p>
-                    <input type="text" id="s_name" placeholder="Street name">
+                    <input type="text" id="s_name" name="street" placeholder="Street name">
                 </div>
                 <div class="label-input">
                     <p>Street number</p>
-                    <input type="number" id="s_num" placeholder="Street number" onclick="checkNegativeInput()">
+                    <input type="number" id="s_num" name="street_number" placeholder="Street number" onclick="checkNegativeInput()">
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>State/Province/Region</p>
-                    <input type="text" id="region" placeholder="State/Province/Region">
+                    <input type="text" id="region" name="state" placeholder="State/Province/Region">
                 </div>
                 <div class="label-input">
                     <p>ZIP code</p>
-                    <input type="text" id="zip" placeholder="ZIP code" oninput="checkNegativeInput(this)">
+                    <input type="text" id="zip" name="zip" placeholder="ZIP code" oninput="checkNegativeInput(this)">
                 </div>
             </span>
             <span>
                 <div class="label-input">
                     <p>Status</p>
-                    <select name="" id="E-status">
-                        <option value="enable">Enable</option>
-                        <option value="disable">Disable</option>
-                    </select>
+                    <?php generateStatusSelectOptions('address_status', 'E-status', false) ?>
                 </div>
             </span>
             <div class="label-input">
                 <p>Description</p>
-                <textarea id="E-desc" cols="30" rows="10"></textarea>
+                <textarea name="address_description" id="E-desc" cols="30" rows="10"></textarea>
             </div>
             <button type="submit" class="button-round-filled-green">Submit Location</button>
         </form>
