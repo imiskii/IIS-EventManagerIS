@@ -663,15 +663,15 @@ function generateLocationProposalRows()
     {
         echo '<tr>';
         echo '<td class="cell-center cell-small">'.$proposal['address_id'].'</td>';
-        echo '<td>'.$proposal['nick'].'</td>';
+        echo '<td>'.getColumn($proposal, 'nick').'</td>';
         echo '<td>'.$proposal['country'].'</td>';
         echo '<td>'.$proposal['city'].'</td>';
         echo '<td>'.$proposal['street'].'</td>';
         echo '<td class="cell-center cell-small">'.$proposal['street_number'].'</td>';
-        echo '<td>'.$proposal['state'].'</td>';
-        echo '<td class="cell-center cell-small">'.$proposal['zip'].'</td>';
+        echo '<td>'.getColumn($proposal, 'state').'</td>';
+        echo '<td class="cell-center cell-small">'.getColumn($proposal, 'zip').'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="address_id[]" value="'.$proposal['address_id'].'" type="checkbox">
             </td>';
         echo '</tr>';
     }
@@ -698,7 +698,7 @@ function generateLocationRows()
         echo '<td class="cell-center cell-small">'.$location['zip'].'</td>';
         echo '<td class="cell-center cell-small">'.$location['address_status'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="address_id[]" value="'.$location['address_id'].'" type="checkbox">
             </td>';
         echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('."'".$location['country']."'".', '
         ."'".$location['city']."'".', '."'".$location['street']."'".', '."'".$location['street_number']."'".', '."'".$location['state']."'".', '."'".$location['zip']."'".')">Edit</button></td>';
