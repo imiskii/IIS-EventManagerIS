@@ -768,6 +768,7 @@ function generateTicketOrdersRows($event_id)
         echo '<td>'.$ticket['last_name'].'</td>';
         echo '<td>'.$ticket['email'].'</td>';
         echo '<td>'.formatAddress($ticket).'</td>';
+        echo '<td>'.$ticket['time_from'].'</td>';
         echo '<td>'.$ticket['fee_name'].'</td>';
         echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">
@@ -793,6 +794,7 @@ function generateTicketRows($event_id)
         echo '<td>'.$ticket['last_name'].'</td>';
         echo '<td>'.$ticket['email'].'</td>';
         echo '<td>'.formatAddress($ticket).'</td>';
+        echo '<td>'.$ticket['time_from'].'</td>';
         echo '<td>'.$ticket['fee_name'].'</td>';
         echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">

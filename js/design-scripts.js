@@ -209,19 +209,23 @@ function toggleAddCategoryPopUp()
 
 /**
  * Show category form popup for editing existing category
- *
- * @param {*} c_name category name
- * @param {*} parent_id id of parent category
+ * 
+ * @param {string} c_name category name
+ * @param {string} parent_id id of parent category
+ * @param {string} desc Description
  */
-function toggleEditCategoryPopUp(c_name, parent_id)
+function toggleEditCategoryPopUp(c_name, parent_id, desc)
 {
-    const popup = document.getElementById('add-category-popup');
-    const closeBtn = document.getElementById('close-category-popup-btn');
-
+    const popup = document.getElementById('edit-category-popup');
+    const closeBtn = document.getElementById('edit-close-category-popup-btn');
+    
     const nameInput = document.getElementById('category-name');
     const parentSelect = document.getElementById('category-parent');
+    const descInput = document.getElementById('c-desc');
+
     nameInput.value = c_name;
     parentSelect.value = parent_id;
+    descInput.textContent = desc;
 
     popup.classList.add('active');
 
@@ -250,25 +254,27 @@ function toggleAddLocationPopUp()
 
 /**
  * Show category form popup for editing existing location
- *
- * @param {*} country location country
- * @param {*} city location city
- * @param {*} s_name street name
- * @param {*} s_num street number
- * @param {*} region state/region/province
- * @param {*} zip ZIP code
+ * 
+ * @param {string} country location country
+ * @param {string} city location city
+ * @param {string} s_name street name
+ * @param {string} s_num street number
+ * @param {string} region state/region/province
+ * @param {string} zip ZIP code
+ * @param {string} desc Description
  */
-function toggleEditLocationPopUp(country, city, s_name, s_num, region, zip)
+function toggleEditLocationPopUp(country, city, s_name, s_num, region, zip, desc)
 {
-    const popup = document.getElementById('add-location-popup');
-    const closeBtn = document.getElementById('close-location-popup-btn');
+    const popup = document.getElementById('edit-location-popup');
+    const closeBtn = document.getElementById('E-close-location-popup-btn');
 
-    const countryInput = document.getElementById('country');
-    const cityInput = document.getElementById('city');
-    const s_nameInput = document.getElementById('s_name');
-    const s_numInput = document.getElementById('s_num');
-    const regionInput = document.getElementById('region');
-    const zipInput = document.getElementById('zip');
+    const countryInput = document.getElementById('E-country');
+    const cityInput = document.getElementById('E-city');
+    const s_nameInput = document.getElementById('E-s_name');
+    const s_numInput = document.getElementById('E-s_num');
+    const regionInput = document.getElementById('E-region');
+    const zipInput = document.getElementById('E-zip');
+    const descInput = document.getElementById('E-desc');
 
     countryInput.value = country;
     cityInput.value = city;
@@ -276,6 +282,7 @@ function toggleEditLocationPopUp(country, city, s_name, s_num, region, zip)
     s_numInput.value = s_num;
     regionInput.value = region;
     zipInput.value = zip;
+    descInput.textContent = desc;
 
     popup.classList.add('active');
 

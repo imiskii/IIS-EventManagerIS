@@ -27,7 +27,7 @@ makeHeader();
     <!-- Edit profile popup -->
     <div class="profile-popup" id="profile-edit-popup">
         <div class="profile-popup-top-bar">
-            <h3>Edit Profile</h3>
+            <h3>Create/Edit Profile</h3>
             <span class="close-edit-btn" id="close-edit-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <form action="">
@@ -49,7 +49,10 @@ makeHeader();
                 <p>Email</p>
                 <input type="text" id="email">
             </div>
-            <?php makeRoleSelector(); ?>
+            <div class="label-input">
+                <p>Type</p>
+                <?php makeRoleSelector() ?>
+            </div>
             <span>
                 <div class="label-input">
                     <p>New password</p>

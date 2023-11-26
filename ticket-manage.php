@@ -44,6 +44,7 @@ makeHeader();
                     <th>Last name</th>
                     <th>Email</th>
                     <th>Location</th>
+                    <th>Time</th>
                     <th>Ticket Type</th>
                     <th>Count</th>
                     <th><i class="fa-solid fa-check"></i></th>
@@ -79,6 +80,7 @@ makeHeader();
                     <th>Last name</th>
                     <th>Email</th>
                     <th>Location</th>
+                    <th>Time</th>
                     <th>Ticket Type</th>
                     <th>Count</th>
                     <th><i class="fa-solid fa-check"></i></th>

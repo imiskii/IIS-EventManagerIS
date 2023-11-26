@@ -27,7 +27,7 @@ makeHeader();
     <!-- Create new Location popup -->
     <div class="profile-popup" id="add-location-popup">
         <div class="profile-popup-top-bar">
-            <h3>Propose new Location</h3>
+            <h3>Create new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <form action="">
@@ -61,6 +61,72 @@ makeHeader();
                     <input type="text" id="zip" placeholder="ZIP code" oninput="checkNegativeInput(this)">
                 </div>
             </span>
+            <span>
+                <div class="label-input">
+                    <p>Status</p>
+                    <select name="" id="E-status">
+                        <option value="enable">Enable</option>
+                        <option value="disable">Disable</option>
+                    </select>
+                </div>
+            </span>
+            <div class="label-input">
+                <p>Description</p>
+                <textarea id="E-desc" cols="30" rows="10"></textarea>
+            </div>
+            <button type="submit" class="button-round-filled-green">Submit Location</button>
+        </form>
+    </div>
+    <!-- Edit Location popup -->
+    <div class="profile-popup" id="edit-location-popup">
+        <div class="profile-popup-top-bar">
+            <h3>Edit Location</h3>
+            <span class="close-edit-btn" id="E-close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <form action="">
+            <span>
+                <div class="label-input">
+                    <p>Country</p>
+                    <input type="text" id="E-country" placeholder="Country">
+                </div>
+                <div class="label-input">
+                    <p>City/Town</p>
+                    <input type="text" id="E-city" placeholder="City name/Town name">
+                </div>
+            </span>
+            <span>
+                <div class="label-input">
+                    <p>Street name</p>
+                    <input type="text" id="E-s_name" placeholder="Street name">
+                </div>
+                <div class="label-input">
+                    <p>Street number</p>
+                    <input type="number" id="E-s_num" placeholder="Street number" onclick="checkNegativeInput()">
+                </div>
+            </span>
+            <span>
+                <div class="label-input">
+                    <p>State/Province/Region</p>
+                    <input type="text" id="E-region" placeholder="State/Province/Region">
+                </div>
+                <div class="label-input">
+                    <p>ZIP code</p>
+                    <input type="text" id="E-zip" placeholder="ZIP code" oninput="checkNegativeInput(this)">
+                </div>
+            </span>
+            <span>
+                <div class="label-input">
+                    <p>Status</p>
+                    <select name="" id="E-status">
+                        <option value="enable">Enable</option>
+                        <option value="disable">Disable</option>
+                    </select>
+                </div>
+            </span>
+            <div class="label-input">
+                <p>Description</p>
+                <textarea id="E-desc" cols="30" rows="10"></textarea>
+            </div>
             <button type="submit" class="button-round-filled-green">Submit Location</button>
         </form>
     </div>

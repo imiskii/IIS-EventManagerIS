@@ -33,6 +33,38 @@ makeHeader();
         <form action="">
             <div class="label-input">
                 <p>Name of new Category</p>
+                <input type="text" placeholder="Category name">
+            </div>
+            <div class="label-input">
+                <p>Parrent Category to new created category</p>
+                <select name="">
+                    <option value="root">Root</option>
+                    <?php generateCategorySelectOptions() ?>
+                </select>
+            </div>
+            <div class="label-input">
+                <p>Status</p>
+                <select name="">
+                    <option value="enable">Enable</option>
+                    <option value="disable">Disable</option>
+                </select>
+            </div>
+            <div class="label-input">
+                <p>Description</p>
+                <textarea cols="30" rows="10"></textarea>
+            </div>
+            <button type="submit" class="button-round-filled-green">Submit Category</button>
+        </form>
+    </div>
+    <!-- Edit Category popup -->
+    <div class="profile-popup" id="edit-category-popup">
+        <div class="profile-popup-top-bar">
+            <h3>Edit Category</h3>
+            <span class="close-edit-btn" id="edit-close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <form action="">
+            <div class="label-input">
+                <p>Name of new Category</p>
                 <input type="text" id="category-name" placeholder="Category name">
             </div>
             <div class="label-input">
@@ -41,6 +73,17 @@ makeHeader();
                     <option value="root">Root</option>
                     <?php generateCategorySelectOptions() ?>
                 </select>
+            </div>
+            <div class="label-input">
+                <p>Status</p>
+                <select name="" id="c-status">
+                    <option value="enable">Enable</option>
+                    <option value="disable">Disable</option>
+                </select>
+            </div>
+            <div class="label-input">
+                <p>Description</p>
+                <textarea id="c-desc" cols="30" rows="10"></textarea>
             </div>
             <button type="submit" class="button-round-filled-green">Submit Category</button>
         </form>
