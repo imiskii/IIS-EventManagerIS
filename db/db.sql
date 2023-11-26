@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS Event;
 DROP TABLE IF EXISTS Category;
 DROP TABLE IF EXISTS Account;
+DROP TRIGGER IF EXISTS update_event_rating_after_insert;
+DROP TRIGGER IF EXISTS update_event_rating_after_update;
+DROP TRIGGER IF EXISTS update_event_rating_after_delete;
 
 ALTER DATABASE xlazik00 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
@@ -149,7 +152,6 @@ CREATE TABLE Photos (
     REFERENCES Address(address_id) ON DELETE CASCADE
 );
 
--- FIXME: event rating needs to be computed from comment rating
 CREATE TABLE Comment (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     time_of_posting DATETIME,
@@ -172,6 +174,54 @@ CREATE TABLE Comment (
     FOREIGN KEY (event_id)
     REFERENCES Event(event_id) ON DELETE CASCADE
 );
+
+DELIMITER //
+
+CREATE TRIGGER update_event_rating_after_insert
+AFTER INSERT ON Comment
+FOR EACH ROW
+BEGIN
+    UPDATE Event
+    SET rating = (
+        SELECT AVG(comment_rating)
+        FROM Comment
+        WHERE event_id = NEW.event_id AND comment_rating IS NOT NULL
+    )
+    WHERE event_id = NEW.event_id;
+END;
+
+//
+
+CREATE TRIGGER update_event_rating_after_update
+AFTER UPDATE ON Comment
+FOR EACH ROW
+BEGIN
+    UPDATE Event
+    SET rating = (
+        SELECT AVG(comment_rating)
+        FROM Comment
+        WHERE event_id = OLD.event_id AND comment_rating IS NOT NULL
+    )
+    WHERE event_id = OLD.event_id;
+END;
+
+//
+
+CREATE TRIGGER update_event_rating_after_delete
+AFTER DELETE ON Comment
+FOR EACH ROW
+BEGIN
+    UPDATE Event
+    SET rating = (
+        SELECT AVG(comment_rating)
+        FROM Comment
+        WHERE event_id = OLD.event_id AND comment_rating IS NOT NULL
+    )
+    WHERE event_id = OLD.event_id;
+END;
+
+//
+DELIMITER ;
 
 -- Account table
 INSERT INTO Account (email, first_name, last_name, nick, password, account_type, profile_icon, account_status)
@@ -211,16 +261,16 @@ VALUES
 -- Event table
 INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)
 VALUES
-    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, 4.5, NOW(), NOW(), 'approved', 'Koncerty', 1),
-    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, 4.2, NOW(), NOW(), 'approved', 'Divadlo', 2),
-    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, 3.0, NOW(), NOW(), 'approved', 'Výstavy', 3),
-    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, 2.8, NOW(), NOW(), 'approved', 'Festivaly', 4),
-    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, 1.3, NOW(), NOW(), 'approved', 'Workshopy', 5),
-    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, 4.6, NOW(), NOW(), 'approved', 'Kino', 6),
-    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, 2.7, NOW(), NOW(), 'approved', 'Sportovní akce', 7),
-    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, 4.4, NOW(), NOW(), 'approved', 'Zábavní parky', 8),
-    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, 4.1, NOW(), NOW(), 'approved', 'Cestování', 9),
-    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, 5.0, NOW(), NOW(), 'approved', 'Společenské události', 10);
+    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, NULL, NOW(), NOW(), 'approved', 'Koncerty', 1),
+    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, NULL, NOW(), NOW(), 'approved', 'Divadlo', 2),
+    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, NULL, NOW(), NOW(), 'approved', 'Výstavy', 3),
+    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, NULL, NOW(), NOW(), 'approved', 'Festivaly', 4),
+    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, NULL, NOW(), NOW(), 'approved', 'Workshopy', 5),
+    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, NULL, NOW(), NOW(), 'approved', 'Kino', 6),
+    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, NULL, NOW(), NOW(), 'approved', 'Sportovní akce', 7),
+    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, NULL, NOW(), NOW(), 'approved', 'Zábavní parky', 8),
+    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, NULL, NOW(), NOW(), 'approved', 'Cestování', 9),
+    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, NULL, NOW(), NOW(), 'approved', 'Společenské události', 10);
 
 -- Addresses
 INSERT INTO Address (country, zip, city, street, street_number, state, address_description, date_of_creation, address_status, account_id)
@@ -460,13 +510,21 @@ VALUES
 -- Comment
 INSERT INTO Comment (time_of_posting, comment_text, account_id, super_comment, event_id, comment_rating)
 VALUES
-    ('2023-05-02 08:45:00', 'Skvělý koncert, nemohl jsem si ho nechat ujít!', 1, NULL, 1, 5),
-    ('2023-06-16 15:20:00', 'Hamlet byl úžasný, skvělá herecká představení!', 2, NULL, 2, 4),
-    ('2023-07-11 12:30:00', 'Výstava mě opravdu inspiruje, skvělé umění!', 3, NULL, 3, 3),
-    ('2023-08-06 22:10:00', 'Festival elektronické hudby mě dostal do varu, super zážitek!', 4, NULL, 4, 5),
-    ('2023-09-03 16:40:00', 'Workshop byl skvělý, hodně jsem se naučil!', 5, NULL, 5, 4),
-    ('2023-10-21 19:05:00', 'Film "Přežít" byl napínavý, moc dobrý!', 6, NULL, 6, 4),
-    ('2023-11-13 10:55:00', 'Běžecký maratón byl úžasný, skvělá organizace!', 7, NULL, 7, 4),
-    ('2023-12-04 14:25:00', 'Zábavní park byl parádní, atrakce jsou skvělé!', 8, NULL, 8, 5),
-    ('2024-01-19 20:15:00', 'Cestování po Asii bylo dobrodružství, krásné zážitky!', 9, NULL, 9, 5),
-    ('2024-02-09 21:30:00', 'Společenský večírek byl elegantní, skvělá atmosféra!', 10, NULL, 10, 4);
+    ('2023-06-18 17:30:00', 'Fantastický koncert skupiny XYZ, nejlepší zážitek!', 1, NULL, 1, 5),
+    ('2023-07-13 14:45:00', 'Hamlet byl emotivní, skvělá herecká představení!', 2, NULL, 2, 4),
+    ('2023-08-10 01:20:00', 'Výstava moderního umění mě oslovila, úžasná tvorba!', 3, NULL, 3, 3),
+    ('2023-09-06 19:10:00', 'Festival elektronické hudby byl nezapomenutelný, skvělá hudba!', 4, NULL, 4, 5),
+    ('2023-10-24 22:00:00', 'Fotografický workshop byl skvělý, přínosné informace!', 5, NULL, 5, 4),
+    ('2023-11-16 13:40:00', 'Film "Přežít" byl napínavý, skvělý scénář!', 6, NULL, 6, 4),
+    ('2023-12-07 16:00:00', 'Běžecký maratón byl úžasný, skvělá atmosféra!', 7, NULL, 7, 4),
+    ('2024-01-23 21:30:00', 'Zábavní park nabídl adrenalinovou jízdu, skvělá zábava!', 8, NULL, 8, 5),
+    ('2024-02-14 23:45:00', 'Cestování po Asii bylo dojemné, krásné vzpomínky!', 9, NULL, 9, 4),
+    ('2023-06-20 11:30:00', 'Skvělý koncert skupiny XYZ, úžasná hudba!', 10, NULL, 1, 4),
+    ('2023-07-15 18:20:00', 'Hamlet byl skvělý, emocionální zážitek!', 1, NULL, 2, 5),
+    ('2023-08-12 09:45:00', 'Výstava moderního umění mě nadchla, skvělá prezentace!', 2, NULL, 3, 3),
+    ('2023-09-08 14:30:00', 'Festival elektronické hudby byl úžasný, nejlepší DJ!', 3, NULL, 4, 4),
+    ('2023-10-26 16:50:00', 'Fotografický workshop byl inspirativní, skvělé tipy!', 4, NULL, 5, 3),
+    ('2023-11-18 20:05:00', 'Film "Přežít" byl skvělý, napínavý příběh!', 5, NULL, 6, 5),
+    ('2023-12-09 11:35:00', 'Běžecký maratón byl úžasný, skvělá trasa!', 6, NULL, 7, 5),
+    ('2024-01-25 15:20:00', 'Zábavní park byl skvělý, adrenalinové atrakce!', 7, NULL, 8, 4),
+    ('2024-02-17 17:40:00', 'Cestování po Asii bylo dobrodružství, nezapomenutelné zážitky!', 8, NULL, 9, 5);

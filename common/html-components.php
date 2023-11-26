@@ -179,7 +179,7 @@ function generateEventCard(&$event, $card_type = null) {
     echo '<div class="name-rating">';
     echo '    <h3>' . $event["event_name"] . '</h3>';
     echo '    <div class="rating">';
-    echo '        <p>' . $event["rating"] . '</p>';
+    echo '        <p>' . ($event["rating"] ?? '-'). '</p>';
     echo '        <i class="fa-regular fa-star"></i>';
     echo '    </div>';
     echo '</div>';
