@@ -45,6 +45,7 @@ function generateProfilMenu()
     ?>
 
     <div class="profile-menu">
+        <script> window.onload = refreshImage('profile_icon', '<?php echo getUserIcon(); ?>') </script>
         <ul>
             <li><i class='fa-solid fa-user'></i><a href="profile.php?account_id=<?php echoUserAttribute('account_id') ?>">Profile</a></li>
 
@@ -93,7 +94,7 @@ function makeHeader()
                     if (userIsLoggedIn())
                     {
                         echo '<div class="profile-icon" onclick="menuToggle();">';
-                        echo '<img src="'.getUserIcon().'">';
+                        echo '<img id="profile_icon" src="'.getUserIcon().'">';
                         echo "</div>";
                         generateProfilMenu();
                     }
@@ -428,7 +429,6 @@ function generateComments($eventID)
 
     foreach ($comments as $comment)
     {
-        // echo header (profile icon, nick, datetime)
         echo '
         <div class="comment">
             <div class="comment-header">
@@ -442,12 +442,10 @@ function generateComments($eventID)
                     </div>
                     <p class="rating-text">'.$comment['comment_rating'].'/5</p>
                     <i class="fa-regular fa-star"></i>
-                </span>
-        ';
+                </span>';
 
-        // if logged user is author of the comment or moderator or administrator
-        if (false) // FIXME
-        {
+        // if logged user is author of the comment or administrator
+        if (userIsAdmin() || getUserAttribute('account_id') == $comment['account_id']) {
             echo '
             <div class="comment-header-buttons">
                 <button class="button-round-filled" onclick="toggleEditCommentPopUp('.$comment['comment_id'].', '.nl2br($comment['comment_text']).')">Edit</button>
@@ -455,8 +453,7 @@ function generateComments($eventID)
                     <input type="hidden" value="'.$comment['comment_id'].'">
                     <button type="submit" class="button-round-filled">Delete</button>
                 </form>
-            </div>
-            ';
+            </div>';
         }
 
         // echo comment text
@@ -509,6 +506,7 @@ function makeProfileInfo($profileID)
         <img id="img-preview" src="<?php echo getUserIcon(); ?>">
         <form action="scripts/upload-profile-icon.php" method="post" enctype="multipart/form-data">
             <input type="file" id="file-input" name="profile-icon" onchange="previewFile()">
+            <script> window.onload = refreshImage('img-preview', '<?php echo getUserIcon(); ?>') </script>
             <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <button type="submit" class="button-round-filled">Change Profile Icon</button>
         </form>

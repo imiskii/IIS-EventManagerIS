@@ -25,7 +25,6 @@ makeHeader();
 
 <main class="event-detail-main-container">
     <div class="info-container">
-        <!-- Replace null with eventID !!! -->
         <?php makeEventInfo($event_id) ?>
     </div>
     <div class="part-lable">

@@ -5,7 +5,7 @@ require_once '../common/db_handler.php';
 session_start();
 $db = connect_to_db();
 
-if(!userIsLoggedIn() ) {
+if(!userIsLoggedIn() || !verifyToken($_POST)) {
     setPopupMessage('error', 'unauthorized access!');
     redirectForce('../index.php');
 }
