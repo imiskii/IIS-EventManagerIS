@@ -5,6 +5,7 @@ require_once "../common/db_handler.php";
 session_start();
 
 if (!verifyMethod('POST') || !verifyToken($_POST)) {
+    setPopupMessage('error', 'unauthorized access!');
     redirectForce('../index.php');
 }
 $db = connect_to_db();
@@ -25,7 +26,8 @@ if (!empty($conflicting_nick)) {
 }
 
 if($_POST['password'] != $_POST['password2']) {
-    echo 'Passwords do not match!';
+    setPopupMessage('error', 'passwords do not match!');
+    redirect('../index.php');
     exit;
 }
 

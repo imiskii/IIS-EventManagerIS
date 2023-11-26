@@ -13,7 +13,7 @@ if(!userIsModerator()) {
     redirectForce('index.php');
 }
 
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSessionReturnPage();
 $db = connect_to_db();
 
 updateSession($_GET, ["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "events_search_bar", "search_bar", 'event_id', 'event_status', 'nick'] );

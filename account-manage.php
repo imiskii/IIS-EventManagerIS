@@ -15,6 +15,7 @@ if(!userIsAdmin()) {
     redirectForce('index.php');
 }
 
+updateSessionReturnPage();
 updateSession($_GET, ["search-bar", "account_status", 'account_type_filter']);
 
 makeHead("Eventer | Account Management");

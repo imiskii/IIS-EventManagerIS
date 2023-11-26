@@ -1374,6 +1374,11 @@ function insert_into_table($table, array &$id_array) {
     return get_pdo_statement($query, $id_array);
 }
 
+function update_table_column($table, $update_query, $id_string, $id_array) {
+    $query = "UPDATE $table $update_query WHERE $id_string";
+    return get_pdo_statement($query, $id_array);
+}
+
 function fetch_table_column($table, $return_id, $id_array, $id_string)
 {
     $query = "SELECT $return_id FROM $table WHERE $id_string";
@@ -1531,12 +1536,30 @@ function redirectForce(string $path) {
     exit;
 }
 
+// TODO: get - no special chars echo - htmlspecialchars
 function getUserAttribute($attribute) {
-    return htmlspecialchars($_SESSION["USER"][$attribute]);
+    return $_SESSION['USER'][$attribute] ?? null;
+}
+
+function setUserAttribute($attribute, $value) {
+    $_SESSION['USER'][$attribute] = $value;
 }
 
 function echoUserAttribute($attribute) {
     echo getUserAttribute($attribute);
+}
+
+function getUserIcon(&$user = null) {
+    $default = 'user-icons/default.webp';
+    if ($user) {
+        return $user['profile_icon'] ?? $default;
+    } else {
+        return $_SESSION['USER']['profile_icon'] ?? $default;
+    }
+}
+
+function getEventIcon(&$event) {
+    return $event['event_icon'] ?? 'event-icons/default.jpg';
 }
 
 function getProfileAttributes($account_id) {
@@ -1957,6 +1980,28 @@ function getTickets($event_id, $confirmed) {
 
 function generateSessionToken() {
     $_SESSION['token'] = bin2hex(random_bytes(32));
+}
+
+function updateSessionReturnPage() {
+    $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+}
+
+function setPopupMessage($type, $message) {
+    if (!isset($_SESSION['POPUP'])) {
+        $_SESSION['POPUP'] = [];
+    }
+    $_SESSION['POPUP']['message'] = "$message";
+    $_SESSION['POPUP']['type'] = $type;
+}
+
+function getPopupMessage() {
+    if(!isset($_SESSION['POPUP'])) {
+        return null;
+    }
+    $message['type'] = $_SESSION['POPUP']['type'];
+    $message['message'] = $_SESSION['POPUP']['message'];
+    unset($_SESSION['POPUP']);
+    return $message;
 }
 
 ?>

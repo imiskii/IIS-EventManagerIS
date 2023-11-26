@@ -16,10 +16,10 @@ if(!userIsLoggedIn()) {
     redirectForce('index.php');
 }
 
+updateSessionReturnPage();
+
 makeHead("Eventer | Create Event");
 makeHeader();
-
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
 ?>
 

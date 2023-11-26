@@ -16,15 +16,12 @@ if (!idMatchesUser()) {
 }
 
 generateSessionToken();
+updateSessionReturnPage();
 $db = connect_to_db();
-
 
 makeHead("Eventer | Profile");
 makeHeader();
 
-
-
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 ?>
 
 <main class="profile-main-container">

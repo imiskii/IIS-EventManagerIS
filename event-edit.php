@@ -15,7 +15,7 @@ if (!userIsModerator() || is_null($event_id = $_GET['event_id'] ?? null)) {
     redirectForce('index.php');
 }
 
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSessionReturnPage();
 $db = connect_to_db();
 
 makeHead("Eventer | Edit Event");

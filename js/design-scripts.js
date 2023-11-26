@@ -463,6 +463,12 @@ function showAlert(type, msg)
         closeBtn.style.background = "#67FF5D";
         alertMsg.textContent = "Success: " + msg;
     }
+    else if (type === "error") {
+        alertBox.style.backgroundColor = "#ff6442";
+        alertBox.style.borderLeft = "8px solid #ff4820";
+        closeBtn.style.background = "#ff4820";
+        alertMsg.textContent = "Error: " + msg;
+    }
 
     // Show alert
     alertBox.classList.remove('hide');
@@ -481,4 +487,21 @@ function closeAlert()
 {
     var alertBox = document.getElementById('alert');
     alertBox.classList.add('hide');
+}
+
+function previewFile() {
+    var preview = document.getElementById('img-preview');
+    var fileInput = document.getElementById('file-input');
+    var file = fileInput.files[0];
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+        preview.src = reader.result;
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = '';
+    }
 }

@@ -14,7 +14,7 @@ if(!userIsModerator()) {
     redirectForce('index.php');
 }
 
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSessionReturnPage();
 updateSession($_GET, ['search-bar', 'address_status']);
 $db = connect_to_db();
 

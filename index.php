@@ -9,7 +9,7 @@
 require_once "common/html-components.php";
 
 session_start();
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+updateSessionReturnPage();
 $db = connect_to_db();
 
 updateSession($_GET, ["categories", "locations", "min_rating", "max_rating", "date_from", "date_to", "events_search_bar"] );

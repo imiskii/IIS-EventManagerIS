@@ -93,7 +93,7 @@ function makeHeader()
                     if (userIsLoggedIn())
                     {
                         echo '<div class="profile-icon" onclick="menuToggle();">';
-                        echo '<img src="'.selectUserIcon($_SESSION["USER"]["user_icon"]).'">';
+                        echo '<img src="'.getUserIcon().'">';
                         echo "</div>";
                         generateProfilMenu();
                     }
@@ -104,6 +104,7 @@ function makeHeader()
                         echo "<a href='signup.php' class='button-sharp-filled'>sign up</a>";
                         echo "</div>";
                     }
+                    makeAlertPopup();
                 ?>
                 <div class="profile-menu">
                     <h3>Name Surname<br><span>Normall user</span></h3>
@@ -137,10 +138,20 @@ function makeFooter()
             <p>&copy; The best Team</p>
         </div>
     </footer>
+    <?php
+    if(!is_null($message = getPopupMessage())) {
+        ?>
+        <script>
+            window.onload = showAlert('<?php echo $message['type'] ?>', '<?php echo $message['message'] ?>');
+        </script>
+        <?php
+    }
+    ?>
     </body>
     </html>
 
     <?php
+
 }
 
 
@@ -164,7 +175,7 @@ function makeAlertPopup()
 
 function generateEventCard(&$event, $card_type = null) {
     echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card'.$card_type.'">';
-    echo '<img src="'.selectEventIcon($event['event_icon']).'">';
+    echo '<img src="'.getEventIcon($event).'">';
     echo '<div class="name-rating">';
     echo '    <h3>' . $event["event_name"] . '</h3>';
     echo '    <div class="rating">';
@@ -365,14 +376,6 @@ function generateEventTickets($eventID)
     }
 }
 
-function selectUserIcon(&$path) {
-    return $path ?? "user-icons/default.webp";
-}
-
-function selectEventIcon(&$path) {
-    return $path ?? "event-icons/default.jpg";
-}
-
 /**
  * Make information section for event
  *
@@ -399,7 +402,7 @@ function makeEventInfo($eventID)
         <h1 class="image-index">1</h1>
     </div>
     <div class="icon-container">
-        <img src="'.selectEventIcon($event['event_icon']).'">
+        <img src="'.getEventIcon($event).'">
         <button class="button-round-filled" onclick="toggleGallery('.json_encode($event_images).')">Gallery</button>
     </div>
     <div class="description-container">
@@ -431,7 +434,7 @@ function generateComments($eventID)
             <div class="comment-header">
                 <span>
                     <div class="profile-icon">
-                        <img src="'.selectUserIcon($comment['profile_icon']).'">
+                        <img src="'.getUserIcon($comment).'">
                     </div>
                     <div class="comment-header-text">
                         <h3>'.$comment['nick'].'</h3>
@@ -498,33 +501,33 @@ function makeRoleSelector($id = "")
  */
 function makeProfileInfo($profileID)
 {
-    // get information from databese
-    $profile = getProfileAttributes($profileID);
-
+    // if user is logged in, user info is already stored in session
+    $icon = getUserAttribute('profile_icon')
     ?>
 
     <div class="icon-container">
-        <img src="<?php echo selectUserIcon($profile['user_icon']); ?>">
-        <form action="" method="post" enctype="multipart/form-data">
-            <input type="file">
+        <img id="img-preview" src="<?php echo getUserIcon(); ?>">
+        <form action="scripts/upload-profile-icon.php" method="post" enctype="multipart/form-data">
+            <input type="file" id="file-input" name="profile-icon" onchange="previewFile()">
+            <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <button type="submit" class="button-round-filled">Change Profile Icon</button>
         </form>
     </div>
     <div class="description-container">
         <div class="nick-container">
-            <h3><?php echo $profile['nick']; ?></h3>
-            <p><?php echo $profile['account_type']; ?></p>
+            <h3><?php echoUserAttribute('nick'); ?></h3>
+            <p><?php echoUserAttribute('account_type'); ?></p>
         </div>
         <div class="name-container">
-            <p><?php echo $profile['first_name']; ?></p>
-            <p><?php echo $profile['last_name']; ?></p>
+            <p><?php echoUserAttribute('first_name'); ?></p>
+            <p><?php echoUserAttribute('last_name'); ?></p>
         </div>
-        <p><?php echo $profile['email']; ?></p>
+        <p><?php echoUserAttribute('email'); ?></p>
         <span>
             <button class="button-round-filled" onclick="toggleEditProfilePopUp('Profile name', 'First name', 'Last name', 'Email', 'user')">Edit profile</button>
             <button class="button-round-filled" onclick="togglePasswordChangeProfilePopUp()">Change password</button>
             <form action="" method="post">
-                <input type="hidden" value="<?php echo $profile['account_id']; ?>">
+                <input type="hidden" value="<?php echoUserAttribute('account_id'); ?>">
                 <button class="button-round-filled">Delete account</button>
             </form>
         </span>
@@ -824,7 +827,7 @@ function makeEditEventForm($eventID)
     <div class="form-block">
         <span>
             <label for="e-icon">Choose front image for your event</label>
-            <input type="file" value="<?php echo selectEventIcon($event['event_icon']) ?>" name="e-icon">
+            <input type="file" value="<?php echo getEventIcon($event) ?>" name="e-icon">
         </span>
         <span>
             <label for="e-images">Choose gallery images for your event</label>
