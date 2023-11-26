@@ -130,11 +130,12 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="">
+        <form action="scripts/manage-categories" method="post">
             <div class="manage-tool-bar">
-                <button class="button-round-filled">Change status</button>
+                <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
+                <button name="change_status" value="change_status" class="button-round-filled">Change status</button>
                 <button type="button" class="button-round-filled" onclick="toggleAddCategoryPopUp()">Add Category</button>
-                <button class="button-round-filled">Delete</button>
+                <button name="delete" value="delete" class="button-round-filled">Delete</button>
             </div>
             <table>
                 <tr>

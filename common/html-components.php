@@ -640,7 +640,7 @@ function generateCategoryRows()
         echo '<td>'.$category['super_category'].'</td>';
         echo '<td class="cell-center cell-small">'.$category['category_status'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="category_name[]" value="'.$category['category_name'].'" type="checkbox">
             </td>';
         echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('."'".$category['category_name']."'".', '."'".$category['super_category']."'".')">Edit</button></td>';
         echo '</tr>';

@@ -1736,6 +1736,26 @@ function getEventIdsByStatus(array &$event_ids, string $status) : array {
     return $result_array;
 }
 
+function getCategoryNameByStatus(array &$category_names, string $status) : array  {
+    $id_string = 'category_status = :category_status AND category_name IN ('.implode(', ',$category_names).')';
+    $table_rows = fetch_all_table_columns('Category', 'category_name', ['category_status' => $status], $id_string); // TODO: rename function
+    $result_array = [];
+    foreach($table_rows as $row) {
+        array_push($result_array, $row['category_name']);
+    }
+    return $result_array;
+}
+
+function getTableColumnsByValue($table, string $return_column, array &$search_selection, string $filter_key, string $filter_value) : array {
+    $id_string = "$filter_key = :$filter_key AND $return_column IN ".'("'.implode('", "', $search_selection).'")';
+    $table_rows = fetch_all_table_columns($table, $return_column, [$filter_key => $filter_value], $id_string); // TODO: rename function
+    $result_array = [];
+    foreach($table_rows as $row) {
+        array_push($result_array, $row[$return_column]);
+    }
+    return $result_array;
+}
+
 function dateBetween($date, $date_from, $date_to, $date_format) {
     return date($date_format, strtotime($date)) >= date($date_format, strtotime($date_from))
         && date($date_format, strtotime($date)) <= date($date_format, strtotime($date_to));
