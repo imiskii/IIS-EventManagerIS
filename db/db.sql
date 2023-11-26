@@ -37,9 +37,8 @@ CREATE TABLE Category (
 
     CONSTRAINT fk_super_category
     FOREIGN KEY (super_category)
-    REFERENCES Category(category_name),
+    REFERENCES Category(category_name) ON DELETE CASCADE,
 
-    CONSTRAINT fk_category_proposed_by_account
     FOREIGN KEY (account_id)
     REFERENCES Account(account_id)
 );
@@ -59,13 +58,11 @@ CREATE TABLE Event (
 
     CONSTRAINT fk_event_category
     FOREIGN KEY (category_name)
-    REFERENCES Category(category_name),
+    REFERENCES Category(category_name), -- TODO: On category delete status is set to pending
 
-    CONSTRAINT fk_event_owner /* merged owner and proposal statuses - they can
-                                 be differentiated in the status field */
-
+    CONSTRAINT fk_event_owner 
     FOREIGN KEY (account_id)
-    REFERENCES Account(account_id)
+    REFERENCES Account(account_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Address (
@@ -81,7 +78,6 @@ CREATE TABLE Address (
     address_status VARCHAR(64),
     account_id INT,
 
-    CONSTRAINT fk_address_proposed_by_account
     FOREIGN KEY (account_id)
     REFERENCES Account(account_id)
 );
@@ -162,7 +158,6 @@ CREATE TABLE Comment (
     super_comment INT,
     event_id INT,
 
-    CONSTRAINT fk_comment_author
     FOREIGN KEY (account_id)
     REFERENCES Account(account_id),
 
