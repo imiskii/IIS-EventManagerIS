@@ -32,7 +32,7 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 array_push($errmsg_array, "$attribute length exceeded. Length cannot exceed 16777215 characters.");
             }
             break;
-        case 'super_category': // no need to check for values. Users can only choose from selection.
+        case 'super_category_id': // no need to check for values. Users can only choose from selection.
         case 'category_status':
         case 'address_status':
             break;

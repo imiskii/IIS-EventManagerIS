@@ -1379,6 +1379,19 @@ function update_table_column($table, $update_query, $id_string, $id_array) {
     return  $stmt->execute();
 }
 
+function update_table_row($table, array &$columns_to_update, $search_by_attribute, $search_by_value) {
+    $update_query_parts = [];
+    $id_array = [];
+    foreach($columns_to_update as $attribute => $value) {
+        array_push($update_query_parts, "$attribute = :$attribute");
+        $id_array[$attribute] = $value;
+    }
+    $id_array[$search_by_attribute] = $search_by_value;
+    $query = "UPDATE $table SET ".implode(', ', $update_query_parts)." WHERE $search_by_attribute = :$search_by_attribute";
+    $stmt = get_pdo_statement($query, $id_array);
+    return $stmt->execute();
+}
+
 function find_table_column($return_column, $table, $id_array) {
     $query_parts = [];
     foreach($id_array as $attribute => $value) {
@@ -1667,7 +1680,7 @@ function getEvents($events_allowed, $account_id = null) {
     $query_parts = [];
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
         if (isset($_GET["categories"])) {
-            addInFilter($id_array, $query_parts, $_GET["categories"], "category_name", "e");
+            addInFilter($id_array, $query_parts, $_GET["categories"], "category_id", "e");
         }
         if (isset($_GET["locations"])) {
             addInFilter($id_array, $query_parts, $_GET["locations"], "city", "a");
@@ -1935,7 +1948,7 @@ function unsetSessionAttributes(array &$attributes) {
 }
 
 function getPendingCategories() {
-    $return_id = "c.category_name, c.category_description, a.nick, c.super_category, c.category_status";
+    $return_id = "c.category_id, c.category_name, c.category_description, a.nick, c.super_category_id, c.category_status";
     $tables = "Category c JOIN Account a ON c.account_id = a.account_id ";
     return fetch_distinct_table_columns($tables, $return_id, null, "category_status = 'pending'");
 }
@@ -1954,17 +1967,17 @@ function getCategories() {
         }
     }
 
-    $return_id = "c.category_name, c.category_description, a.nick, c.super_category, c.category_status";
+    $return_id = "c.category_id, c.category_name, c.category_description, a.nick, c.super_category_id, c.category_status";
     $tables = "Category c JOIN Account a ON c.account_id = a.account_id ";
     return fetch_distinct_table_columns($tables, $return_id, $id_array, implode(' AND ', $query_parts));
 }
 
 function getSubCategories($parent_category = null) {
-    $id_array = ($parent_category) ? ["super_category" => $parent_category] : null;
-    $id_string = "super_category " . ($parent_category ? "= :super_category" : "IS NULL");
+    $id_array = ($parent_category ? ["super_category_id" => $parent_category] : null);
+    $id_string = "super_category_id " . ($parent_category ? "= :super_category_id" : "IS NULL");
     $id_string.=" and category_status = 'approved'";
 
-    return fetch_distinct_table_columns("Category", "category_name", $id_array, $id_string);
+    return fetch_distinct_table_columns("Category", "category_id, category_name, super_category_id", $id_array, $id_string);
 }
 
 function userIsAdmin() {
@@ -2069,6 +2082,19 @@ function loadInputData(&$method, &$input_data, &$columns) {
         if(isset($method[$column]) && !empty($method[$column])) {
             $input_data[$column] = $method[$column];
         }
+    }
+}
+
+
+function getColumn(array &$row, string $column) {
+    return $row[$column] ?? '';
+}
+
+function getSuperCategoryName(array &$category) {
+    if ($super_category = getColumn($category, 'super_category_id')) {
+        return fetch_table_column('Category', 'category_name', ['category_id' => $super_category], 'category_id = :category_id');
+    } else {
+        return null;
     }
 }
 

@@ -12,25 +12,25 @@ if(!userIsLoggedIn() || !verifyToken($_POST)) {
 $db = connect_to_db();
 
 $input_data = [];
-$valid_columns = ['delete', 'change_status', 'category_name'];
+$valid_columns = ['delete', 'change_status', 'category_id'];
 loadInputData($_POST, $input_data, $valid_columns);
 
-if(!key_exists('category_name', $input_data)) {
+if(!key_exists('category_id', $input_data)) {
     setPopupMessage('warning', 'no categories were selected');
     redirect('../index/php');
 }
 
 if (in_array('delete', $input_data)) {
-    if(!delete_from_table('Category', $input_data['category_name'], 'category_name')) {
+    if(!delete_from_table('Category', $input_data['category_id'], 'category_id')) {
         setPopupMessage('error', 'could not delete the selected categories.');
     } else {
         setPopupMessage('success', 'categories deleted successfully.');
     }
 } else {
-    $approved_categories = getTableColumnsByValue('Category', 'category_name', $input_data['category_name'], 'category_status', 'approved');
-    $pending_categories = getTableColumnsByValue('Category', 'category_name', $input_data['category_name'], 'category_status', 'pending');
-    if (!empty($approved_categories) && !update_table_column('Category', 'SET category_status = "pending"', 'category_name IN ("'.implode('", "', $approved_categories).'")', null) ||
-        !empty($pending_categories) && !update_table_column('Category', 'SET category_status = "approved"', 'category_name IN ("'.implode('", "', $pending_categories).'")', null) ) {
+    $approved_categories = getTableColumnsByValue('Category', 'category_id', $input_data['category_id'], 'category_status', 'approved');
+    $pending_categories = getTableColumnsByValue('Category', 'category_id', $input_data['category_id'], 'category_status', 'pending');
+    if (!empty($approved_categories) && !update_table_column('Category', 'SET category_status = "pending"', 'category_id IN ("'.implode('", "', $approved_categories).'")', null) ||
+        !empty($pending_categories) && !update_table_column('Category', 'SET category_status = "approved"', 'category_id IN ("'.implode('", "', $pending_categories).'")', null) ) {
         setPopupMessage('error', 'could not change status on the selected categories.');
     } else {
         setPopupMessage('success', 'Categories updated successfully!');

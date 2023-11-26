@@ -27,17 +27,18 @@ CREATE TABLE Account (
 );
 
 CREATE TABLE Category (
-    category_name VARCHAR(128) PRIMARY KEY,
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(128),
     category_description MEDIUMTEXT,
     time_of_creation DATETIME,
     category_status VARCHAR(64),
 
-    super_category VARCHAR(128),
+    super_category_id INT,
     account_id INT,
 
     CONSTRAINT fk_super_category
-    FOREIGN KEY (super_category)
-    REFERENCES Category(category_name) ON DELETE CASCADE,
+    FOREIGN KEY (super_category_id)
+    REFERENCES Category(category_id) ON DELETE CASCADE,
 
     FOREIGN KEY (account_id)
     REFERENCES Account(account_id)
@@ -53,14 +54,12 @@ CREATE TABLE Event (
     time_of_last_edit DATETIME,
     event_status VARCHAR(64),
 
-    category_name VARCHAR(128),
+    category_id INT,
     account_id INT,
 
-    CONSTRAINT fk_event_category
-    FOREIGN KEY (category_name)
-    REFERENCES Category(category_name), -- TODO: On category delete status is set to pending
+   -- TODO: On category delete status is set to pending
 
-    CONSTRAINT fk_event_owner 
+    CONSTRAINT fk_event_owner
     FOREIGN KEY (account_id)
     REFERENCES Account(account_id) ON DELETE CASCADE
 );
@@ -233,13 +232,13 @@ VALUES
     ('nikola.bartosova@email.cz', 'Nikola', 'Bartošová', 'nikbart', 'hashed_password', 'moderator', NULL, 'active');
 
 -- Category table
-INSERT INTO Category (category_name, category_description, time_of_creation, category_status, super_category, account_id)
+INSERT INTO Category (category_name, category_description, time_of_creation, category_status, super_category_id, account_id)
 VALUES
     ('Hudební Události', 'Kategorie pro hudební události jako festivaly a koncerty', NOW(), 'approved', NULL, 1),
-    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'approved', 'Hudební Události', 1),
+    ('Koncerty', 'Kategorie pro koncerty', NOW(), 'approved', 1, 1),
     ('Divadlo', 'Kategorie pro divadelní představení', NOW(), 'approved', NULL, 2),
     ('Výstavy', 'Kategorie pro výstavy a galerie', NOW(), 'approved', NULL, 3),
-    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'approved', 'Hudební Události', 4),
+    ('Festivaly', 'Kategorie pro festivaly', NOW(), 'approved', 1, 4),
     ('Workshopy', 'Kategorie pro vzdělávací workshopy', NOW(), 'approved', NULL, 5),
     ('Kino', 'Kategorie pro kino a filmové projekce', NOW(), 'approved', NULL, 6),
     ('Sportovní akce', 'Kategorie pro sportovní akce', NOW(), 'approved', NULL, 7),
@@ -249,23 +248,23 @@ VALUES
     -- pending
     ('Gastronomie', 'Kategorie pro gastronomické události a ochutnávky', NOW(), 'pending', NULL, 3),
     ('Literární akce', 'Kategorie pro literární setkání a knižní večery', NOW(), 'pending', NULL, 6),
-    ('Umělecká díla', 'Kategorie pro prezentaci a vystavování uměleckých děl', NOW(), 'pending', 'Výstavy', 9),
-    ('Adrenalinové sporty', 'Kategorie pro extrémní sportovní události a zážitky', NOW(), 'pending', 'Sportovní akce', 4),
-    ('Filmový festival', 'Kategorie pro filmové festivaly a premiéry', NOW(), 'pending', 'Kino', 7);
+    ('Umělecká díla', 'Kategorie pro prezentaci a vystavování uměleckých děl', NOW(), 'pending', 4, 9),
+    ('Adrenalinové sporty', 'Kategorie pro extrémní sportovní události a zážitky', NOW(), 'pending', 8, 4),
+    ('Filmový festival', 'Kategorie pro filmové festivaly a premiéry', NOW(), 'pending', 6, 7);
 
 -- Event table
-INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_name, account_id)
+INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_id, account_id)
 VALUES
-    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, NULL, NOW(), NOW(), 'approved', 'Koncerty', 1),
-    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, NULL, NOW(), NOW(), 'approved', 'Divadlo', 2),
-    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, NULL, NOW(), NOW(), 'approved', 'Výstavy', 3),
-    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, NULL, NOW(), NOW(), 'approved', 'Festivaly', 4),
-    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, NULL, NOW(), NOW(), 'approved', 'Workshopy', 5),
-    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, NULL, NOW(), NOW(), 'approved', 'Kino', 6),
-    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, NULL, NOW(), NOW(), 'approved', 'Sportovní akce', 7),
-    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, NULL, NOW(), NOW(), 'approved', 'Zábavní parky', 8),
-    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, NULL, NOW(), NOW(), 'approved', 'Cestování', 9),
-    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, NULL, NOW(), NOW(), 'approved', 'Společenské události', 10);
+    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, NULL, NOW(), NOW(), 'approved', 2, 1),
+    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, NULL, NOW(), NOW(), 'approved', 3, 2),
+    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, NULL, NOW(), NOW(), 'approved', 4, 3),
+    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, NULL, NOW(), NOW(), 'approved', 5, 4),
+    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, NULL, NOW(), NOW(), 'approved', 6, 5),
+    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, NULL, NOW(), NOW(), 'approved', 7, 6),
+    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, NULL, NOW(), NOW(), 'approved', 8, 7),
+    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, NULL, NOW(), NOW(), 'approved', 9, 8),
+    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, NULL, NOW(), NOW(), 'approved', 10, 9),
+    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, NULL, NOW(), NOW(), 'approved', 11, 10);
 
 -- Addresses
 INSERT INTO Address (country, zip, city, street, street_number, state, address_description, date_of_creation, address_status, account_id)

@@ -274,13 +274,13 @@ function generateCategoryTree($parent_category = null)
         echo '<input
                 type="checkbox"
                 name="categories[]"
-                value="' . $category["category_name"] .
+                value="' . $category["category_id"] .
                 '" parent="' . $parent_category . '"' .
                 ' onchange="updateChildCheckboxes(this)"' .
-                getCheckBoxSessionState("categories", $category["category_name"]) .
+                getCheckBoxSessionState("categories", $category["category_id"]) .
             '>';
         echo $category["category_name"];
-        generateCategoryTree($category["category_name"]);
+        generateCategoryTree($category["category_id"]);
         echo '</li>';
     }
     echo '</ul>';
@@ -290,14 +290,13 @@ function generateCategoryTree($parent_category = null)
 function generateCategorySelectOptions($parent_category = null, $prev_categories = '', $default = null)
 {
     $categories = getSubCategories($parent_category);
-    if(!$parent_category) { // FIXME make sure this does not pass category filter
-        echo '<option value="" '.($default ? '' : 'selected').'>-</option>';
-    }
     foreach ($categories as $category)
     {
+        $id = $category['category_id'];
         $name = $category['category_name'];
-        echo '<option value="'.$name.'"'.($name == $default ? " selected" : '').'>'.$prev_categories.$name.'</option>';
-        generateCategorySelectOptions($name, $prev_categories . $name .' -> ', $default);
+        $selected = ($name == $default ? 'selected' : '');
+        echo '<option value="'.$id.'" '.$selected.'>'.$prev_categories.$name.'</option>';
+        generateCategorySelectOptions($id, $prev_categories . $name .' -> ', $default);
     }
 }
 
@@ -597,7 +596,7 @@ function generateCategoryProposalRows()
     // db query
     $category_proposals = getPendingCategories();
 
-    // FIXME: Make changing super category on accept accessible.
+
     foreach($category_proposals as $proposal)
     {
         echo '<tr>';
@@ -605,21 +604,24 @@ function generateCategoryProposalRows()
         echo '<td>'.$proposal['nick'].'</td>';
         echo '<td>'.$proposal['category_description'].'</td>';
         echo '<td>
-                <select name="'.$proposal['category_name'].'_super_category" id="categories">';
-        generateCategorySelectOptions(null, '', $proposal['super_category'] ?? null);
+                <select name="'.$proposal['category_id'].'_super_category" id="categories">';
+        if (!$super_category = getSuperCategoryName($proposal)) {
+            echo '<option value="" selected></option>';
+        }
+        generateCategorySelectOptions(null, '', $super_category);
         echo '</select>
             </td>';
         echo '<td class="cell-center cell-small">
-                <input name="category_name[]" value="'.$proposal['category_name'].'" type="checkbox">
+                <input name="category_id[]" value="'.$proposal['category_id'].'" type="checkbox">
             </td>';
         echo '</tr>';
     }
 }
 
 
-function generateStatusSelectOptions($select_name) {
-    echo '<select name="'.$select_name.'" id="'.$select_name.'">';
-    echo '<option value="all" '.getSelectSessionDefaultState($select_name, 'all').' >all</option>';
+function generateStatusSelectOptions($select_name, $select_id, $include_all = false) {
+    echo '<select name="'.$select_name.'" id="'.$select_id.'">';
+    echo $include_all ? '<option value="all" '.getSelectSessionDefaultState($select_name, 'all').' >all</option>' : '';
     foreach(['approved', 'pending'] as $status) {
         echo '<option value="'.$status.'" '.getSelectSessionState($select_name, $status) .' >'.$status.'</option>';
     }
@@ -637,12 +639,14 @@ function generateCategoryRows()
     {
         echo '<tr>';
         echo '<td>'.$category['category_name'].'</td>';
-        echo '<td>'.$category['super_category'].'</td>';
+        echo '<td>'.getSuperCategoryName($category).'</td>';
         echo '<td class="cell-center cell-small">'.$category['category_status'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input name="category_name[]" value="'.$category['category_name'].'" type="checkbox">
+                <input name="category_id[]" value="'.$category['category_id'].'" type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditCategoryPopUp('."'".$category['category_name']."'".', '."'".$category['super_category']."'".')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled"
+        onclick="toggleEditCategoryPopUp('."'".getColumn($category, 'category_name')."', '". getColumn($category, 'super_category_id').
+        "', '".getColumn($category, 'category_description')."', '".getColumn($category, 'category_status')."', '".getColumn($category, 'category_id')."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }

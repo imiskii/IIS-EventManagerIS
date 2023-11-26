@@ -39,7 +39,7 @@ makeHeader();
                     </span>
                     <span>
                         <label for="event_status">Event status</label>
-                        <?php generateStatusSelectOptions('event_status') ?>
+                        <?php generateStatusSelectOptions('event_status', 'event_status', true) ?>
                     </span>
                     <div class="filter-bar">
                         <ul>

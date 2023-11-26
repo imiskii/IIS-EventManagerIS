@@ -209,23 +209,27 @@ function toggleAddCategoryPopUp()
 
 /**
  * Show category form popup for editing existing category
- * 
+ *
  * @param {string} c_name category name
  * @param {string} parent_id id of parent category
  * @param {string} desc Description
  */
-function toggleEditCategoryPopUp(c_name, parent_id, desc)
+function toggleEditCategoryPopUp(c_name, parent_name, desc, status, id)
 {
     const popup = document.getElementById('edit-category-popup');
     const closeBtn = document.getElementById('edit-close-category-popup-btn');
-    
+
     const nameInput = document.getElementById('category-name');
     const parentSelect = document.getElementById('category-parent');
     const descInput = document.getElementById('c-desc');
+    const statusSelect = document.getElementById('c-edit-status');
+    const categoryId = document.getElementById('category-id');
 
     nameInput.value = c_name;
-    parentSelect.value = parent_id;
+    parentSelect.value = parent_name;
     descInput.textContent = desc;
+    statusSelect.value = status;
+    categoryId.value = id;
 
     popup.classList.add('active');
 
@@ -254,7 +258,7 @@ function toggleAddLocationPopUp()
 
 /**
  * Show category form popup for editing existing location
- * 
+ *
  * @param {string} country location country
  * @param {string} city location city
  * @param {string} s_name street name

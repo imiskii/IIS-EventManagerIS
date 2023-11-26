@@ -15,6 +15,7 @@ if(!userIsModerator()) {
 }
 
 updateSessionReturnPage();
+generateSessionToken();
 updateSession($_GET, ['search-bar', 'category_status']);
 $db = connect_to_db();
 
@@ -30,24 +31,22 @@ makeHeader();
             <h3>Create new Category</h3>
             <span class="close-edit-btn" id="close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="scripts/create-category.php" method="post">
+        <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
                 <p>Name of new Category</p>
-                <input type="text" placeholder="Category name">
+                <input type="text" name="category_name" required placeholder="Category name">
             </div>
             <div class="label-input">
                 <p>Parrent Category to new created category</p>
-                <select name="">
-                    <option value="root">Root</option>
+                <select name="super_category">
+                    <option value="" selected></option>
                     <?php generateCategorySelectOptions() ?>
                 </select>
             </div>
             <div class="label-input">
                 <p>Status</p>
-                <select name="">
-                    <option value="enable">Enable</option>
-                    <option value="disable">Disable</option>
-                </select>
+                <?php generateStatusSelectOptions('category_status', 'c-add-status', false) ?>
             </div>
             <div class="label-input">
                 <p>Description</p>
@@ -62,30 +61,28 @@ makeHeader();
             <h3>Edit Category</h3>
             <span class="close-edit-btn" id="edit-close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="">
+        <form action="scripts/edit-category.php" method="post">
+        <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
+        <input type="hidden" id="category-id" name="category_id" >
             <div class="label-input">
-                <p>Name of new Category</p>
-                <input type="text" id="category-name" placeholder="Category name">
+                <p>Category Name</p>
+                <input type="text" name="category_name" id="category-name" placeholder="Category name">
             </div>
             <div class="label-input">
-                <p>Parrent Category to new created category</p>
-                <select name="" id="category-parent">
-                    <option value="root">Root</option>
+                <p>Parent Category</p>
+                <select name="super_category_id" id="category-parent">
                     <?php generateCategorySelectOptions() ?>
                 </select>
             </div>
             <div class="label-input">
                 <p>Status</p>
-                <select name="" id="c-status">
-                    <option value="enable">Enable</option>
-                    <option value="disable">Disable</option>
-                </select>
+                <?php generateStatusSelectOptions('category_status', 'c-edit-status', false) ?>
             </div>
             <div class="label-input">
                 <p>Description</p>
-                <textarea id="c-desc" cols="30" rows="10"></textarea>
+                <textarea id="c-desc" name="category_description" cols="30" rows="10"></textarea>
             </div>
-            <button type="submit" class="button-round-filled-green">Submit Category</button>
+            <button type="submit" class="button-round-filled-green">Submit</button>
         </form>
     </div>
     <!-- MAIN -->
@@ -124,7 +121,7 @@ makeHeader();
                     </span>
                     <span>
                         <label for="category_status">Category status</label>
-                        <?php generateStatusSelectOptions('category_status') ?>
+                        <?php generateStatusSelectOptions('category_status', 'category_status', true) ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>
                 </form>

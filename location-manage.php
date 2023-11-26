@@ -169,7 +169,7 @@ makeHeader();
                     </span>
                     <span>
                         <label for="address_status">Location status</label>
-                        <?php generateStatusSelectOptions('address_status') ?>
+                        <?php generateStatusSelectOptions('address_status', 'address_status', true) ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>
                 </form>
