@@ -5,7 +5,7 @@
 <head lang="EN">
     <meta charset="UTF-8">
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-2"/>
-    <title>Projekt IIS - Akce a události</title>
+    <title>Project IIS - Actions and events (Akce a události)</title>
     <style type="text/css">
     	table { border-collapse: collapse; }
     	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
@@ -14,47 +14,73 @@
 </head>
 <body>
 
-<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu
      podle použitého editoru -->
 
-<h1>Akce a události</h1> <!-- Nahradte názvem svého zadání -->
+<h1>Actions and events (Akce a události)</h1> <!-- Nahradte názvem svého zadání -->
 
 <dl>
 	<dt>Authors</dt>
-	<dd>První jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	<dd>Michal Ľaš <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
 	    <a href="mailto:xlasmi00@stud.fit.vutbr.cz">xlasmi00@stud.fit.vutbr.cz</a> -
-		Database design, user interface design, user interface implementation, generation of user interface elements. 
+		Database design, user interface design, user interface implementation (front-end implementation)
 	</dd>
-	<dd>Druhé jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-	    <a href="mailto:xlazik00@stud.fit.vutbr.cz">xlazik00@stud.fit.vutbr.cz</a> - 
-		popis činnosti v týmu
+	<dd>Adam Lazík <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xlazik00@stud.fit.vutbr.cz">xlazik00@stud.fit.vutbr.cz</a> -
+		SQL script, php form-handling scripts
 	</dd>
-  <dd>Třetí jméno <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
-	    <a href="mailto:xkurca01@stud.fit.vutbr.cz">xkurca01@stud.fit.vutbr.cz</a> - 
-		popis činnosti v týmu
+    <dd>Filip Kurčák <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xkurca01@stud.fit.vutbr.cz">xkurca01@stud.fit.vutbr.cz</a> -
+		Back-end: request validation + authorization, login/logout (sessions)
 	</dd>
-	<dt>URL aplikace</dt>
+	<dt>Application URL</dt>
 	<dd><a href="http://www.stud.fit.vutbr.cz/~xlazik00/IIS/">http://www.stud.fit.vutbr.cz/~xlazik00/IIS/</a></dd>
-	<dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
 </dl>
 
-<h2>Uživatelé systému pro testování</h2>
-<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
-<table>
-<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
-<tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
-<tr><td>prodavac</td><td>prodavac</td><td>Moderator</td></tr>
-<tr><td>franta</td><td>franta</td><td>User</td></tr>
-</table>
+<h2>User accounts for testing</h2>
 
-<p>(Diagram případů užití není nutné vkládat, pokud IS implementuje role a případy užití definované zadáním.)</p> 
+<table>
+<tr><th>Login</th><th>Password</th><th>Role</th></tr>
+<tr><td>eva.hodkova@email.cz</td><td>password</td><td>Administrator</td></tr>
+<tr><td>ondrej.nemec@email.cz</td><td>password</td><td>Moderator</td></tr>
+<tr><td>jan.novak@email.cz</td><td>password</td><td>Regular</td></tr>
+</table>
 
 <h3>Video</h3>
 
-<p>Přiložte odkaz na komentované video demostrující použití informačního systému. Zaměřte se na případy užití definované zadáním (např. registrace uživatele, správa uživatelů a činnosti jednotlivých rolí). Video nahrajte například na VUT Google Drive, kde ho bude možné přímo spustit z odkazu.</p> 
+<a href="https://drive.google.com/file/d/1KbmzB9W92YCBY5-huvauhG3vlOfCovxU/view?usp=drive_link">Link to commented video</a>
 
-<h2>Implementace</h2>
+<h2>Implementation</h2>
 <p>Stručná dokumentace k implementaci, která popisuje, které části projektu (např. PHP skripty) implementují jednotlivé případy použití.</p>
+
+<p><strong>...</strong></p>
+
+<ul>
+	<li><i>./*.php</i>: in the root directory are individual web pages. The corresponding styles for these pages are located within the <i>./styles</i> directory,
+		while the associated JavaScript scripts are stored in the <i>./scripts</i> directory. Each page has its own functions (backend logic) located in <strong><i>./scripts</i></strong> directory. <br>
+		<ul>
+			<li><i>index.php</i>: the main page with event searching</li>
+			<li><i>login.php</i>: page with login</li>
+			<li><i>signup.php</i>: page with new user registration</li>
+			<li><i>profile.php</i>: page with the profile of the logged-in user</li>
+			<li><i>event-detail.php</i>: page with a detailed description of an event</li>
+			<li><i>event-edit.php</i>: page for editing an existing event</li>
+			<li><i>event-create.php</i>: page for creating a new event</li>
+			<li><i>account-manage.php</i>: page for managing user accounts</li>
+			<li><i>category-manage.php</i>: page for managing event categories</li>
+			<li><i>location-manage.php</i>: page for managing locations</li>
+			<li><i>ticket-manage.php</i>: page for managing purchased tickets</li>
+			<li><i>event-manage.php</i>: page for managing created events</li>
+		</ul>
+	</li>
+	<li><i>./common/html-components.php</i>: functions for generating common html components</li>
+	<li><i>./common/db_handler.php</i>: functions for connecting to our database, fetching and validating data, performing CRUD operations, and utility functions for user sessions and responses</li>
+	<li><i>./common/input_validator.php</i>: provides functions for validating user input</li>
+	<li><i>./db</i>:  file .htaccess specifies the order in which Deny and Allow directives are evaluated + blocks all users from accessing the directory. File db.sql defines the database schema for our event management system</li>
+	<li><i>./doc</i>: documentation</li>
+	<li><i>./js</i>: functions for UI interactions and validations</li>
+	<li><i>./styles</i>: CSS files, each dedicated to styling different components and pages of our web application</li>
+</ul>
 
 <h3>Database</h3>
 
@@ -62,17 +88,34 @@
     <img src="ER-EventManager.png">
 </div>
 
-<h2>Instalace</h2>
+<h2>Instalation</h2>
 
-Stručně popište: 
 <ul>
-<li>postup instalace na server,</li>
-<li>softwarové požadavky (verze PHP apod.),</li>
-<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+	<li>Installation steps<br>
+		<ul>
+			<li>Place root directory of this project into your WWWW directory</li>
+			<li>Create directory event-images with 777 permissions</li>
+			<li>Input your SQL credentials in the connect_to_db() function in common/db_handler.php</li>
+		</ul>
+	</li>
+	<li>Software requirements<br>
+		<ul>
+			<li>PHP 8.1.19</li>
+			<li>MySQL 14.14 Distrib 5.7.44</li>
+		</ul>
+	</li>
+	<li>Database initialization<br>
+		<ul>
+			<li>Login into MySQL</li>
+			<li>CREATE DATABASE DatabaseName CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;</li>
+			<li>USE DatabaseName;</li>
+			<li>source path/to/db/db.sql</li>
+		</ul>
+	</li>
 </ul>
 
-<h2>Známé problémy</h2>
-<p>Zde popište, které body zadání nejsou implementovány a z jakého důvodu. Např. &bdquo;Z časových důvodů nebyla implementována správa uživatelů.&rdquo; Pomůžete tím zrychlit hodnocení, když neimplementované funkce nebudeme muset dlouze hledat.</p>
+<h2>Known problems</h2>
+<p>Due to time constraints, editing of Events is not supported, also passwords are currently not being hashed. Also we forgot to validate whether time_from precedes time_to in Event_Instances (allowing us to insert invalid time intervals).</p>
 
 </body>
 </html>

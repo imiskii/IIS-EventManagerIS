@@ -34,21 +34,21 @@ makeHeader();
         <form action="scripts/account-manage/add-account.php" method="post">
         <input type="hidden" id="add-acc-token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
-                <p>Nick</p>
+                <p>Nick *</p>
                 <input required name="nick" type="text" id="add-acc-nick">
             </div>
             <span>
                 <div class="label-input">
-                    <p>First name</p>
+                    <p>First name *</p>
                     <input required name="first_name" type="text" id="add-acc-fname">
                 </div>
                 <div class="label-input">
-                    <p>Last name</p>
+                    <p>Last name *</p>
                     <input required name="last_name" type="text" id="add-acc-lname">
                 </div>
             </span>
             <div class="label-input">
-                <p>Email</p>
+                <p>Email *</p>
                 <input required name="email" type="text" id="add-acc-email">
             </div>
             <div class="label-input">
@@ -57,11 +57,11 @@ makeHeader();
             </div>
             <span>
                 <div class="label-input">
-                    <p>Password</p>
+                    <p>Password *</p>
                     <input required type="password" name="password">
                 </div>
                 <div class="label-input">
-                    <p>Repeat password</p>
+                    <p>Repeat password *</p>
                     <input required type="password" name="password2">
                 </div>
             </span>
@@ -71,28 +71,28 @@ makeHeader();
     <!-- Edit profile popup -->
     <div class="profile-popup" id="profile-edit-popup">
         <div class="profile-popup-top-bar">
-            <h3>Create New Profile</h3>
+            <h3>Edit Profile</h3>
             <span class="close-edit-btn" id="close-edit-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <form action="scripts/account-manage/edit-account.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
         <input type="hidden" id="edit-acc-id" name="account_id">
             <div class="label-input">
-                <p>Nick</p>
+                <p>Nick *</p>
                 <input type="text" required name='nick' id="edit-acc-nick">
             </div>
             <span>
                 <div class="label-input">
-                    <p>First name</p>
+                    <p>First name *</p>
                     <input type="text" required name="first_name" id="edit-acc-fname">
                 </div>
                 <div class="label-input">
-                    <p>Last name</p>
+                    <p>Last name *</p>
                     <input type="text" required name="last_name" id="edit-acc-lname">
                 </div>
             </span>
             <div class="label-input">
-                <p>Email</p>
+                <p>Email *</p>
                 <input type="text" required name="email" id="edit-acc-email">
             </div>
             <div class="label-input">

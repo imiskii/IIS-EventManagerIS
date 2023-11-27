@@ -41,7 +41,6 @@ if(in_array('accept', $input_data)) {
         setPopupMessage('error', 'could not update all categories.');
     }
 } else {
-    // FIXME: Add rejected status so the user can see their category has been rejected
     if (delete_from_table('Category', $input_data['category_id'], 'category_id')) {
         setPopupMessage('success', 'categories rejected successfully.');
     } else {

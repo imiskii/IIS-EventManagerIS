@@ -15,6 +15,7 @@ if (userIsLoggedIn()) {
     redirectForce('index.php');
 }
 
+updateSessionReturnPage();
 generateSessionToken();
 $db = connect_to_db();
 
@@ -28,7 +29,8 @@ makeHead("Eventer | Sign up");
     <div class="center-block">
         <div class="form-container">
             <h2>Sign up</h2>
-            <form action="scripts/signup.php" method="post">
+            <?php makeAlertPopup(); ?>
+            <form action="scripts/sign-up/signup.php" method="post">
             <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
                 <ul>
                     <li>

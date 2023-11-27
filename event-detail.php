@@ -39,7 +39,6 @@ makeHeader();
         ?>
     </div>
     <div class="tickets-container">
-        <script src="src/front-end/js/calcTicketsVal.js"></script>
         <?php generateEventTickets($event_id) ?>
     </div>
     <div class="part-lable">
@@ -47,6 +46,7 @@ makeHeader();
     </div>
     <div class="comments-container">
         <div class="comment-form">
+            <?php if (userIsLoggedIn()) { ?>
             <form action="scripts/event-detail/post-comment.php" method="post">
             <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <input type="hidden" id="comment_event_id" name="event_id" value="<?php echo $event_id ?>" >
@@ -60,6 +60,7 @@ makeHeader();
                 </div>
                 <button type="Submit" class="button-round-filled">Submit</button>
             </form>
+            <?php } ?>
         </div>
         <div class="comments-block">
             <div class="comment-edit-popup">
@@ -67,10 +68,11 @@ makeHeader();
                     <h3>Edit Comment</h3>
                     <span class="close-edit-btn"><i class="fa-solid fa-xmark"></i></span>
                 </div>
-                <form action="">
-                    <input type="hidden" id="cid">
+                <form action="scripts/event-detail/edit-comment.php" method="post">
+                    <input type="hidden" id="cid" name="comment_id">
+                    <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
                     <input type="hidden" value="<?php date('Y-m-d H:i:s') ?>">
-                    <textarea name="" id="ctext" cols="30" rows="10"></textarea>
+                    <textarea name="comment_text" id="ctext" cols="30" rows="10"></textarea>
                     <button type="submit" class="button-round-filled-green">Submit Edit</button>
                 </form>
             </div>

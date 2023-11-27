@@ -14,6 +14,8 @@ if(userIsLoggedIn()) {
     redirectForce('index.php');
 }
 
+generateSessionToken();
+updateSessionReturnPage();
 $db = connect_to_db();
 
 makeHead("Eventer | Sign in");
@@ -24,14 +26,15 @@ makeHead("Eventer | Sign in");
     <div class="center-block">
         <div class="form-container">
             <h2>Log in</h2>
-            <form action="scripts/login.php" method="post">
+            <?php makeAlertPopup(); ?>
+            <form action="scripts/login/login.php" method="post">
                 <ul>
                     <li>
                         <div class="input-row">
                             <div class="input-icon">
                                 <i class="fa-solid fa-user"></i>
                             </div>
-                            <input type="text" name="email" id="email" placeholder="Email">
+                            <input type="text" required name="email" id="email" placeholder="Email">
                         </div>
                     </li>
                     <li>
@@ -39,14 +42,13 @@ makeHead("Eventer | Sign in");
                             <div class="input-icon">
                                 <i class="fa-solid fa-key"></i>
                             </div>
-                            <input type="password" name="pwd" id="pwd" placeholder="Password">
+                            <input type="password" required name="pwd" id="pwd" placeholder="Password">
                         </div>
                     </li>
                     <li>
                         <div class="buttons">
                             <button class="button-round-filled" type="submit">Log in</button>
                             <a href="signup.php" class="button-round-empty">Create new account</a>
-                            <!-- FIXME $_SESSION['return_to'] -->
                             <a href="index.php" class="button-round-empty"><i class="fa-solid fa-arrow-left"></i>Go back Home</a>
                         </div>
                     </li>

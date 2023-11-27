@@ -62,7 +62,7 @@ function generateProfilMenu()
     }
     ?>
 
-            <li><i class="fa-solid fa-right-from-bracket"></i><a href="scripts/logout.php">Log out</a></li>
+            <li><i class="fa-solid fa-right-from-bracket"></i><a href="scripts/logout/logout.php">Log out</a></li>
         </ul>
     </div>
 
@@ -156,6 +156,9 @@ function makeFooter()
 }
 
 
+/**
+ * Generates Alert popup
+ */
 function makeAlertPopup()
 {
     ?>
@@ -163,7 +166,7 @@ function makeAlertPopup()
     <div id="alert" class="alert hide">
     <span class="alert-content">
         <i class="fa-solid fa-circle-info"></i>
-        <span id="alert-msg" class="msg">Warning: TODO</span>
+        <span id="alert-msg" class="msg">Warning: </span>
     </span>
     <span id="alert-close-btn" class="alert-close-btn" onclick="closeAlert()">
         <i class="fa-solid fa-xmark"></i>
@@ -174,9 +177,17 @@ function makeAlertPopup()
 }
 
 
+/**
+ * Generates one event card
+ *
+ * @param array $event array with specific event informations
+ * @param string|null $card_type type of card style that will be generated. "" -> normall card, "owner" -> card for event owners, "participant" -> card for event participant.
+ */
 function generateEventCard(&$event, $card_type = null) {
+
+    echo '<script> window.onload = refreshImage("icon-'.$event['event_id'].'", "'.getEventIcon($event).'") </script>';
     echo '<a href="event-detail.php?event_id='.$event["event_id"].'" class="event-card'.$card_type.'">';
-    echo '<img src="'.getEventIcon($event).'">';
+    echo '<img id="icon-'.$event['event_id'].'" src="'.getEventIcon($event).'">';
     echo '<div class="name-rating">';
     echo '    <h3>' . $event["event_name"] . '</h3>';
     echo '    <div class="rating">';
@@ -194,9 +205,9 @@ function generateEventCard(&$event, $card_type = null) {
 /**
  * Function generates Event Cards
  *
- * @param array $events is array of values that are displayed on card like Event name, Location, etc.
- * @param string $card_type is type of card that will be generated, default is "" -> normall card, "owner" -> card for event owners, "participant" -> card for event participant
- * @return void
+ * @param string|null $card_type is type of card that will be generated, default is "" -> normall card, "owner" -> card for event owners, "participant" -> card for event participant
+ * @param int|null $account_id
+ *  @return void
  *
  */
 function generateEventCards(string $card_type=null, $account_id = null)
@@ -213,21 +224,11 @@ function generateEventCards(string $card_type=null, $account_id = null)
 
 function generateEventCardsbyDate() {
     $events = getEvents('approved');
-    $periods = sortEventsByPeriods($events);
-
-    for($i = 0; $i < 5; $i++) {
-        if(!isset($periods[$i])) {
-            continue;
-        }
-        echo "<h2>$periods[$i]</h2>";
-        echo '<div class="card-container">';
-        foreach($events as &$event) {
-            if(isset($event[$periods[$i]])) {
-                generateEventCard($event);
-            }
-        }
-        echo '</div>';
+    echo '<div class="card-container">';
+    foreach($events as &$event) {
+            generateEventCard($event);
     }
+    echo '</div>';
 }
 
 /**
@@ -287,6 +288,13 @@ function generateCategoryTree($parent_category = null)
 }
 
 
+/**
+ * Generates gategories options for select element in html
+ *
+ * @param string|null $parent_category name of paren category, roots parent category is null
+ * @param string $prev_categories string with all root categories
+ * @param string|null $default sign of selected category, default is null
+ */
 function generateCategorySelectOptions($parent_category = null, $prev_categories = '', $default = null)
 {
     $categories = getSubCategories($parent_category);
@@ -301,6 +309,9 @@ function generateCategorySelectOptions($parent_category = null, $prev_categories
 }
 
 
+/**
+ * Generates location options for html select element
+ */
 function generateLocationSelectOptions($default = null)
 {
 
@@ -309,6 +320,18 @@ function generateLocationSelectOptions($default = null)
     {
         echo '<option value="'.$location['address_id'].'"'.($location['address_id'] == $default ? ' selected' : '').'>'.formatAddress($location).'</option>';
     }
+}
+
+
+function getLocationSelectOptions($default = null)
+{
+    $locations = getApprovedLocations();
+    $options_str = '';
+    foreach ($locations as $location)
+    {
+        $options_str .= '<option value="'.$location['address_id'].'"'.($location['address_id'] == $default ? ' selected' : '').'>'.formatAddress($location).'</option>';
+    }
+    return htmlspecialchars($options_str);
 }
 
 
@@ -339,41 +362,46 @@ function generateEventTickets($eventID)
                     </p>
                 </div>
                 <button ticket-arrow-button="ticket-'.$cnt_t.'" class="arrow-button" onclick="toggleTicketDetail(\'ticket-'.$cnt_t.'\')">▼</button>
-            </div>
-            <div class="ticket-types" id="ticket-'.$cnt_t.'">
-        <table>';
+            </div>';
+        if(userIsLoggedIn()) {
+            echo '<div class="ticket-types" id="ticket-'.$cnt_t.'">
+            <form action="scripts/event-detail/register-tickets.php" method="post">
+            <input type="hidden" name="instance_id" value="'.$event_instance['instance_id'].'">
+            <input type="hidden" id="token" name="token" value="'.htmlspecialchars(getSessionVal('token', '')).'" >
+            <table>';
 
+            // getEventTicketTypes return array of Entrence fees for choosen event and location
+            // adjust it based on how the final database will looks like
+            $result_id = "fee_name, max_tickets, sold_tickets, cost";
+            $entrance_fees = fetch_all_table_columns("Entrance_fee", $result_id, ["instance_id" => $event_instance['instance_id']] ,"instance_id = :instance_id", null);
 
-        // getEventTicketTypes return array of Entrence fees for choosen event and location
-        // adjust it based on how the final database will looks like
-        $result_id = "fee_name, max_tickets, sold_tickets, cost";
-        $entrance_fees = fetch_all_table_columns("Entrance_fee", $result_id, ["instance_id" => $event_instance['instance_id']] ,"instance_id = :instance_id", null);
+            $cnt_tt = 1; // counter fot tickets types
+            $num_tt = count($entrance_fees);
 
-        $cnt_tt = 1; // counter fot tickets types
-        $num_tt = count($entrance_fees);
+            foreach ($entrance_fees as $fee)
+            {
+                echo '<tr>';
+                echo '<td>' . $fee['fee_name'] . '</td>';
+                echo '<td id="ticket-'.$cnt_t.'-price-'.$cnt_tt.'">' . $fee['cost'] . ',-</td>';
+                echo '<td>' . $fee['max_tickets'] - $fee['sold_tickets'] . ' left</td>';
+                echo '<input type="hidden" name="fee_name[]" value="'.$fee['fee_name'].'">';
+                echo '<td class="row-10"><input type="number" name="ticket_count[]" min="0" value="0" id="ticket-'.$cnt_t.'-quantity-'.$cnt_tt.'" oninput="calcTicketsVal('.$cnt_t.','.$cnt_tt.')"></td>';
+                echo '</tr>';
 
-        foreach ($entrance_fees as $fee)
-        {
-            echo '<tr>';
-            echo '<td>' . $fee['fee_name'] . '</td>';
-            echo '<td id="ticket-'.$cnt_t.'-price-'.$cnt_tt.'">' . $fee['cost'] . ',-</td>';
-            echo '<td>' . $fee['max_tickets'] - $fee['sold_tickets'] . ' left</td>';
-            echo '<td class="row-10"><input type="number" min="0" value="0" id="ticket-'.$cnt_t.'-quantity-'.$cnt_tt.'" oninput="calcTicketsVal('.$cnt_t.','.$num_tt.')"></td>';
-            echo '</tr>';
+                $cnt_tt += 1;
+            }
 
-            $cnt_tt += 1;
+            echo '<tr class="tickets-reserved">
+                            <td><p>Total: </p></td>
+                            <td><p id="total-ticket-'.$cnt_t.'">0.00,-</p></td>
+                            <td></td>
+                            <td class="row-10"><button type="submit" class="button-round-empty">Reserve</button></td>
+                    </tr>
+                    </table>
+                    </form>
+                </div>';
         }
-
-        // TODO: implement functionality
-        echo '<tr class="tickets-reserved">
-                        <td><p>Total: </p></td>
-                        <td><p id="total-ticket-'.$cnt_t.'">0.00,-</p></td>
-                        <td></td>
-                        <td class="row-10"><button class="button-round-empty">Reserve</button></td>
-                </tr>
-                </table>
-            </div>
-        </div>';
+        echo '</div>';
 
         $cnt_t++;
     }
@@ -392,10 +420,13 @@ function makeEventInfo($eventID)
     //$eventInfo = getEventInfo($eventID);
     $event = fetch_table_entry("Event", "event_icon, event_name, event_description", ["event_id" => $eventID], "event_id = :event_id");
     $event_images = fetch_all_table_columns("Photos", "photo_path", ["event_id" => $eventID], "event_id = :event_id");
+    $event_image_paths = [];
+    foreach($event_images as $event_image) {
+        array_push($event_image_paths, $event_image['photo_path']);
+    }
 
 
     echo '<div class="gallery-popup">
-        <script src="src/front-end/js/toggleGallery.js"></script>
         <div class="gallery-popup-top-bar">
             <span class="close-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
@@ -406,7 +437,7 @@ function makeEventInfo($eventID)
     </div>
     <div class="icon-container">
         <img src="'.getEventIcon($event).'">
-        <button class="button-round-filled" onclick="toggleGallery('.json_encode($event_images).')">Gallery</button>
+        <button class="button-round-filled" onclick="toggleGallery('.htmlspecialchars(json_encode($event_image_paths)).')">Gallery</button>
     </div>
     <div class="description-container">
         <h3>'.$event["event_name"].'</h3>
@@ -446,13 +477,14 @@ function generateComments($eventID)
                     <i class="fa-regular fa-star"></i>
                 </span>';
 
-        // if logged user is author of the comment or administrator
-        if (userIsAdmin() || getUserAttribute('account_id') == $comment['account_id']) {
+        if (userIsModerator() || getUserAttribute('account_id') == $comment['account_id']) {
             echo '
             <div class="comment-header-buttons">
-                <button class="button-round-filled" onclick="toggleEditCommentPopUp('.$comment['comment_id'].', '.nl2br($comment['comment_text']).')">Edit</button>
-                <form action="">
-                    <input type="hidden" value="'.$comment['comment_id'].'">
+                <button class="button-round-filled" onclick="toggleEditCommentPopUp('."'".htmlspecialchars($comment['comment_id'])."', '".htmlspecialchars(nl2br($comment['comment_text']))."'".')">Edit</button>
+                <form action="scripts/event-detail/delete-comment.php" method="post">
+                    <input type="hidden" name="account_id" value="'.$comment['account_id'].'">
+                    <input type="hidden" name="comment_id" value="'.$comment['comment_id'].'">
+                    <input type="hidden" name="token" value="'.htmlspecialchars(getSessionVal('token', '')).'">
                     <button type="submit" class="button-round-filled">Delete</button>
                 </form>
             </div>';
@@ -621,6 +653,9 @@ function generateCategoryProposalRows()
 }
 
 
+/**
+ * Generates html element select and its options for status
+ */
 function generateStatusSelectOptions($select_name, $select_id, $include_all = false) {
     echo '<select name="'.$select_name.'" id="'.$select_id.'">';
     echo $include_all ? '<option value="all" '.getSelectSessionDefaultState($select_name, 'all').' >all</option>' : '';
@@ -631,7 +666,7 @@ function generateStatusSelectOptions($select_name, $select_id, $include_all = fa
 }
 
 /**
- * Generate table rows with categories
+ * Generates table rows with categories
  */
 function generateCategoryRows()
 {
@@ -655,7 +690,7 @@ function generateCategoryRows()
 
 
 /**
- * Generate location proposals table rows
+ * Generates location proposals table rows
  */
 function generateLocationProposalRows()
 {
@@ -681,7 +716,7 @@ function generateLocationProposalRows()
 
 
 /**
- * Generate location table rows
+ * Generates location table rows
  */
 function generateLocationRows()
 {
@@ -711,7 +746,7 @@ function generateLocationRows()
 
 
 /**
- * Generate account table rows
+ * Generates account table rows
  */
 function generateAccountRows()
 {
@@ -738,7 +773,7 @@ function generateAccountRows()
 
 
 /**
- * Generate event table rows
+ * Generates event table rows
  */
 function generateEventRows()
 {
@@ -758,13 +793,16 @@ function generateEventRows()
         echo '<td class="cell-center cell-small">
                 <input type="checkbox" value="'.$event['event_id'].'" name="event_id[]'.$event['event_id'].'">
             </td>';
-        echo '<td class="cell-center cell-small"><a href="event-edit.php?event_id='.$event['event_id'].'" class="button-round-filled">Edit</a></td>';
         echo '</tr>';
     }
 }
 
 
-
+/**
+ * Generates html table rows with attributs of ordered tickets for specific event
+ *
+ * @param int $event_id id of event
+ */
 function generateTicketOrdersRows($event_id)
 {
     // db query
@@ -790,7 +828,11 @@ function generateTicketOrdersRows($event_id)
 }
 
 
-
+/**
+ * Generates html table rows with attributs of confirmed tickets for specific event
+ *
+ * @param int $event_id id of event
+ */
 function generateTicketRows($event_id)
 {
     // db query
@@ -816,6 +858,11 @@ function generateTicketRows($event_id)
 }
 
 
+/**
+ * Creates form for the editing event
+ *
+ * @param int $eventID id of the event
+ */
 function makeEditEventForm($eventID)
 {
     // db query
@@ -857,6 +904,11 @@ function makeEditEventForm($eventID)
 }
 
 
+/**
+ * Generates ticket variants of specific event for editing
+ *
+ * @param int $eventID id of the event
+ */
 function generateEditEventVariants($eventID)
 {
     // db query
@@ -935,6 +987,10 @@ function generateEditEventVariants($eventID)
     }
 }
 
+
+/**
+ * Generates select with options for account status selection
+ */
 function makeAccountStatusSelector() {
     echo '<select name="account_status" id="account_status">';
     foreach(['all', 'active', 'disabled'] as $status) {

@@ -1,17 +1,3 @@
--- Dropping tables for development purposes
-DROP TABLE IF EXISTS Comment;
-DROP TABLE IF EXISTS Photos;
-DROP TABLE IF EXISTS Registration;
-DROP TABLE IF EXISTS Entrance_fee;
-DROP TABLE IF EXISTS Event_instance;
-DROP TABLE IF EXISTS Address;
-DROP TABLE IF EXISTS Event;
-DROP TABLE IF EXISTS Category;
-DROP TABLE IF EXISTS Account;
-DROP TRIGGER IF EXISTS update_event_rating_after_insert;
-DROP TRIGGER IF EXISTS update_event_rating_after_update;
-DROP TRIGGER IF EXISTS update_event_rating_after_delete;
-
 ALTER DATABASE xlazik00 CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 CREATE TABLE Account (
@@ -53,8 +39,6 @@ CREATE TABLE Event (
 
     category_id INT,
     account_id INT,
-
-   -- TODO: On category delete status is set to pending
 
     CONSTRAINT fk_event_owner
     FOREIGN KEY (account_id)
@@ -130,15 +114,10 @@ CREATE TABLE Photos (
     photo_path VARCHAR(256),
 
     event_id INT,
-    address_id INT,
 
     CONSTRAINT fk_event_photo
     FOREIGN KEY (event_id)
-    REFERENCES Event(event_id) ON DELETE CASCADE,
-
-    CONSTRAINT fk_address_photo
-    FOREIGN KEY (address_id)
-    REFERENCES Address(address_id) ON DELETE CASCADE
+    REFERENCES Event(event_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Comment (
@@ -209,6 +188,34 @@ BEGIN
 END;
 
 //
+
+CREATE TRIGGER update_sold_tickets
+AFTER UPDATE ON Registration
+FOR EACH ROW
+BEGIN
+    UPDATE Entrance_fee
+    SET sold_tickets = (
+        SELECT SUM(ticket_count)
+        FROM Registration
+        WHERE instance_id = OLD.instance_id AND fee_name = OLD.fee_name AND time_of_confirmation IS NOT NULL
+    )
+    WHERE instance_id = OLD.instance_id AND fee_name = OLD.fee_name;
+END;
+
+//
+
+CREATE TRIGGER after_delete_category
+AFTER DELETE
+ON Category FOR EACH ROW
+
+BEGIN
+    UPDATE Event
+    SET event_status = 'pending'
+    WHERE category_id = OLD.category_id;
+
+END;
+//
+
 DELIMITER ;
 
 -- Account table
@@ -247,18 +254,18 @@ VALUES
     ('Filmový festival', 'Kategorie pro filmové festivaly a premiéry', NOW(), 'pending', 6, 7);
 
 -- Event table
-INSERT INTO Event (event_name, event_description, event_icon, rating, time_of_creation, time_of_last_edit, event_status, category_id, account_id)
+INSERT INTO Event (event_name, event_description, event_icon, time_of_creation, time_of_last_edit, event_status, category_id, account_id)
 VALUES
-    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, NULL, NOW(), NOW(), 'approved', 2, 1),
-    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, NULL, NOW(), NOW(), 'approved', 3, 2),
-    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, NULL, NOW(), NOW(), 'approved', 4, 3),
-    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, NULL, NOW(), NOW(), 'approved', 5, 4),
-    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, NULL, NOW(), NOW(), 'approved', 6, 5),
-    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, NULL, NOW(), NOW(), 'approved', 7, 6),
-    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, NULL, NOW(), NOW(), 'approved', 8, 7),
-    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, NULL, NOW(), NOW(), 'approved', 9, 8),
-    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, NULL, NOW(), NOW(), 'approved', 10, 9),
-    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, NULL, NOW(), NOW(), 'approved', 11, 10);
+    ('Koncert skupiny XYZ', 'Skvělý koncert oblíbené skupiny v moderním koncertním sále.', NULL, NOW(), NOW(), 'approved', 2, 1),
+    ('Divadelní představení "Hamlet"', 'Tragická hra o lásce a zradě v podání renomovaného divadla.', NULL, NOW(), NOW(), 'approved', 3, 2),
+    ('Výstava moderního umění', 'Prohlídka moderních uměleckých děl od talentovaných umělců.', NULL, NOW(), NOW(), 'approved', 4, 3),
+    ('Festival elektronické hudby', 'Největší festival elektronické hudby v regionu s top DJ hvězdami.', NULL, NOW(), NOW(), 'approved', 5, 4),
+    ('Workshop: Fotografie pro začátečníky', 'Praktický workshop pro začátečníky zaměřený na základy fotografie.', NULL, NOW(), NOW(), 'approved', 6, 5),
+    ('Projekce filmu "Přežít"', 'Dramatický film o přežití v divočině s úžasným hereckým obsazením.', NULL, NOW(), NOW(), 'approved', 7, 6),
+    ('Maratón běhu na 10 km', 'Sportovní událost pro běžecké nadšence v krásném přírodním prostředí.', NULL, NOW(), NOW(), 'approved', 8, 7),
+    ('Zábavní park: Adrenalinová jízda', 'Napínavé atrakce a adrenalinové jízdy v oblíbeném zábavním parku.', NULL, NOW(), NOW(), 'approved', 9, 8),
+    ('Cestování po Asii', 'Dojemný příběh cestování po Asii s mnoha zážitky a dobrodružstvími.', NULL, NOW(), NOW(), 'approved', 10, 9),
+    ('Společenský večírek "Večer s hvězdami"', 'Elegantní společenský večírek pod širým nebem s hudebním programem.', NULL, NOW(), NOW(), 'approved', 11, 10);
 
 -- Addresses
 INSERT INTO Address (country, zip, city, street, street_number, state, address_description, date_of_creation, address_status, account_id)

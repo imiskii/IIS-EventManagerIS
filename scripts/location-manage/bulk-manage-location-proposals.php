@@ -33,7 +33,6 @@ if(in_array('accept', $input_data)) {
         setPopupMessage('error', 'could not update all categories.');
     }
 } else {
-    // FIXME: Add rejected status so the user can see their address has been rejected
     if (delete_from_table('Address', $input_data['address_id'], 'address_id')) {
         setPopupMessage('success', 'locations rejected successfully.');
     } else {

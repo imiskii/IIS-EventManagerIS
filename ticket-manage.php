@@ -13,13 +13,13 @@ session_start();
 $db = connect_to_db();
 
 if(is_null($event_id = $_GET['event_id'] ?? null) || (!userIsAdmin() && !userIsOwner($event_id))) {
-    redirectForce('index.php'); // TODO: Error message
+    setPopupMessage('error', 'unauthorized access!');
+    redirectForce('index.php');
 }
 
 generateSessionToken();
 updateSessionReturnPage();
 updateSession($_GET, ['ticket_search_bar']);
-$_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
 makeHead("Eventer | Ticket Management");
 makeHeader();

@@ -114,7 +114,6 @@ makeHeader();
                     <th>Rating</th>
                     <th>Status</th>
                     <th><i class="fa-solid fa-check"></i></th>
-                    <th>Action</th>
                 </tr>
                 <?php generateEventRows() ?>
             </table>

@@ -35,21 +35,21 @@ makeHeader();
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <span>
                 <div class="label-input">
-                    <p>Country</p>
+                    <p>Country *</p>
                     <input type="text" name="country" required id="country" placeholder="Country">
                 </div>
                 <div class="label-input">
-                    <p>City/Town</p>
+                    <p>City/Town *</p>
                     <input type="text" id="city" required name="city" placeholder="City name/Town name">
                 </div>
             </span>
             <span>
                 <div class="label-input">
-                    <p>Street name</p>
+                    <p>Street name *</p>
                     <input type="text" id="s_name" required name="street" placeholder="Street name">
                 </div>
                 <div class="label-input">
-                    <p>Street number</p>
+                    <p>Street number *</p>
                     <input type="number" id="s_num" required name="street_number" placeholder="Street number" onclick="checkNegativeInput()">
                 </div>
             </span>
@@ -87,21 +87,21 @@ makeHeader();
         <input type="hidden" id="E-id" name="address_id">
             <span>
                 <div class="label-input">
-                    <p>Country</p>
+                    <p>Country *</p>
                     <input type="text" name="country" required id="E-country" placeholder="Country">
                 </div>
                 <div class="label-input">
-                    <p>City/Town</p>
+                    <p>City/Town *</p>
                     <input type="text" name="city" required id="E-city" placeholder="City name/Town name">
                 </div>
             </span>
             <span>
                 <div class="label-input">
-                    <p>Street name</p>
+                    <p>Street name *</p>
                     <input type="text" name="street" required id="E-s_name" placeholder="Street name">
                 </div>
                 <div class="label-input">
-                    <p>Street number</p>
+                    <p>Street number *</p>
                     <input type="number" id="E-s_num" required name="street_number" placeholder="Street number" onclick="checkNegativeInput()">
                 </div>
             </span>

@@ -108,6 +108,38 @@ function toggleTicketDetail(ticketID)
     }
 }
 
+/**
+ * Function calculate final price of registration in choosen ticket type
+ *
+ * @param {*} ticketID id of ticket component
+ * @param {*} ticketTypesNumber number of ticket types
+ */
+function calcTicketsVal(ticketID, ticketTypesNumber)
+{
+    console.log('in function');
+    var totalValue = 0;
+    for (var i = 1; i <= ticketTypesNumber; i++)
+    {
+        var quantityInput = document.getElementById(`ticket-${ticketID}-quantity-${i}`);
+        var quantity = parseInt(quantityInput.value);
+        var priceElement = document.getElementById(`ticket-${ticketID}-price-${i}`);
+        var price = parseFloat(priceElement.textContent.replace('$', '')); // Extract numeric value from the price element
+
+        if (quantity < 0 || isNaN(quantity))
+        {
+            quantity = 0;
+            quantityInput.value = 0;
+        }
+
+        totalValue += (price * quantity);
+
+    }
+    console.log(`price: ${price}, quantity: ${quantity}, totalValue: ${totalValue}`);
+
+    var totalPriceElement = document.getElementById(`total-ticket-${ticketID}`);
+    totalPriceElement.textContent = `${totalValue.toFixed(2)},-`;
+}
+
 
 
 
@@ -316,8 +348,8 @@ function toggleEditLocationPopUp(country, city, s_name, s_num, region, zip, loc_
  * Create new event instance form
 */
 let eventVariantCount = 1;
-function addEventVariant() {
-    if((eventVariantCount == 1) && (document.getElementById('tickets-variants').childElementCount > 1))7
+function addEventVariant(locationselectoptions) {
+    if((eventVariantCount == 1) && (document.getElementById('tickets-variants').childElementCount > 1))
     {
         eventVariantCount = document.getElementById('tickets-variants').childElementCount;
     }
@@ -332,47 +364,45 @@ function addEventVariant() {
         <button type="button" class="button-round-filled" onclick="removeEventVariant(${eventVariantCount})"><i class="fa-solid fa-trash"></i></button>
         <div class="ticket-form-inputs">
             <div class="filter-date">
-                <label for="e-date-from">Date from:</label>
-                <input type="date" id="e-date-from">
+                <label for="e-date-from">Date from: *</label>
+                <input type="date" required name="date_from[]" id="e-date-from">
             </div>
             <div class="filter-date">
-                <label for="e-date-to">Date to:</label>
-                <input type="date" id="e-date-to">
+                <label for="e-date-to">Date to: *</label>
+                <input type="date" required name="date_to[]" id="e-date-to">
             </div>
             <div class="filter-date">
-                <label for="e-time-from">Time from:</label>
-                <input type="time" id="e-time-from">
+                <label for="e-time-from">Time from: *</label>
+                <input type="time" required name="time_from[]" id="e-time-from">
             </div>
             <div class="filter-date">
-                <label for="e-time-to">Time to:</label>
-                <input type="time" id="e-time-to">
+                <label for="e-time-to">Time to: *</label>
+                <input type="time" required name="time_to[]" id="e-time-to">
             </div>
             <span>
-                <label for="location-select">Select location</label>
-                <select name="location-select" id="location-select">
-                    <?php generateLocationSelectOptions() ?>
-                </select>
-            </span>
+                <label for="location-select[]">Select location</label>
+                <select name="address_id[]" id="location-select">` + locationselectoptions +
+                `</select></span>
         </div>
         <button type="button" ticket-arrow-button="ticket-${eventVariantCount}" class="arrow-button" onclick="toggleTicketDetail('ticket-${eventVariantCount}')">▼</button>
     </div>
     <div class="ticket-types" id="ticket-${eventVariantCount}">
         <table id="variant-types-${eventVariantCount}">
             <tr>
-                <td>Ticket type</td>
-                <td class="row-15">Ticket cost in $</td>
-                <td class="row-15">Number of tickets</td>
+                <td>Ticket type *</td>
+                <td class="row-15">Ticket cost in czk *</td>
+                <td class="row-15">Number of tickets *</td>
                 <td class="row-10"><button type="button" class="button-round-filled" onclick="addTicketType(${eventVariantCount})"><i class="fa-solid fa-plus"></i></button></td>
             </tr>
             <tr>
                 <td>
-                    <input type="text" name="" id="ticket-type" placeholder="Ticket type name">
+                    <input type="text" required name="${eventVariantCount}_ticket_type[]" id="ticket-type" placeholder="Ticket type name">
                 </td>
                 <td class="row-15">
-                    <input type="number" name="" id="ticket-cost" placeholder="Cost" oninput="checkNegativeInput(this)">
+                    <input type="number" required name="${eventVariantCount}_ticket_cost[]" id="ticket-cost" placeholder="Cost" oninput="checkNegativeInput(this)">
                 </td>
                 <td class="row-15">
-                    <input type="number" name="" id="ticket-cnt" placeholder="Num." oninput="checkNegativeInput(this)">
+                    <input type="number" required name="${eventVariantCount}_ticket_count[]" id="ticket-cnt" placeholder="Num." oninput="checkNegativeInput(this)">
                 </td>
                 <td class="row-10"><button type="button" class="button-round-filled" onclick="removeTicketType(this)"><i class="fa-solid fa-trash"></i></button></td>
             </tr>
@@ -537,7 +567,6 @@ function previewFile() {
  * Show gallery popup with given imageList
  *
  * @param {*} imageList list with paths to the images
- * @FIXME leave popup emty if no photos are provided
  */
 function toggleGallery(imageList)
 {

@@ -34,7 +34,7 @@ makeHeader();
         <form action="scripts/category-manage/create-category.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
-                <p>Name of new Category</p>
+                <p>Name of new Category *</p>
                 <input type="text" name="category_name" required placeholder="Category name">
             </div>
             <div class="label-input">
@@ -65,7 +65,7 @@ makeHeader();
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
         <input type="hidden" id="category-id" name="category_id" >
             <div class="label-input">
-                <p>Category Name</p>
+                <p>Category Name *</p>
                 <input type="text" required name="category_name" id="category-name" placeholder="Category name">
             </div>
             <div class="label-input">

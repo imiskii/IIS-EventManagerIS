@@ -10,14 +10,18 @@ function check_max_len ($attribute, $value, $maxlen, &$data_valid, &$errmsg_arra
 function validateData(array &$data_array, array &$errmsg_array) {
     $data_valid = true;
     foreach($data_array as $attribute => $value) {
-        switch ($attribute) {
+        if(is_array($value)) {
+            $data_valid = validateData($value, $errmsg_array);
+        } else switch ($attribute) {
         case 'email':
             check_max_len($attribute, $value, 256, $data_valid, $errmsg_array);
-            if (!filter_var($attribute, FILTER_VALIDATE_EMAIL)) { // FIXME: not working?
+            if (!preg_match('/^[\d\p{L}\-_\.]+@[\.\-_\d\p{L}]+\.[a-zA-Z]+$/', $value)) {
                 $data_valid = false;
-                array_push($errmsg_array, "$\'$value\' is not a valid email format.");
+                array_push($errmsg_array, "\'$value\' is not a valid email format.");
             }
             break;
+        case 'fee_name':
+        case 'event_name':
         case 'last_name':
         case 'first_name':
         case 'category_name':
@@ -36,6 +40,13 @@ function validateData(array &$data_array, array &$errmsg_array) {
             if (!preg_match('/^[\p{L}\s\-\.\d_]+$/u', $value)) {
                 $data_valid = false;
                 array_push($errmsg_array, "Only alphanumeric charcters, whitespaces, hyphen, underscore or dot allowed to be used from nickname.");
+            }
+            break;
+        case 'cost':
+        case 'max_tickets':
+            if (!filter_var($value, FILTER_VALIDATE_INT) || $value < 0) {
+                $data_valid = false;
+                array_push($errmsg_array, "$attribute must be a non-negative integer.");
             }
             break;
         case 'zip':
@@ -71,16 +82,21 @@ function validateData(array &$data_array, array &$errmsg_array) {
         case 'account_id':
         case 'category_id':
         case 'address_id':
+        case 'instance_id':
+        case 'super_category_id':
             if (!filter_var($value, FILTER_VALIDATE_INT) || $value < 0) {
                 $data_valid = false;
                 array_push($errmsg_array, "invalid $attribute.");
             }
             break;
-        case 'super_category_id': // no need to check for values. Users can only choose from selection. TODO: check values in case of direct html edits
-        case 'category_status':
+        case 'category_status': // no need to check for values. Users can only choose from selection or input is rescricted in html
         case 'address_status':
         case 'account_type':
         case 'account_status':
+        case 'date_from':
+        case 'date_to':
+        case 'time_from':
+        case 'time_to':
             break;
         default:
             $data_valid = false;
