@@ -726,7 +726,7 @@ function generateAccountRows()
         echo '<td class="cell-center cell-small">'.$account['account_type'].'</td>';
         echo '<td class="cell-center cell-small">'.$account['account_status'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="account_id[]" value="'.$account['account_id'].'" type="checkbox">
             </td>';
         echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('."'".$account['nick']."'".', '
         ."'".$account['first_name']."'".', ' ."'".$account['last_name']."'".', '."'".$account['email']."'".', '."'".$account['account_type']."'".')">Edit</button></td>';

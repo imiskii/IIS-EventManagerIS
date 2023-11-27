@@ -10,7 +10,7 @@ require_once "common/html-components.php";
 
 session_start();
 
-if (!idMatchesUser()) {
+if (!urlIdMatchesUser()) {
     // unauthorized access gets redirected to home page
     redirectForce('index.php');
 }

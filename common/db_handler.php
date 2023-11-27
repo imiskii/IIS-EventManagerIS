@@ -1815,8 +1815,12 @@ function userIsLoggedIn() {
     return isset($_SESSION['USER']);
 }
 
-function idMatchesUser() {
+function urlIdMatchesUser() {
     return key_exists('account_id', $_GET) && userIsLoggedIn() && $_SESSION['USER']['account_id'] == $_GET['account_id'];
+}
+
+function idMatchesUser($account_id) {
+    return userIsLoggedIn() && $account_id == $_SESSION['USER']['account_id'];
 }
 
 function getCities() {
@@ -2107,6 +2111,10 @@ function getSuperCategoryName(array &$category) {
     } else {
         return null;
     }
+}
+
+function getAccountType($account_id) {
+    return fetch_table_column('Account', 'account_type', ["account_id" => $account_id], 'account_id = :account_id');
 }
 
 ?>

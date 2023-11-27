@@ -34,14 +34,11 @@ CREATE TABLE Category (
     category_status VARCHAR(64),
 
     super_category_id INT,
-    account_id INT,
+    account_id INT, -- on account delete category can persist, not adding constraint
 
     CONSTRAINT fk_super_category
     FOREIGN KEY (super_category_id)
-    REFERENCES Category(category_id) ON DELETE CASCADE,
-
-    FOREIGN KEY (account_id)
-    REFERENCES Account(account_id)
+    REFERENCES Category(category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Event (
@@ -75,10 +72,7 @@ CREATE TABLE Address (
     address_description MEDIUMTEXT,
     date_of_creation DATETIME, -- FIXME: Do we need this?
     address_status VARCHAR(64),
-    account_id INT,
-
-    FOREIGN KEY (account_id)
-    REFERENCES Account(account_id)
+    account_id INT -- on account delete address can persist, not adding constraint
 );
 
 CREATE TABLE Event_instance (
@@ -158,7 +152,7 @@ CREATE TABLE Comment (
     event_id INT,
 
     FOREIGN KEY (account_id)
-    REFERENCES Account(account_id),
+    REFERENCES Account(account_id) ON DELETE CASCADE,
 
     CONSTRAINT fk_super_comment
     FOREIGN KEY (super_comment)
