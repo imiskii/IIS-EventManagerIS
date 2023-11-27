@@ -783,7 +783,7 @@ function generateTicketOrdersRows($event_id)
         echo '<td>'.$ticket['fee_name'].'</td>';
         echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="reg_id[]" value="'.$ticket['reg_id'].'" type="checkbox">
             </td>';
         echo '</tr>';
     }
@@ -809,7 +809,7 @@ function generateTicketRows($event_id)
         echo '<td>'.$ticket['fee_name'].'</td>';
         echo '<td class="cell-center cell-small">'.$ticket['ticket_count'].'</td>';
         echo '<td class="cell-center cell-small">
-                <input type="checkbox">
+                <input name="reg_id[]" value="'.$ticket['reg_id'].'" type="checkbox">
             </td>';
         echo '</tr>';
     }

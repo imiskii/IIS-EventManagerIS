@@ -2060,7 +2060,7 @@ function getTickets($event_id, $confirmed) {
     $tables = 'Event e JOIN Event_instance ei ON e.event_id = ei.event_id JOIN Entrance_fee ef ON ei.instance_id = ef.instance_id
     JOIN Registration r ON r.instance_id = ef.instance_id AND r.fee_name = ef.fee_name JOIN Account acc ON r.account_id = acc.account_id
     JOIN Address a ON ei.address_id = a.address_id';
-    $return_id = 'r.reg_id, acc.nick, acc.first_name, acc.last_name, acc.email, a.country, a.city, a.street, a.street_number, ef.fee_name, r.ticket_count';
+    $return_id = 'ei.date_from, ei.time_from, ei.date_to, ei.time_to, r.reg_id, acc.nick, acc.first_name, acc.last_name, acc.email, a.country, a.city, a.street, a.street_number, ef.fee_name, r.ticket_count';
     $id_string = implode(' AND ', $query_parts);
     return fetch_all_table_columns($tables, $return_id, $id_array, $id_string);
 }
@@ -2069,8 +2069,8 @@ function generateSessionToken() {
     $_SESSION['token'] = bin2hex(random_bytes(32));
 }
 
-function updateSessionReturnPage() {
-    $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
+function updateSessionReturnPage($suffix=null) {
+    $_SESSION['return_to'] = $_SERVER['REQUEST_URI'].$suffix;
 }
 
 function setPopupMessage($type, $message) {

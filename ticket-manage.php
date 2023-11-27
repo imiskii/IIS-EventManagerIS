@@ -16,6 +16,8 @@ if(is_null($event_id = $_GET['event_id'] ?? null) || (!userIsAdmin() && !userIsO
     redirectForce('index.php'); // TODO: Error message
 }
 
+generateSessionToken();
+updateSessionReturnPage();
 updateSession($_GET, ['ticket_search_bar']);
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
@@ -31,10 +33,11 @@ makeHeader();
         <div class="part-lable">
             <h2>Tickets waiting on Confirmation</h2>
         </div>
-        <form action="">
+        <form action="scripts/ticket-manage/confirm-pending-tickets.php" method="post">
+        <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="manage-tool-bar">
-                <button class="button-round-filled">Confirm</button>
-                <button class="button-round-filled">Delete</button>
+                <button name="accept" value="accept" class="button-round-filled">Confirm</button>
+                <button name="delete" value="delete" class="button-round-filled">Delete</button>
             </div>
             <table>
                 <tr>
@@ -68,9 +71,10 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="">
+        <form action="scripts/ticket-manage/bulk-manage-registrations.php" method="post">
             <div class="manage-tool-bar">
-                <button class="button-round-filled">Delete</button>
+                <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
+                <button name="delete" value="delete" class="button-round-filled">Delete</button>
             </div>
             <table>
                 <tr>
