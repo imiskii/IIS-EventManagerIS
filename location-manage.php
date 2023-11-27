@@ -31,7 +31,7 @@ makeHeader();
             <h3>Create new Location</h3>
             <span class="close-edit-btn" id="close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/create-location.php" method="post">
+        <form action="scripts/location-manage/create-location.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <span>
                 <div class="label-input">
@@ -82,7 +82,7 @@ makeHeader();
             <h3>Edit Location</h3>
             <span class="close-edit-btn" id="E-close-location-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/edit-location.php" method="post">
+        <form action="scripts/location-manage/edit-location.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
         <input type="hidden" id="E-id" name="address_id">
             <span>
@@ -133,7 +133,7 @@ makeHeader();
         <div class="part-lable">
             <h2>Location proposals</h2>
         </div>
-        <form action="scripts/manage-location-proposals.php" method="post">
+        <form action="scripts/location-manage/bulk-manage-location-proposals.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="manage-tool-bar">
                 <button name="accept" value="accept" class="button-round-filled">Accept proposal</button>
@@ -173,7 +173,7 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="scripts/manage-locations.php" method="post">
+        <form action="scripts/location-manage/bulk-manage-locations.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="manage-tool-bar">
                 <button name="change_status" value="change_status" class="button-round-filled">Change status</button>

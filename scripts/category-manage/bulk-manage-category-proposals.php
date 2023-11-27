@@ -1,12 +1,12 @@
 <?php
-require_once "../common/db_handler.php";
-require_once '../common/input_validator.php';
+require_once "../../common/db_handler.php";
+require_once '../../common/input_validator.php';
 
 session_start();
 
 if(!userIsLoggedIn() || !verifyToken($_POST)) {
     setPopupMessage('error', 'unauthorized access!');
-    redirect('../index.php');
+    redirect('../../index.php');
 }
 
 $db = connect_to_db();
@@ -17,7 +17,7 @@ loadInputData($_POST, $input_data, $valid_columns);
 
 if(!key_exists('category_id', $input_data)) {
     setPopupMessage('warning', 'no categories were selected');
-    redirect('../index/php');
+    redirect('../../index/php');
 }
 
 $op_success = true;
@@ -49,6 +49,6 @@ if(in_array('accept', $input_data)) {
     }
 }
 
-redirect('..index.php');
+redirect('../../index.php');
 
 ?>

@@ -26,9 +26,9 @@ function validateData(array &$data_array, array &$errmsg_array) {
         case 'street':
         case 'state':
             check_max_len($attribute, $value, 128, $data_valid, $errmsg_array);
-            if (!preg_match('/^[\p{L}\s\-\.]+$/u', $value)) {
+            if (!preg_match('/^[\p{L}\s\-\.\d]+$/u', $value)) {
                 $data_valid = false;
-                array_push($errmsg_array, "$attribute \'$value\' contains characters which are not allowed. Please only use letters, whitespaces, hyphen, or dot.");
+                array_push($errmsg_array, "$attribute \'$value\' contains characters which are not allowed. Please only use alphanumeric characters, whitespaces, hyphen, or dot.");
             }
             break;
         case 'nick':

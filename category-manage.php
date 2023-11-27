@@ -31,7 +31,7 @@ makeHeader();
             <h3>Create new Category</h3>
             <span class="close-edit-btn" id="close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/create-category.php" method="post">
+        <form action="scripts/category-manage/create-category.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
                 <p>Name of new Category</p>
@@ -61,7 +61,7 @@ makeHeader();
             <h3>Edit Category</h3>
             <span class="close-edit-btn" id="edit-close-category-popup-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/edit-category.php" method="post">
+        <form action="scripts/category-manage/edit-category.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
         <input type="hidden" id="category-id" name="category_id" >
             <div class="label-input">
@@ -91,7 +91,7 @@ makeHeader();
         <div class="part-lable">
             <h2>Category proposals</h2>
         </div>
-        <form action="scripts/manage-category-proposals.php" method="post">
+        <form action="scripts/category-manage/bulk-manage-category-proposals.php" method="post">
             <div class="manage-tool-bar">
                 <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
                 <button name='accept' value='accept' class="button-round-filled">Accept proposal</button>
@@ -127,7 +127,7 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="scripts/manage-categories" method="post">
+        <form action="scripts/category-manage/bulk-manage-categories" method="post">
             <div class="manage-tool-bar">
                 <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
                 <button name="change_status" value="change_status" class="button-round-filled">Change status</button>
