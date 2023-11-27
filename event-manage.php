@@ -96,7 +96,7 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="scripts/edit-events.php" method="post">
+        <form action="scripts/event-manage/bulk-manage-events.php" method="post">
         <input type="hidden" name="token" value="<?php echoSessionVal('token', ''); ?>">
             <div class="manage-tool-bar">
                 <button name='change_status' value='change_status' class="button-round-filled">Change status</button>
