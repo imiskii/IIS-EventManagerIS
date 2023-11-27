@@ -30,7 +30,7 @@ CREATE TABLE Category (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(128),
     category_description MEDIUMTEXT,
-    time_of_creation DATETIME,
+    time_of_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
     category_status VARCHAR(64),
 
     super_category_id INT,
@@ -47,7 +47,7 @@ CREATE TABLE Event (
     event_description MEDIUMTEXT,
     event_icon VARCHAR(256),
     rating FLOAT,
-    time_of_creation DATETIME,
+    time_of_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
     time_of_last_edit DATETIME,
     event_status VARCHAR(64),
 
@@ -70,7 +70,7 @@ CREATE TABLE Address (
     street_number INT,
     state VARCHAR(128),
     address_description MEDIUMTEXT,
-    date_of_creation DATETIME, -- FIXME: Do we need this?
+    date_of_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
     address_status VARCHAR(64),
     account_id INT -- on account delete address can persist, not adding constraint
 );
@@ -143,7 +143,7 @@ CREATE TABLE Photos (
 
 CREATE TABLE Comment (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
-    time_of_posting DATETIME,
+    time_of_posting DATETIME DEFAULT CURRENT_TIMESTAMP,
     comment_text MEDIUMTEXT,
     comment_rating FLOAT,
 

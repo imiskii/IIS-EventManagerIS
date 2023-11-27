@@ -10,10 +10,13 @@ require_once "common/html-components.php";
 
 session_start();
 
-if(is_null($event_id = $_GET['event_id'] ?? null)) {
-    redirectForce('index.php'); // TODO: Error message
+if(!isset($_GET['event_id'])) {
+    setPopupMessage('error', 'invalid event id!');
+    redirectForce('index.php');
 }
+$event_id = $_GET['event_id'];
 
+generateSessionToken();
 updateSessionReturnPage();
 $db = connect_to_db();
 
@@ -44,14 +47,15 @@ makeHeader();
     </div>
     <div class="comments-container">
         <div class="comment-form">
-            <form action="">
-                <input type="hidden" value="User nick">
-                <input type="hidden" value="<?php date('Y-m-d H:i:s') ?>">
+            <form action="scripts/event-detail/post-comment.php" method="post">
+            <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
+            <input type="hidden" id="comment_event_id" name="event_id" value="<?php echo $event_id ?>" >
+            <input type="hidden" id="comment_account_id" name="account_id" value="<?php echoUserAttribute('account_id') ?>" >
                 <div class="form-input">
-                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                    <textarea name="comment_text" id="comment_text" cols="30" rows="10"></textarea>
                     <span>
                         <label for="rating">Choose rating</label>
-                        <input type="number" id="rating" pattern="[0-5]" value="5" oninput="checkRatingInput()">
+                        <input type="number" name="comment_rating" id="rating" pattern="[0-5]" value="5" oninput="checkRatingInput()">
                     </span>
                 </div>
                 <button type="Submit" class="button-round-filled">Submit</button>

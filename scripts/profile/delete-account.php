@@ -11,6 +11,10 @@ if(!userIsLoggedIn() || !verifyToken($_POST)) {
     redirectForce('../../index.php');
 }
 
+$valid_columns = ['comment_text', 'comment_password'];
+$input_data = [];
+loadInputData($_POST, $input_data, $valid_columns);
+
 $delete_values = [getUserAttribute('account_id')];
 if(delete_from_table('Account', $delete_values, 'account_id')) {
     unset($_SESSION['USER']);

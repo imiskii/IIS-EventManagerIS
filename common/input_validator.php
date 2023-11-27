@@ -37,6 +37,7 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 $data_valid = false;
                 array_push($errmsg_array, "Only alphanumeric charcters, whitespaces, hyphen, underscore or dot allowed to be used from nickname.");
             }
+            break;
         case 'zip':
         case 'street_number':
             if (!filter_var($value, FILTER_VALIDATE_INT) || $value <= 0) {
@@ -44,11 +45,18 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 array_push($errmsg_array, "$attribute must be a positive integer.");
             }
             break;
+        case 'comment_text':
         case 'category_description':
         case 'address_description':
             if (mb_strlen($value) > 16777215) { // Medium text max length
                 $data_valid = false;
                 array_push($errmsg_array, "$attribute length exceeded. Length cannot exceed 16777215 characters.");
+            }
+            break;
+        case 'comment_rating':
+            if (!filter_var($value, FILTER_VALIDATE_INT) || $value < 0 || $value > 5) {
+                $data_valid = false;
+                array_push($errmsg_array, "rating must be of of value from 0 to 5.");
             }
             break;
         case 'password':
@@ -58,6 +66,16 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 $data_valid = false;
                 array_push($errmsg_array, "password must be at least 8 characters long.");
             }
+            break;
+        case 'event_id':
+        case 'account_id':
+        case 'category_id':
+        case 'address_id':
+            if (!filter_var($value, FILTER_VALIDATE_INT) || $value < 0) {
+                $data_valid = false;
+                array_push($errmsg_array, "invalid $attribute.");
+            }
+            break;
         case 'super_category_id': // no need to check for values. Users can only choose from selection. TODO: check values in case of direct html edits
         case 'category_status':
         case 'address_status':
