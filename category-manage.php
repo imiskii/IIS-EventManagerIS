@@ -38,7 +38,7 @@ makeHeader();
                 <input type="text" name="category_name" required placeholder="Category name">
             </div>
             <div class="label-input">
-                <p>Parrent Category to new created category</p>
+                <p>Parent Category to new created category</p>
                 <select name="super_category">
                     <option value="" selected></option>
                     <?php generateCategorySelectOptions() ?>

@@ -13,7 +13,7 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 $data_valid = false;
                 array_push($errmsg_array, "$attribute can be at most 128 characters long.");
             }
-            if (!preg_match('/^[\p{L}\s\-]+$/u', $value)) {
+            if (!preg_match('/^[\p{L}\s\-\.]+$/u', $value)) {
                 $data_valid = false;
                 array_push($errmsg_array, "$attribute \'$value\' contains characters which are not allowed. Please only use letters, whitespaces, or hyphen.");
             }
@@ -32,7 +32,7 @@ function validateData(array &$data_array, array &$errmsg_array) {
                 array_push($errmsg_array, "$attribute length exceeded. Length cannot exceed 16777215 characters.");
             }
             break;
-        case 'super_category_id': // no need to check for values. Users can only choose from selection.
+        case 'super_category_id': // no need to check for values. Users can only choose from selection. TODO: check values in case of direct html edits
         case 'category_status':
         case 'address_status':
             break;

@@ -25,7 +25,7 @@ if(in_array('accept', $input_data)) {
     $search_by_array = [];
     for($i = 0; $i < sizeof($input_data['address_id']); $i++) {
         $id_aray['address_id'.$i] = $input_data['address_id'][$i];
-        $array_push($search_by_array, ":address_id$i");
+        array_push($search_by_array, ":address_id$i");
     }
     if (update_table_column('Address', 'SET address_status = "approved"', 'address_id IN ('.implode(', ', $search_by_array).')', $id_aray)) {
         setPopupMessage('success', 'categories approved successfully.');

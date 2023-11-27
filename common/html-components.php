@@ -700,8 +700,9 @@ function generateLocationRows()
         echo '<td class="cell-center cell-small">
                 <input name="address_id[]" value="'.$location['address_id'].'" type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('."'".$location['country']."'".', '
-        ."'".$location['city']."'".', '."'".$location['street']."'".', '."'".$location['street_number']."'".', '."'".$location['state']."'".', '."'".$location['zip']."'".')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditLocationPopUp('."'".$location['country'].
+        "', '".$location['city']."', '".$location['street']."', '".$location['street_number']."', '".$location['state']."'".', '."'".$location['zip']."', '".
+        getColumn($location, 'address_description')."', '".$location['address_id']."', '".$location['address_status']."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }
