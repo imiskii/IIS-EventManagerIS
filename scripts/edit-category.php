@@ -15,8 +15,14 @@ $valid_columns = ['category_name', 'category_description', 'category_status', 's
 $input_data = [];
 loadInputData($_POST, $input_data, $valid_columns);
 
-if($super_category = getColumn($input_data, 'super_category_id') && $super_category == $_POST['category_id']) {
+if(($super_category = getColumn($input_data, 'super_category_id')) && $super_category == $_POST['category_id']) {
     setPopupMessage('error', 'category cannot be a sub category of itself.');
+    redirect('../index.php');
+}
+
+if(($conflicting_category_id = find_table_column('category_id', 'Category', ['category_name' => $input_data['category_name']])) &&
+    $conflicting_category_id != $_POST['category_id']) {
+    setPopupMessage('error', "category with name \'".$input_data['category_name']."\' already exists.");
     redirect('../index.php');
 }
 

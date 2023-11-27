@@ -148,22 +148,24 @@ function toggleEditCommentPopUp(commentID, commentText)
  * @param {*} email profile email
  * @param {*} role profile role
  */
-function toggleEditProfilePopUp(nick='', f_name='', l_name='', email='', role='')
+function toggleEditProfilePopUp(nick, f_name, l_name, email, role, account_id)
 {
     const popup = document.getElementById('profile-edit-popup');
     const closeBtn = document.getElementById('close-edit-profile-btn');
 
-    const nickInput = document.getElementById('nick');
-    const firstNameInput = document.getElementById('fname');
-    const lastNameInput = document.getElementById('lname');
-    const emailInput = document.getElementById('email');
-    const roleInput = document.getElementById('role');
+    const nickInput = document.getElementById('edit-acc-nick');
+    const firstNameInput = document.getElementById('edit-acc-fname');
+    const lastNameInput = document.getElementById('edit-acc-lname');
+    const emailInput = document.getElementById('edit-acc-email');
+    const roleInput = document.getElementById('role-edit-acc');
+    const accountId = document.getElementById('edit-acc-id');
 
     nickInput.value = nick;
     firstNameInput.value = f_name;
     lastNameInput.value = l_name;
     emailInput.value = email;
     roleInput.value = role;
+    accountId.value = account_id;
 
     popup.classList.add('active');
 
@@ -172,6 +174,16 @@ function toggleEditProfilePopUp(nick='', f_name='', l_name='', email='', role=''
     });
 }
 
+function toggleAddProfilePopUp(){
+    const popup = document.getElementById('profile-add-popup');
+    const closeBtn = document.getElementById('close-add-profile-btn');
+
+    popup.classList.add('active');
+
+    closeBtn.addEventListener('click', () => {
+        popup.classList.remove('active');
+    });
+}
 
 /**
  * Show password change popup

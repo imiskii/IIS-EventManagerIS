@@ -21,7 +21,7 @@ if (!validateData($input_data, $error_msg_array)) {
     redirect('../index.php');
 }
 
-if ($status = fetch_table_column('Category', 'category_name', ['category_name' => $input_data['category_name']], 'category_name = :category_name')) {
+if (find_table_column('category_name', 'Category', ['category_name' => $input_data['category_name']])) {
     setPopupMessage('error', "category \'".$input_data['category_name']."\' already exists.");
     redirect('../index.php');
 }

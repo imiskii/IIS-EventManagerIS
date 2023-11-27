@@ -21,6 +21,15 @@ if (!validateData($input_data, $error_msg_array)) {
     redirect('../index.php');
 }
 
+$unique_data_columns = ['country', 'city', 'street', 'street_number'];
+$unique_data = [];
+loadInputData($_POST, $unique_data, $unique_data_columns);
+
+if ($conflicting_address = find_table_row('Address', $unique_data) && $conflicting_address['address_id'] != $_POST['address_id']) {
+    setPopupMessage('error', "address \'".formatAddress($address)."\' already exists.");
+    redirect('../index.php');
+}
+
 if(!update_table_row('Address', $input_data, 'address_id', $_POST['address_id'])) {
     setPopupMessage('error', 'could not update the location.');
 } else {

@@ -480,7 +480,7 @@ function makeRoleSelector($id = "")
     if (userIsAdmin())
     {
         // FIXME: option for all not rendering
-        echo '<select name="account_type'.$id.'" id="role'.$id.'">';
+        echo '<select name="account_type" id="role-'.$id.'">';
         if($id == '_filter') {
             echo '<option value="all" '.getSessionVal("account_type$id", "") ? "" : 'selected'.' >all</option>';
         }
@@ -728,8 +728,8 @@ function generateAccountRows()
         echo '<td class="cell-center cell-small">
                 <input name="account_id[]" value="'.$account['account_id'].'" type="checkbox">
             </td>';
-        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('."'".$account['nick']."'".', '
-        ."'".$account['first_name']."'".', ' ."'".$account['last_name']."'".', '."'".$account['email']."'".', '."'".$account['account_type']."'".')">Edit</button></td>';
+        echo '<td class="cell-center cell-small"><button type="button" class="button-round-filled" onclick="toggleEditProfilePopUp('."'".$account['nick']."', '".
+        $account['first_name']."', '".$account['last_name']."', '".$account['email']."', '".$account['account_type']."', '".$account['account_id']."'".')">Edit</button></td>';
         echo '</tr>';
     }
 }

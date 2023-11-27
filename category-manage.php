@@ -66,7 +66,7 @@ makeHeader();
         <input type="hidden" id="category-id" name="category_id" >
             <div class="label-input">
                 <p>Category Name</p>
-                <input type="text" name="category_name" id="category-name" placeholder="Category name">
+                <input type="text" required name="category_name" id="category-name" placeholder="Category name">
             </div>
             <div class="label-input">
                 <p>Parent Category</p>
