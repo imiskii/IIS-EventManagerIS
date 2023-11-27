@@ -1673,7 +1673,7 @@ function getAccounts() {
             $id_array['status'] = $_GET["account_status"];
             array_push($query_parts, 'account_status = :status');
         }
-        if (isset($_GET['account_type_filter'])) {
+        if (isset($_GET['account_type_filter']) && $_GET['account_type_filter'] != 'all') {
             $id_array['type'] = $_GET['account_type_filter'];
             array_push($query_parts, 'account_type = :type');
         }

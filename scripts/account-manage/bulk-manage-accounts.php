@@ -1,12 +1,12 @@
 <?php
-require_once "../common/db_handler.php";
-require_once '../common/input_validator.php';
+require_once "../../common/db_handler.php";
+require_once '../../common/input_validator.php';
 
 session_start();
 
 if(!userIsLoggedIn() || !verifyToken($_POST)) {
     setPopupMessage('error', 'unauthorized access!');
-    redirect('../index.php');
+    redirect('../../index.php');
 }
 
 $db = connect_to_db();
@@ -17,14 +17,14 @@ loadInputData($_POST, $input_data, $valid_columns);
 
 if(!key_exists('account_id', $input_data)) {
     setPopupMessage('warning', 'no categories were selected');
-    redirect('../index/php');
+    redirect('../../index/php');
 }
 
 
 foreach($input_data['account_id'] as $account_id) {
     if (getAccountType($account_id) == 'administrator' && !idMatchesUser($account_id)) {
         setPopupMessage('error', 'cannot edit account of another administrator!');
-        redirect('../index.php');
+        redirect('../../index.php');
     }
 }
 
@@ -45,6 +45,6 @@ if (in_array('delete', $input_data)) {
     }
 }
 
-redirect('../index.php');
+redirect('../../index.php');
 
 ?>

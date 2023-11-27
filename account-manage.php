@@ -31,7 +31,7 @@ makeHeader();
             <h3>Create Profile</h3>
             <span class="close-edit-btn" id="close-add-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/add-account.php" method="post">
+        <form action="scripts/account-manage/add-account.php" method="post">
         <input type="hidden" id="add-acc-token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="label-input">
                 <p>Nick</p>
@@ -74,7 +74,7 @@ makeHeader();
             <h3>Create New Profile</h3>
             <span class="close-edit-btn" id="close-edit-profile-btn"><i class="fa-solid fa-xmark"></i></span>
         </div>
-        <form action="scripts/edit-account.php" method="post">
+        <form action="scripts/account-manage/edit-account.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
         <input type="hidden" id="edit-acc-id" name="account_id">
             <div class="label-input">
@@ -127,11 +127,7 @@ makeHeader();
                     </span>
                     <span>
                         <label for="account_status">Account status</label>
-                        <select name="account_status" id="account_status">
-                            <option value="all">All</option>
-                            <option value="active">active</option>
-                            <option value="disabled">disabled</option>
-                        </select>
+                        <?php makeAccountStatusSelector() ?>
                     </span>
                     <span>
                         <label for="account_type_filter">Account type</label>
@@ -141,7 +137,7 @@ makeHeader();
                 </form>
             </div>
         </div>
-        <form action="scripts/manage-accounts.php" method="post">
+        <form action="scripts/account-manage/bulk-manage-accounts.php" method="post">
         <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
             <div class="manage-tool-bar">
                 <button name="change_status" value="change_status" class="button-round-filled">Change status</button>

@@ -13,7 +13,7 @@ function validateData(array &$data_array, array &$errmsg_array) {
         switch ($attribute) {
         case 'email':
             check_max_len($attribute, $value, 256, $data_valid, $errmsg_array);
-            if (!filter_var($attribute, FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($attribute, FILTER_VALIDATE_EMAIL)) { // FIXME: not working?
                 $data_valid = false;
                 array_push($errmsg_array, "$\'$value\' is not a valid email format.");
             }

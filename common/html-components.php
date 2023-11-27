@@ -479,10 +479,10 @@ function makeRoleSelector($id = "")
 {
     if (userIsAdmin())
     {
-        // FIXME: option for all not rendering
-        echo '<select name="account_type" id="role-'.$id.'">';
+        echo '<select name="account_type'.$id.'" id="role-'.$id.'">';
         if($id == '_filter') {
-            echo '<option value="all" '.getSessionVal("account_type$id", "") ? "" : 'selected'.' >all</option>';
+            $selected = getSessionVal("account_type$id", "") ? "" : 'selected';
+            echo '<option value="all" '.$selected.' >all</option>';
         }
         foreach (['administrator', 'moderator', 'regular'] as $account_type) {
             echo '<option value="'.$account_type.'" '.getSelectSessionState("account_type$id", $account_type).'>'.$account_type.'</option>';
@@ -931,4 +931,13 @@ function generateEditEventVariants($eventID)
         <?php
         $cnt++;
     }
+}
+
+function makeAccountStatusSelector() {
+    echo '<select name="account_status" id="account_status">';
+    foreach(['all', 'active', 'disabled'] as $status) {
+        $selected = getSessionVal('account_status', '') == $status ? 'selected' : '';
+        echo '<option value="'.$status.'" '.$selected.'>'.$status.'</option>';
+    }
+    echo '</select>';
 }
