@@ -1544,7 +1544,6 @@ function session_handler($table, $data, $account_type)
             return;
         }
 
-        // if (password_verify($data['pwd'], $stored_data['pwd'])) { // right now we don't hash passwords
         if ($account['password'] == $data['password']){
             $_SESSION["USER"] = [];
             foreach($account as $attribute => $value) {
@@ -1673,8 +1672,8 @@ function getAccounts() {
             $id_array['status'] = $_GET["account_status"];
             array_push($query_parts, 'account_status = :status');
         }
-        if (isset($_GET['account_type_filter']) && $_GET['account_type_filter'] != 'all') {
-            $id_array['type'] = $_GET['account_type_filter'];
+        if (isset($_GET['account_type']) && $_GET['account_type'] != 'all') {
+            $id_array['type'] = $_GET['account_type'];
             array_push($query_parts, 'account_type = :type');
         }
     }

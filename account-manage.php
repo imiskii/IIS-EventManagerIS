@@ -17,7 +17,7 @@ if(!userIsAdmin()) {
 
 generateSessionToken();
 updateSessionReturnPage();
-updateSession($_GET, ["search-bar", "account_status", 'account_type_filter']);
+updateSession($_GET, ["search-bar", "account_status", 'account_type']);
 
 makeHead("Eventer | Account Management");
 makeHeader();
@@ -130,7 +130,7 @@ makeHeader();
                         <?php makeAccountStatusSelector() ?>
                     </span>
                     <span>
-                        <label for="account_type_filter">Account type</label>
+                        <label for="account_type">Account type</label>
                         <?php makeRoleSelector('_filter'); ?>
                     </span>
                     <button class="button-round-filled-green">Submit filters</button>

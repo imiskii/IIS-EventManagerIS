@@ -15,6 +15,12 @@ $valid_columns = ['nick', 'first_name', 'last_name', 'email', 'password', 'passw
 $input_data = [];
 loadInputData($_POST, $input_data, $valid_columns);
 
+$error_msg_array = [];
+if (!validateData($input_data, $error_msg_array)) {
+    setPopupMessage('error', implode(' ', $error_msg_array));
+    redirect('../../index.php');
+}
+
 $conflicting_email = find_table_column('email', 'Account', ['email' => $_POST['email']]);
 if (!empty($conflicting_email)) {
     setPopupMessage('error', 'account with this email already exists.');

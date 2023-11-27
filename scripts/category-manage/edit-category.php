@@ -15,6 +15,13 @@ $valid_columns = ['category_name', 'category_description', 'category_status', 's
 $input_data = [];
 loadInputData($_POST, $input_data, $valid_columns);
 
+$error_msg_array = [];
+if (!validateData($input_data, $error_msg_array)) {
+    setPopupMessage('error', implode(' ', $error_msg_array));
+    redirect('../../index.php');
+}
+
+
 if(($super_category = getColumn($input_data, 'super_category_id')) && $super_category == $_POST['category_id']) {
     setPopupMessage('error', 'category cannot be a sub category of itself.');
     redirect('../../index.php');

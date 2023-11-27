@@ -477,17 +477,18 @@ function generateComments($eventID)
  */
 function makeRoleSelector($id = "")
 {
-    if (userIsAdmin())
-    {
-        echo '<select name="account_type'.$id.'" id="role-'.$id.'">';
+    if (userIsAdmin()) {
+        echo '<select name="account_type" id="role-'.$id.'">';
         if($id == '_filter') {
-            $selected = getSessionVal("account_type$id", "") ? "" : 'selected';
+            $selected = getSessionVal("account_type", "") ? "" : 'selected';
             echo '<option value="all" '.$selected.' >all</option>';
         }
         foreach (['administrator', 'moderator', 'regular'] as $account_type) {
-            echo '<option value="'.$account_type.'" '.getSelectSessionState("account_type$id", $account_type).'>'.$account_type.'</option>';
+            echo '<option value="'.$account_type.'" '.getSelectSessionState("account_type", $account_type).'>'.$account_type.'</option>';
         }
         echo '</select>';
+    } else {
+        echo '<input type="hidden" name="account_status" id="role-edit-acc" value="'.getUserAttribute('account_type').'">';
     }
 }
 
@@ -506,7 +507,7 @@ function makeProfileInfo($profileID)
 
     <div class="icon-container">
         <img id="img-preview" src="<?php echo getUserIcon(); ?>">
-        <form action="scripts/upload-profile-icon.php" method="post" enctype="multipart/form-data">
+        <form action="scripts/profile/upload-profile-icon.php" method="post" enctype="multipart/form-data">
             <input type="file" id="file-input" name="profile-icon" onchange="previewFile()">
             <script> window.onload = refreshImage('img-preview', '<?php echo getUserIcon(); ?>') </script>
             <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
@@ -524,10 +525,11 @@ function makeProfileInfo($profileID)
         </div>
         <p><?php echoUserAttribute('email'); ?></p>
         <span>
-            <button class="button-round-filled" onclick="toggleEditProfilePopUp('Profile name', 'First name', 'Last name', 'Email', 'user')">Edit profile</button>
+            <button class="button-round-filled" onclick="toggleEditProfilePopUp('<?php echoUserAttribute('nick')?>', '<?php echoUserAttribute('first_name') ?>',
+            '<?php echoUserAttribute('last_name') ?>', '<?php echoUserAttribute('email') ?>', '<?php echoUserAttribute('account_type') ?>', '<?php echoUserAttribute('account_id') ?>')">Edit profile</button>
             <button class="button-round-filled" onclick="togglePasswordChangeProfilePopUp()">Change password</button>
-            <form action="" method="post">
-                <input type="hidden" value="<?php echoUserAttribute('account_id'); ?>">
+            <form action="scripts/profile/delete-account.php" method="post">
+                <input type="hidden" id="token" name="token" value="<?php echoSessionVal('token', '') ?>" >
                 <button class="button-round-filled">Delete account</button>
             </form>
         </span>
